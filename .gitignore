@@ -1,0 +1,16 @@
+# IDEA Files #
+.idea/
+*.iml
+
+# Outputs #
+*.class
+target/
+out/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+#MacOS Files #
+.DS_Store
