@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories("by.triumgroup.recourse.repository")
-@EntityScan(basePackages = "by.triumgroup.recourse.entity")
+@EntityScan("by.triumgroup.recourse.entity")
 public class PersistenceConfiguration {
 
     @Bean
