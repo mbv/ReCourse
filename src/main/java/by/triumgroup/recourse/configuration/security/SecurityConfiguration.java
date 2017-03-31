@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.configuration.security;
 
-import by.triumgroup.recourse.service.UserService;
+import by.triumgroup.recourse.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -50,8 +50,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
-        userDetailsService = new JdbcUserDetailsService(userService);
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        userDetailsService = new JdbcUserDetailsService(userRepository);
         return userDetailsService;
     }
 }

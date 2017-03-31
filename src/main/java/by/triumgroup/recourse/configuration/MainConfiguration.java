@@ -2,8 +2,10 @@ package by.triumgroup.recourse.configuration;
 
 import by.triumgroup.recourse.configuration.security.SecurityConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -27,6 +29,10 @@ public class MainConfiguration extends SpringBootServletInitializer {
         return builder.sources(MainConfiguration.class);
     }
 
+    @Bean
+    DefaultErrorAttributes errorAttributes() {
+        return new ErrorAttributesWithoutExceptionName();
+    }
 
 
 

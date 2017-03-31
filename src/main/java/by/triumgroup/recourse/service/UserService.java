@@ -1,11 +1,10 @@
 package by.triumgroup.recourse.service;
 
 import by.triumgroup.recourse.entity.User;
+import by.triumgroup.recourse.service.exception.ServiceException;
 
-public interface UserService {
+public interface UserService extends CrudService<User, Long> {
 
-    User findById(Long id);
-
-    User findByEmail(String email);
+    User findByEmail(String email) throws ServiceException;
 
 }

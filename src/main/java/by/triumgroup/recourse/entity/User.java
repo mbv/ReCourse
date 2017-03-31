@@ -1,8 +1,11 @@
 package by.triumgroup.recourse.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
@@ -11,11 +14,12 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "INT(11)", nullable = false)
-    private long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(columnDefinition = "CHAR(60)", nullable = false)
     private String passwordHash;
 
@@ -26,14 +30,14 @@ public class User implements Serializable {
     private String surname;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('male','female')", nullable = false)
+    @Column(columnDefinition = "ENUM ('MALE', 'FEMALE')", nullable = false)
     private Gender gender;
 
     @Column(columnDefinition = "DATE")
     private Timestamp birthday;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM ('guest', 'student', 'teacher', 'organizer')")
+    @Column(columnDefinition = "ENUM ('GUEST', 'STUDENT', 'TEACHER', 'ORGANIZER')")
     private Role role;
 
     private boolean isDeleted;
@@ -53,11 +57,11 @@ public class User implements Serializable {
         isDeleted = user.isDeleted;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -129,32 +133,21 @@ public class User implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         User user = (User) o;
-
-        return id == user.id
-                && (email != null ? email.equals(user.email) : user.email == null)
-                && (passwordHash != null ? passwordHash.equals(user.passwordHash) : user.passwordHash == null)
-                && (name != null ? name.equals(user.name) : user.name == null)
-                && (surname != null ? surname.equals(user.surname) : user.surname == null)
-                && gender == user.gender
-                && (birthday != null ? birthday.equals(user.birthday) : user.birthday == null)
-                && role == user.role
-                && isDeleted == user.isDeleted;
+        return Objects.equals(id, user.id) &&
+                isDeleted == user.isDeleted &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(passwordHash, user.passwordHash) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(surname, user.surname) &&
+                gender == user.gender &&
+                Objects.equals(birthday, user.birthday) &&
+                role == user.role;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (passwordHash != null ? passwordHash.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (surname != null ? surname.hashCode() : 0);
-        result = 31 * result + (gender != null ? gender.hashCode() : 0);
-        result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
-        result = 31 * result + (role != null ? role.hashCode() : 0);
-        result = 31 * result + (isDeleted ? 1 : 0);
-        return result;
+        return Objects.hash(id, email, passwordHash, name, surname, gender, birthday, role, isDeleted);
     }
 
     @Override
@@ -162,7 +155,7 @@ public class User implements Serializable {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+                //", passwordHash='" + passwordHash + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", gender=" + gender +
