@@ -6,5 +6,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
-public interface UserController extends CrudController<User, Long> {
+public interface UserController extends CrudController<User, Integer> {
 }

@@ -32,13 +32,14 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     public void configure(ResourceServerSecurityConfigurer resources) {
         resources
                 .tokenStore(tokenStore());
+        resources.stateless(false);
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                // here can be provided access to some url's
+                .antMatchers("/user/**").hasAuthority("ORGANIZER")
                 .anyRequest().authenticated();
     }
 }

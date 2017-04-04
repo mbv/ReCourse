@@ -1,17 +1,10 @@
 package by.triumgroup.recourse.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "teacher_feedback")
-public class TeacherFeedback {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long id;
-
+public class TeacherFeedback extends BaseEntity<Integer>{
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "teacher_id")
     private User teacher;
@@ -34,14 +27,6 @@ public class TeacherFeedback {
         this.student = student;
         this.heading = heading;
         this.report = report;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getTeacher() {
@@ -74,33 +59,5 @@ public class TeacherFeedback {
 
     public void setReport(String report) {
         this.report = report;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TeacherFeedback that = (TeacherFeedback) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(teacher, that.teacher) &&
-                Objects.equals(student, that.student) &&
-                Objects.equals(heading, that.heading) &&
-                Objects.equals(report, that.report);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, teacher, student, heading, report);
-    }
-
-    @Override
-    public String toString() {
-        return "TeacherFeedback{" +
-                "id=" + id +
-                ", teacher=" + teacher +
-                ", student=" + student +
-                ", heading='" + heading + '\'' +
-                ", report='" + report + '\'' +
-                '}';
     }
 }

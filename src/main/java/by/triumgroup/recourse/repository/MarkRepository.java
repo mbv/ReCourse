@@ -3,8 +3,8 @@ package by.triumgroup.recourse.repository;
 import by.triumgroup.recourse.entity.Mark;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface MarkRepository extends PagingAndSortingRepository<Mark, Long> {
+public interface MarkRepository extends PagingAndSortingRepository<Mark, Integer> {
 
-    Mark findBySolutionId(Long id);
+    Mark findBySolutionId(Integer id);
 
 }

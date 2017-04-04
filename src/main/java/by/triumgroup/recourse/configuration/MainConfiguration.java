@@ -1,6 +1,7 @@
 package by.triumgroup.recourse.configuration;
 
 import by.triumgroup.recourse.configuration.security.SecurityConfiguration;
+import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -34,6 +35,8 @@ public class MainConfiguration extends SpringBootServletInitializer {
         return new ErrorAttributesWithoutExceptionName();
     }
 
-
-
+    @Bean
+    RestExceptionHandler restExceptionHandler() {
+        return new RestExceptionHandler();
+    }
 }

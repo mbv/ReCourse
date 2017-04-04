@@ -1,17 +1,10 @@
 package by.triumgroup.recourse.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "course")
-public class Course {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long id;
-
+public class Course extends BaseEntity<Integer>{
     @Column(length = 50, nullable = false)
     private String title;
 
@@ -35,22 +28,13 @@ public class Course {
     public Course() {
     }
 
-    public Course(Long id, String title, String description, User teacher, User organizer, Status status, Integer maxStudents) {
-        this.id = id;
+    public Course(String title, String description, User teacher, User organizer, Status status, Integer maxStudents) {
         this.title = title;
         this.description = description;
         this.teacher = teacher;
         this.organizer = organizer;
         this.status = status;
         this.maxStudents = maxStudents;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -99,38 +83,6 @@ public class Course {
 
     public void setMaxStudents(Integer maxStudents) {
         this.maxStudents = maxStudents;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
-        return Objects.equals(id, course.id) &&
-                Objects.equals(maxStudents, course.maxStudents) &&
-                Objects.equals(title, course.title) &&
-                Objects.equals(description, course.description) &&
-                Objects.equals(teacher, course.teacher) &&
-                Objects.equals(organizer, course.organizer) &&
-                status == course.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, teacher, organizer, status, maxStudents);
-    }
-
-    @Override
-    public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", teacher=" + teacher +
-                ", organizer=" + organizer +
-                ", status=" + status +
-                ", maxStudents=" + maxStudents +
-                '}';
     }
 
     public enum Status {

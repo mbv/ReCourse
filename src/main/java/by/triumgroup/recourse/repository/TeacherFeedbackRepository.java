@@ -8,14 +8,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TeacherFeedbackRepository extends PagingAndSortingRepository<TeacherFeedback, Long> {
+public interface TeacherFeedbackRepository extends PagingAndSortingRepository<TeacherFeedback, Integer> {
 
-    List<TeacherFeedback> findByTeacherIdOrderByIdDesc(Long id);
+    List<TeacherFeedback> findByTeacherIdOrderByIdDesc(Integer id);
 
-    List<TeacherFeedback> findByTeacherIdOrderByIdDesc(Long id, Pageable pageable);
+    List<TeacherFeedback> findByTeacherIdOrderByIdDesc(Integer id, Pageable pageable);
 
-    List<TeacherFeedback> findByStudentIdOrderByIdDesc(Long id);
+    List<TeacherFeedback> findByStudentIdOrderByIdDesc(Integer id);
 
-    List<TeacherFeedback> findByStudentIdOrderByIdDesc(Long id, Pageable pageable);
+    List<TeacherFeedback> findByStudentIdOrderByIdDesc(Integer id, Pageable pageable);
 
 }

@@ -1,17 +1,10 @@
 package by.triumgroup.recourse.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "hometask_solution")
-public class HometaskSolution {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long id;
-
+public class HometaskSolution extends BaseEntity<Integer>{
     @Column(columnDefinition = "INT(11)", nullable = false)
     private Long hometaskId;
 
@@ -25,19 +18,10 @@ public class HometaskSolution {
     public HometaskSolution() {
     }
 
-    public HometaskSolution(Long id, Long hometaskId, User student, String solution) {
-        this.id = id;
+    public HometaskSolution(Long hometaskId, User student, String solution) {
         this.hometaskId = hometaskId;
         this.student = student;
         this.solution = solution;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getHometaskId() {
@@ -62,31 +46,5 @@ public class HometaskSolution {
 
     public void setSolution(String solution) {
         this.solution = solution;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        HometaskSolution that = (HometaskSolution) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(hometaskId, that.hometaskId) &&
-                Objects.equals(student, that.student) &&
-                Objects.equals(solution, that.solution);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, hometaskId, student, solution);
-    }
-
-    @Override
-    public String toString() {
-        return "HometaskSolution{" +
-                "id=" + id +
-                ", hometaskId=" + hometaskId +
-                ", student=" + student +
-                ", solution='" + solution + '\'' +
-                '}';
     }
 }

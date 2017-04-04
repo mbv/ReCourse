@@ -3,17 +3,10 @@ package by.triumgroup.recourse.entity;
 import javax.persistence.*;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 @Table(name = "lesson")
-public class Lesson {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long id;
-
+public class Lesson extends BaseEntity<Integer>{
     @Column(columnDefinition = "DATETIME", nullable = false)
     private Timestamp startTime;
 
@@ -39,14 +32,6 @@ public class Lesson {
         this.courseId = courseId;
         this.topic = topic;
         this.teacher = teacher;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Timestamp getStartTime() {
@@ -89,33 +74,4 @@ public class Lesson {
         this.teacher = teacher;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Lesson lesson = (Lesson) o;
-        return Objects.equals(id, lesson.id) &&
-                Objects.equals(courseId, lesson.courseId) &&
-                Objects.equals(startTime, lesson.startTime) &&
-                Objects.equals(duration, lesson.duration) &&
-                Objects.equals(topic, lesson.topic) &&
-                Objects.equals(teacher, lesson.teacher);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, startTime, duration, courseId, topic, teacher);
-    }
-
-    @Override
-    public String toString() {
-        return "Lesson{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", duration=" + duration +
-                ", courseId=" + courseId +
-                ", topic='" + topic + '\'' +
-                ", teacher=" + teacher +
-                '}';
-    }
 }

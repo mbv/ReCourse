@@ -1,16 +1,10 @@
 package by.triumgroup.recourse.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "course_feedback")
-public class CourseFeedback {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long id;
+public class CourseFeedback extends BaseEntity<Integer>{
 
     @Column(columnDefinition = "INT(11)", nullable = false)
     private Long courseId;
@@ -34,22 +28,13 @@ public class CourseFeedback {
     public CourseFeedback() {
     }
 
-    public CourseFeedback(Long id, Long courseId, User student, String heading, String report, String pros, String cons) {
-        this.id = id;
+    public CourseFeedback(Long courseId, User student, String heading, String report, String pros, String cons) {
         this.courseId = courseId;
         this.student = student;
         this.heading = heading;
         this.report = report;
         this.pros = pros;
         this.cons = cons;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getCourseId() {
@@ -98,37 +83,5 @@ public class CourseFeedback {
 
     public void setCons(String cons) {
         this.cons = cons;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CourseFeedback that = (CourseFeedback) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(courseId, that.courseId) &&
-                Objects.equals(student, that.student) &&
-                Objects.equals(heading, that.heading) &&
-                Objects.equals(report, that.report) &&
-                Objects.equals(pros, that.pros) &&
-                Objects.equals(cons, that.cons);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, courseId, student, heading, report, pros, cons);
-    }
-
-    @Override
-    public String toString() {
-        return "CourseFeedback{" +
-                "id=" + id +
-                ", courseId=" + courseId +
-                ", student=" + student +
-                ", heading='" + heading + '\'' +
-                ", report='" + report + '\'' +
-                ", pros='" + pros + '\'' +
-                ", cons='" + cons + '\'' +
-                '}';
     }
 }

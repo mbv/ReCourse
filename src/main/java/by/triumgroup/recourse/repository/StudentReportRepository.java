@@ -9,18 +9,18 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StudentReportRepository extends PagingAndSortingRepository<StudentReport, Long> {
+public interface StudentReportRepository extends PagingAndSortingRepository<StudentReport, Integer> {
 
-    List<StudentReport> findByTeacherId(Long id);
+    List<StudentReport> findByTeacherId(Integer id);
 
-    List<StudentReport> findByTeacherId(Long id, Pageable pageable);
+    List<StudentReport> findByTeacherId(Integer id, Pageable pageable);
 
-    List<StudentReport> findByStudentId(Long id);
+    List<StudentReport> findByStudentId(Integer id);
 
-    List<StudentReport> findByStudentId(Long id, Pageable pageable);
+    List<StudentReport> findByStudentId(Integer id, Pageable pageable);
 
-    List<StudentReport> findByCourseId(Long id);
+    List<StudentReport> findByCourseId(Integer id);
 
-    List<StudentReport> findByCourseId(Long id, Pageable pageable);
+    List<StudentReport> findByCourseId(Integer id, Pageable pageable);
 
 }

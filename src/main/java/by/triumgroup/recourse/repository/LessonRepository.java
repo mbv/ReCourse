@@ -6,14 +6,14 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface LessonRepository extends PagingAndSortingRepository<Lesson, Long> {
+public interface LessonRepository extends PagingAndSortingRepository<Lesson, Integer> {
 
-    List<Lesson> findByCourseIdOrderByStartTimeDesc(Long id);
+    List<Lesson> findByCourseIdOrderByStartTimeDesc(Integer id);
 
-    List<Lesson> findByCourseIdOrderByStartTimeDesc(Long id, Pageable pageable);
+    List<Lesson> findByCourseIdOrderByStartTimeDesc(Integer id, Pageable pageable);
 
-    List<Lesson> findByTeacherIdOrderByStartTimeDesc(Long id);
+    List<Lesson> findByTeacherIdOrderByStartTimeDesc(Integer id);
 
-    List<Lesson> findByTeacherIdOrderByStartTimeDesc(Long id, Pageable pageable);
+    List<Lesson> findByTeacherIdOrderByStartTimeDesc(Integer id, Pageable pageable);
 
 }

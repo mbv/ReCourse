@@ -5,9 +5,12 @@ import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
 
-import static by.triumgroup.recourse.service.exception.wrapper.ServiceExceptionWrapper.tryCallJPA;
+import java.util.Optional;
 
-public class UserServiceImpl extends AbstractCrudService<User, Long> implements UserService {
+import static by.triumgroup.recourse.service.exception.wrapper.ServiceExceptionWrapper.tryCallJPA;
+import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.wrapToOptional;
+
+public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
     private final UserRepository userRepository;
 
@@ -19,5 +22,15 @@ public class UserServiceImpl extends AbstractCrudService<User, Long> implements 
     @Override
     public User findByEmail(String email) throws ServiceException {
         return tryCallJPA(() -> userRepository.findByEmail(email));
+    }
+
+    @Override
+    public <S extends User> Optional<S> update(S entity, Integer integer) throws ServiceException {
+        Optional<User> updatingUser = wrapToOptional(() -> userRepository.findOne(integer));
+        if (updatingUser.isPresent()){
+            User existingUser = updatingUser.get();
+            entity.setPasswordHash(existingUser.getPasswordHash());
+        }
+        return super.update(entity, integer);
     }
 }

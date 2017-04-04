@@ -1,17 +1,10 @@
 package by.triumgroup.recourse.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "student_report")
-public class StudentReport {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long id;
-
+public class StudentReport extends BaseEntity<Integer>{
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "student_id")
     private User student;
@@ -32,21 +25,12 @@ public class StudentReport {
     public StudentReport() {
     }
 
-    public StudentReport(Long id, User student, User teacher, Long courseId, String heading, String report) {
-        this.id = id;
+    public StudentReport( User student, User teacher, Long courseId, String heading, String report) {
         this.student = student;
         this.teacher = teacher;
         this.courseId = courseId;
         this.heading = heading;
         this.report = report;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getStudent() {
@@ -89,33 +73,4 @@ public class StudentReport {
         this.report = report;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        StudentReport that = (StudentReport) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(courseId, that.courseId) &&
-                Objects.equals(student, that.student) &&
-                Objects.equals(teacher, that.teacher) &&
-                Objects.equals(heading, that.heading) &&
-                Objects.equals(report, that.report);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, student, teacher, courseId, heading, report);
-    }
-
-    @Override
-    public String toString() {
-        return "StudentReport{" +
-                "id=" + id +
-                ", student=" + student +
-                ", teacher=" + teacher +
-                ", courseId=" + courseId +
-                ", heading='" + heading + '\'' +
-                ", report='" + report + '\'' +
-                '}';
-    }
 }

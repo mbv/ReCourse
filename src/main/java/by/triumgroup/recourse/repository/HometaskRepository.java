@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HometaskRepository extends PagingAndSortingRepository<Hometask, Long> {
+public interface HometaskRepository extends PagingAndSortingRepository<Hometask, Integer> {
 
-    List<Hometask> findByLessonId(Long id);
+    List<Hometask> findByLessonId(Integer id);
 
-    List<Hometask> findByLessonId(Long id, Pageable pageable);
+    List<Hometask> findByLessonId(Integer id, Pageable pageable);
 
 }
