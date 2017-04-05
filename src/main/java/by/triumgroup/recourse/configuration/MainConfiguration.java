@@ -2,6 +2,8 @@ package by.triumgroup.recourse.configuration;
 
 import by.triumgroup.recourse.configuration.security.SecurityConfiguration;
 import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
+import by.triumgroup.recourse.repository.UserRepository;
+import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -38,5 +40,10 @@ public class MainConfiguration extends SpringBootServletInitializer {
     @Bean
     RestExceptionHandler restExceptionHandler() {
         return new RestExceptionHandler();
+    }
+
+    @Bean
+    RegistrationDetailsValidator registrationDetailsValidator(UserRepository userRepository) {
+        return new RegistrationDetailsValidator(userRepository);
     }
 }

@@ -2,10 +2,10 @@ package by.triumgroup.recourse.controller;
 
 import by.triumgroup.recourse.configuration.MainConfiguration;
 import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
-import by.triumgroup.recourse.entity.BaseEntity;
-import by.triumgroup.recourse.supplier.entity.EntitySupplier;
+import by.triumgroup.recourse.entity.model.BaseEntity;
+import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.supplier.bean.TestBeansSupplier;
+import by.triumgroup.recourse.supplier.bean.DefaultTestBeansSupplier;
 import by.triumgroup.recourse.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID, TControll
 
     private String baseUrlRequest;
 
-    CrudControllerTest(EntitySupplier<E, ID> entitySupplier, TestBeansSupplier<TController, TService> testBeansSupplier, String baseUrl){
+    CrudControllerTest(EntitySupplier<E, ID> entitySupplier, DefaultTestBeansSupplier<TController, TService> testBeansSupplier, String baseUrl){
         this.entitySupplier = entitySupplier;
         this.singleEntityRequest = String.format("/%s/1", baseUrl);
         this.baseUrlRequest = String.format("/%s/", baseUrl);

@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service;
 
-import by.triumgroup.recourse.entity.BaseEntity;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.exception.ServiceException;
 
 import java.util.Optional;

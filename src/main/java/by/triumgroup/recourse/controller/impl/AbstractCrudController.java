@@ -4,7 +4,7 @@ import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.ControllerException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.BaseEntity;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import org.slf4j.Logger;

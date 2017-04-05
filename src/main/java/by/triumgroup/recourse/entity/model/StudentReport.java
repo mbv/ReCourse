@@ -1,17 +1,20 @@
-package by.triumgroup.recourse.entity;
+package by.triumgroup.recourse.entity.model;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "teacher_feedback")
-public class TeacherFeedback extends BaseEntity<Integer>{
+@Table(name = "student_report")
+public class StudentReport extends BaseEntity<Integer>{
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "student_id")
+    private User student;
+
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "teacher_id")
     private User teacher;
 
-    @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "student_id")
-    private User student;
+    @Column(columnDefinition = "INT(11)", nullable = false)
+    private Long courseId;
 
     @Column(length = 50)
     private String heading;
@@ -19,14 +22,23 @@ public class TeacherFeedback extends BaseEntity<Integer>{
     @Column(columnDefinition = "TEXT")
     private String report;
 
-    public TeacherFeedback() {
+    public StudentReport() {
     }
 
-    public TeacherFeedback(User teacher, User student, String heading, String report) {
-        this.teacher = teacher;
+    public StudentReport( User student, User teacher, Long courseId, String heading, String report) {
         this.student = student;
+        this.teacher = teacher;
+        this.courseId = courseId;
         this.heading = heading;
         this.report = report;
+    }
+
+    public User getStudent() {
+        return student;
+    }
+
+    public void setStudent(User student) {
+        this.student = student;
     }
 
     public User getTeacher() {
@@ -37,12 +49,12 @@ public class TeacherFeedback extends BaseEntity<Integer>{
         this.teacher = teacher;
     }
 
-    public User getStudent() {
-        return student;
+    public Long getCourseId() {
+        return courseId;
     }
 
-    public void setStudent(User student) {
-        this.student = student;
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
     }
 
     public String getHeading() {
@@ -60,4 +72,5 @@ public class TeacherFeedback extends BaseEntity<Integer>{
     public void setReport(String report) {
         this.report = report;
     }
+
 }

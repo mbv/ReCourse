@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.UserController;
-import by.triumgroup.recourse.entity.User;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 

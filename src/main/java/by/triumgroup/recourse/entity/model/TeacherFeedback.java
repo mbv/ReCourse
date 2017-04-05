@@ -1,20 +1,17 @@
-package by.triumgroup.recourse.entity;
+package by.triumgroup.recourse.entity.model;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "student_report")
-public class StudentReport extends BaseEntity<Integer>{
-    @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "student_id")
-    private User student;
-
+@Table(name = "teacher_feedback")
+public class TeacherFeedback extends BaseEntity<Integer>{
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "teacher_id")
     private User teacher;
 
-    @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long courseId;
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "student_id")
+    private User student;
 
     @Column(length = 50)
     private String heading;
@@ -22,23 +19,14 @@ public class StudentReport extends BaseEntity<Integer>{
     @Column(columnDefinition = "TEXT")
     private String report;
 
-    public StudentReport() {
+    public TeacherFeedback() {
     }
 
-    public StudentReport( User student, User teacher, Long courseId, String heading, String report) {
-        this.student = student;
+    public TeacherFeedback(User teacher, User student, String heading, String report) {
         this.teacher = teacher;
-        this.courseId = courseId;
+        this.student = student;
         this.heading = heading;
         this.report = report;
-    }
-
-    public User getStudent() {
-        return student;
-    }
-
-    public void setStudent(User student) {
-        this.student = student;
     }
 
     public User getTeacher() {
@@ -49,12 +37,12 @@ public class StudentReport extends BaseEntity<Integer>{
         this.teacher = teacher;
     }
 
-    public Long getCourseId() {
-        return courseId;
+    public User getStudent() {
+        return student;
     }
 
-    public void setCourseId(Long courseId) {
-        this.courseId = courseId;
+    public void setStudent(User student) {
+        this.student = student;
     }
 
     public String getHeading() {
@@ -72,5 +60,4 @@ public class StudentReport extends BaseEntity<Integer>{
     public void setReport(String report) {
         this.report = report;
     }
-
 }

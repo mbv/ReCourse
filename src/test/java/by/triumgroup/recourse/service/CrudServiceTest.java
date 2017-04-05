@@ -1,9 +1,9 @@
 package by.triumgroup.recourse.service;
 
-import by.triumgroup.recourse.entity.BaseEntity;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.exception.ServiceException;
-import by.triumgroup.recourse.supplier.bean.TestBeansSupplier;
-import by.triumgroup.recourse.supplier.entity.EntitySupplier;
+import by.triumgroup.recourse.supplier.bean.DefaultTestBeansSupplier;
+import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -41,11 +41,13 @@ public abstract class CrudServiceTest<
 
     private TService crudService;
     private TRepository crudRepository;
-    private EntitySupplier<E, ID> entitySupplier;
+    protected DefaultTestBeansSupplier<TService, TRepository> testBeansSupplier;
+    protected EntitySupplier<E, ID> entitySupplier;
 
-    protected CrudServiceTest(TestBeansSupplier<TService, TRepository> testBeansSupplier, EntitySupplier<E, ID> entitySupplier) {
+    protected CrudServiceTest(DefaultTestBeansSupplier<TService, TRepository> testBeansSupplier, EntitySupplier<E, ID> entitySupplier) {
         this.crudService = testBeansSupplier.getBeanUnderTest();
         this.crudRepository = testBeansSupplier.getMockedBean();
+        this.testBeansSupplier = testBeansSupplier;
         this.entitySupplier = entitySupplier;
     }
 

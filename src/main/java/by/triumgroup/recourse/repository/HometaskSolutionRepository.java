@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.repository;
 
-import by.triumgroup.recourse.entity.HometaskSolution;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
