@@ -16,7 +16,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer, UserCo
     }
 //
 //    @Test
-//    public void registrationTest() throws Exception {
+//    public void registrationWithExistingEmailTest() throws Exception {
 //
 //        mockMvc
 //    }

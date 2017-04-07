@@ -28,6 +28,9 @@ public class RegistrationDetailsValidator implements Validator {
         if (userRepository.findByEmail(registrationDetails.getEmail()) != null){
             errors.rejectValue("email", "User already exists");
         }
+        if (!registrationDetails.getPassword().equals(registrationDetails.getPasswordConfirmation())){
+            errors.rejectValue("password", "Passwords do not match");
+        }
     }
 
 }
