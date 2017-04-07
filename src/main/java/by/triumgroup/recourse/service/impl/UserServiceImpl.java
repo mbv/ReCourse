@@ -7,7 +7,7 @@ import by.triumgroup.recourse.service.exception.ServiceException;
 
 import java.util.Optional;
 
-import static by.triumgroup.recourse.service.exception.wrapper.ServiceExceptionWrapper.tryCallJPA;
+import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.tryCallJPA;
 import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.wrapToOptional;
 
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
@@ -23,6 +23,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     public User findByEmail(String email) throws ServiceException {
         return tryCallJPA(() -> userRepository.findByEmail(email));
     }
+
 
     @Override
     public <S extends User> Optional<S> update(S entity, Integer integer) throws ServiceException {

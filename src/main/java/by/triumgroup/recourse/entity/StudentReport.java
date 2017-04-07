@@ -1,24 +1,39 @@
 package by.triumgroup.recourse.entity;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(name = "student_report")
 public class StudentReport extends BaseEntity<Integer>{
+
+    @NotNull
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "student_id")
     private User student;
 
+    @NotNull
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "teacher_id")
     private User teacher;
 
+    @NotNull
     @Column(columnDefinition = "INT(11)", nullable = false)
     private Long courseId;
 
+    @NotNull
+    @SafeHtml
+    @Size(min = 1, max = 50)
     @Column(length = 50)
     private String heading;
 
+    @NotBlank
+    @SafeHtml
     @Column(columnDefinition = "TEXT")
     private String report;
 
@@ -73,4 +88,21 @@ public class StudentReport extends BaseEntity<Integer>{
         this.report = report;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        StudentReport that = (StudentReport) o;
+        return Objects.equals(student, that.student) &&
+                Objects.equals(teacher, that.teacher) &&
+                Objects.equals(courseId, that.courseId) &&
+                Objects.equals(heading, that.heading) &&
+                Objects.equals(report, that.report);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), student, teacher, courseId, heading, report);
+    }
 }

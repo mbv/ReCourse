@@ -2,15 +2,12 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.service.exception.ServiceException;
 import org.springframework.data.repository.CrudRepository;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-import static by.triumgroup.recourse.service.exception.wrapper.ServiceExceptionWrapper.tryCallJPA;
-import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.wrapToBoolean;
-import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.wrapToOptional;
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.*;
 
 public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends Serializable> implements CrudService<E, ID> {
 
@@ -21,27 +18,27 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
     }
 
     @Override
-    public Optional<E> findById(ID id) throws ServiceException {
-        return wrapToOptional(() -> repository.findOne(id));
+    public Optional<E> findById(ID id) {
+        return wrapJPACallToOptional(() -> repository.findOne(id));
     }
 
     @Override
-    public <S extends E> Optional<S> add(S entity) throws ServiceException {
+    public <S extends E> Optional<S> add(S entity) {
         entity.setId(null);
-        return wrapToOptional(() -> repository.save(entity));
+        return wrapJPACallToOptional(() -> repository.save(entity));
     }
 
     @Override
-    public Optional<Boolean> delete(ID id) throws ServiceException {
-        return wrapToBoolean(() -> repository.delete(id));
+    public Optional<Boolean> delete(ID id) {
+        return wrapJPACallToBoolean(() -> repository.delete(id));
     }
 
     @Override
-    public <S extends E> Optional<S> update(S entity, ID id) throws ServiceException {
+    public <S extends E> Optional<S> update(S entity, ID id) {
         Optional<S> result;
-        if (tryCallJPA(() -> repository.exists(id))){
+        if (wrapJPACall(() -> repository.exists(id))) {
             entity.setId(id);
-            result = wrapToOptional(() -> repository.save(entity));
+            result = wrapJPACallToOptional(() -> repository.save(entity));
         } else {
             result = Optional.empty();
         }

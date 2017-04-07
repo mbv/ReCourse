@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
         ServiceConfiguration.class,
         ControllerConfiguration.class,
         SecurityConfiguration.class,
+        PageRequestConfiguration.class
 })
 @EnableAutoConfiguration(exclude = {
         org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,

@@ -4,11 +4,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.util.Objects;
 
 @MappedSuperclass
 public class BaseEntity<ID> implements Serializable{
+
+    @Null
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private ID id;

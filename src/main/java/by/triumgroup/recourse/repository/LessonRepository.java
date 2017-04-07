@@ -8,12 +8,10 @@ import java.util.List;
 
 public interface LessonRepository extends PagingAndSortingRepository<Lesson, Integer> {
 
-    List<Lesson> findByCourseIdOrderByStartTimeDesc(Integer id);
-
     List<Lesson> findByCourseIdOrderByStartTimeDesc(Integer id, Pageable pageable);
 
-    List<Lesson> findByTeacherIdOrderByStartTimeDesc(Integer id);
-
     List<Lesson> findByTeacherIdOrderByStartTimeDesc(Integer id, Pageable pageable);
+
+    List<Lesson> findByTeacherIdAndCourseIdOrderByStartTimeDesc(Integer teacherId, Integer courseId, Pageable pageable);
 
 }

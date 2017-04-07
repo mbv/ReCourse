@@ -17,7 +17,7 @@ CREATE TABLE `user` (
   `name`          VARCHAR(50)             NOT NULL,
   `gender`        ENUM ('MALE', 'FEMALE') NOT NULL,
   `birthday`      DATE                                              DEFAULT NULL,
-  `role`          ENUM ('GUEST', 'STUDENT', 'TEACHER', 'ORGANIZER') DEFAULT NULL,
+  `role`          ENUM ('STUDENT', 'TEACHER', 'ORGANIZER')          DEFAULT NULL,
   `is_deleted`    BOOL                    NOT NULL                  DEFAULT FALSE,
   PRIMARY KEY (`id`),
   KEY `IDX_name` (`name`, `surname`),

@@ -1,15 +1,11 @@
-package by.triumgroup.recourse.repository;
-
+package by.triumgroup.recourse.service;
 
 import by.triumgroup.recourse.entity.StudentReport;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public interface StudentReportRepository extends PagingAndSortingRepository<StudentReport, Integer> {
+public interface StudentReportService extends CrudService<StudentReport, Integer> {
 
     List<StudentReport> findByTeacherId(Integer id, Pageable pageable);
 

@@ -1,15 +1,24 @@
 package by.triumgroup.recourse.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
 public class User extends BaseEntity<Integer> {
+
+    @NotNull
+    @Email
+    @SafeHtml
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -17,29 +26,33 @@ public class User extends BaseEntity<Integer> {
     @Column(columnDefinition = "CHAR(60)", nullable = false)
     private String passwordHash;
 
-    @Column(length = 50, nullable = false)
-    @Size(min = 1, max = 50)
     @NotNull
+    @SafeHtml
+    @Size(min = 1, max = 50)
+    @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(length = 50, nullable = false)
-    @Size(min = 1, max = 50)
     @NotNull
+    @SafeHtml
+    @Size(min = 1, max = 50)
+    @Column(length = 50, nullable = false)
     private String surname;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "ENUM ('MALE', 'FEMALE')", nullable = false)
-    @NotNull
     private Gender gender;
 
+    @Past
     @Column(columnDefinition = "DATE")
     private Timestamp birthday;
 
-    @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM ('GUEST', 'STUDENT', 'TEACHER', 'ORGANIZER')")
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "ENUM ('STUDENT', 'TEACHER', 'ORGANIZER')")
     private Role role;
 
+    @JsonIgnore
     private boolean isDeleted;
 
     public User() {
@@ -120,11 +133,32 @@ public class User extends BaseEntity<Integer> {
         isDeleted = deleted;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return isDeleted == user.isDeleted &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(passwordHash, user.passwordHash) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(surname, user.surname) &&
+                gender == user.gender &&
+                Objects.equals(birthday, user.birthday) &&
+                role == user.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), email, passwordHash, name, surname, gender, birthday, role, isDeleted);
+    }
+
     public enum Gender {
         MALE, FEMALE
     }
 
     public enum Role {
-        GUEST, STUDENT, TEACHER, ORGANIZER
+        STUDENT, TEACHER, ORGANIZER
     }
 }

@@ -10,11 +10,7 @@ import java.util.List;
 @Repository
 public interface TeacherFeedbackRepository extends PagingAndSortingRepository<TeacherFeedback, Integer> {
 
-    List<TeacherFeedback> findByTeacherIdOrderByIdDesc(Integer id);
-
     List<TeacherFeedback> findByTeacherIdOrderByIdDesc(Integer id, Pageable pageable);
-
-    List<TeacherFeedback> findByStudentIdOrderByIdDesc(Integer id);
 
     List<TeacherFeedback> findByStudentIdOrderByIdDesc(Integer id, Pageable pageable);
 
