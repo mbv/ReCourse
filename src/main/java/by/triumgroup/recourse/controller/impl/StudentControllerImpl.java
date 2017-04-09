@@ -54,11 +54,11 @@ public class StudentControllerImpl implements StudentController {
     @Override
     public HometaskSolution getSolutionForLesson(
             @PathVariable("studentId") Integer studentId,
-            @RequestParam("lessonId") Integer lessonId,
+            @RequestParam("hometaskId") Integer hometaskId,
             Pageable pageable) {
         return wrapServiceCall(logger, () -> {
             Optional<HometaskSolution> callResult =
-                    hometaskSolutionService.findByStudentIdAndLessonId(studentId, lessonId);
+                    hometaskSolutionService.findByStudentIdAndHometaskId(studentId, hometaskId);
             return callResult.orElseThrow(NotFoundException::new);
         });
     }

@@ -296,4 +296,4 @@ INSERT INTO `user` (email, password_hash, name, surname, gender, birthday, role)
    'Andrey', 'Tatarenko', 'male', NULL, 'student'),
   ('Mikhail_Snitavets@triumgroup.com',
    '$2a$12$dhZ.l.x3RwbAYSMTOS.ERuRlRy6ikeSVIkdDPbD20uGrP08WmmZRe', /* 09876 */
-   'Mikhail', 'Snitavets', 'male', NULL, 'guest');
+   'Mikhail', 'Snitavets', 'male', NULL, 'student');

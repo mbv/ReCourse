@@ -63,14 +63,6 @@ public class CourseControllerImpl
 
     @Override
     public List<Course> getAll(@RequestParam(value = "status", required = false) Course.Status status, Pageable pageable) {
-        return wrapServiceCall(logger, () -> {
-            List<Course> courses;
-            if (status == null) {
-                courses = courseService.findAll(pageable);
-            } else {
-                courses = courseService.findByStatus(status, pageable);
-            }
-            return courses;
-        });
+        return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable));
     }
 }

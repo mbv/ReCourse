@@ -33,7 +33,7 @@ public interface StudentController {
     @GetMapping("{studentId}/solution")
     HometaskSolution getSolutionForLesson(
             @PathVariable("studentId") Integer studentId,
-            @RequestParam("lessonId") Integer lessonId,
+            @RequestParam("hometaskId") Integer hometaskId,
             Pageable pageable
     );
 

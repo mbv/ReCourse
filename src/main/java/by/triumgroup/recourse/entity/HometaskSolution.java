@@ -28,7 +28,8 @@ public class HometaskSolution extends BaseEntity<Integer> {
     private String solution;
 
     @Null
-    @OneToOne(mappedBy = "hometask_solution")
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "solution_id")
     private Mark mark;
 
     public HometaskSolution() {

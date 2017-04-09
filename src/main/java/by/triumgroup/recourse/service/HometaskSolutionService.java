@@ -12,6 +12,6 @@ public interface HometaskSolutionService extends CrudService<HometaskSolution, I
 
     List<HometaskSolution> findByStudentId(Integer id, Pageable pageable);
 
-    Optional<HometaskSolution> findByStudentIdAndLessonId(Integer studentId, Integer lessonId);
+    Optional<HometaskSolution> findByStudentIdAndHometaskId(Integer studentId, Integer hometaskId);
 
 }

@@ -7,8 +7,8 @@ import by.triumgroup.recourse.service.exception.ServiceException;
 
 import java.util.Optional;
 
-import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.tryCallJPA;
-import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.wrapToOptional;
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
 
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
@@ -21,13 +21,13 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     @Override
     public User findByEmail(String email) throws ServiceException {
-        return tryCallJPA(() -> userRepository.findByEmail(email));
+        return wrapJPACall(() -> userRepository.findByEmail(email));
     }
 
 
     @Override
     public <S extends User> Optional<S> update(S entity, Integer integer) throws ServiceException {
-        Optional<User> updatingUser = wrapToOptional(() -> userRepository.findOne(integer));
+        Optional<User> updatingUser = wrapJPACallToOptional(() -> userRepository.findOne(integer));
         if (updatingUser.isPresent()){
             User existingUser = updatingUser.get();
             entity.setPasswordHash(existingUser.getPasswordHash());
