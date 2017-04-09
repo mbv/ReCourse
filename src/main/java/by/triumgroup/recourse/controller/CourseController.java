@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/courses")
 public interface CourseController extends CrudController<Course, Integer> {
 
     @GetMapping("{courseId}/lessons")

@@ -44,4 +44,9 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
         }
         return result;
     }
+
+    @Override
+    public Iterable<E> findAll() {
+        return wrapJPACall(() -> repository.findAll());
+    }
 }

@@ -83,7 +83,6 @@
       <artifactId>jsoup</artifactId>
       <version>1.7.2</version>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -116,6 +115,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>

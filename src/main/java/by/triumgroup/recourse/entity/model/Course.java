@@ -28,11 +28,6 @@ public class Course extends BaseEntity<Integer> {
     private User teacher;
 
     @NotNull
-    @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "organizer_id")
-    private User organizer;
-
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "ENUM ('ONGOING', 'REGISTRATION', 'FINISHED')", nullable = false)
     private Status status;
@@ -45,11 +40,10 @@ public class Course extends BaseEntity<Integer> {
     public Course() {
     }
 
-    public Course(String title, String description, User teacher, User organizer, Status status, Integer maxStudents) {
+    public Course(String title, String description, User teacher, Status status, Integer maxStudents) {
         this.title = title;
         this.description = description;
         this.teacher = teacher;
-        this.organizer = organizer;
         this.status = status;
         this.maxStudents = maxStudents;
     }
@@ -78,14 +72,6 @@ public class Course extends BaseEntity<Integer> {
         this.teacher = teacher;
     }
 
-    public User getOrganizer() {
-        return organizer;
-    }
-
-    public void setOrganizer(User organizer) {
-        this.organizer = organizer;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -111,14 +97,13 @@ public class Course extends BaseEntity<Integer> {
         return Objects.equals(title, course.title) &&
                 Objects.equals(description, course.description) &&
                 Objects.equals(teacher, course.teacher) &&
-                Objects.equals(organizer, course.organizer) &&
                 status == course.status &&
                 Objects.equals(maxStudents, course.maxStudents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), title, description, teacher, organizer, status, maxStudents);
+        return Objects.hash(super.hashCode(), title, description, teacher, status, maxStudents);
     }
 
     public enum Status {

@@ -11,7 +11,6 @@ public class CourseSupplier implements EntityIntegerPKSupplier<Course> {
     public Course getValidEntityWithoutId() {
         Course course =  new Course();
         course.setTitle("Title");
-        course.setOrganizer(userSupplier.getValidEntityWithId());
         course.setDescription("Description");
         course.setMaxStudents(10);
         course.setStatus(Course.Status.ONGOING);

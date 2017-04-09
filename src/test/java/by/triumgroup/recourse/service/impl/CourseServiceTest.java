@@ -111,50 +111,6 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     }
 
     @Test
-    public void findByNotExistingOrganizerIdTest() throws Exception {
-        User user = userSupplier.getValidEntityWithId();
-        user.setRole(User.Role.TEACHER);
-        when(userRepository.findOne(anyInt())).thenReturn(user);
-
-        Optional<List<Course>> courses = courseService.findByOrganizerId(user.getId(), null);
-
-        verify(userRepository, times(1)).findOne(anyInt());
-        assertFalse(courses.isPresent());
-    }
-
-    @Test
-    public void findByExistingOrganizerIdTest() throws Exception {
-        User user = userSupplier.getValidEntityWithId();
-        user.setRole(User.Role.ORGANIZER);
-        when(userRepository.findOne(anyInt())).thenReturn(user);
-        when(courseRepository.findByOrganizerIdOrderByIdDesc(anyInt(), any()))
-                .thenReturn(Collections.singletonList(courseSupplier.getValidEntityWithId()));
-
-        Optional<List<Course>> courses = courseService.findByOrganizerId(user.getId(), null);
-
-        verify(userRepository, times(1)).findOne(anyInt());
-        verify(courseRepository, times(1)).findByOrganizerIdOrderByIdDesc(anyInt(), any());
-        assertTrue(courses.isPresent());
-    }
-
-    @Test
-    public void findByExistingOrganizerIdAndStatus() throws Exception {
-        User user = userSupplier.getValidEntityWithId();
-        user.setRole(User.Role.ORGANIZER);
-        when(userRepository.findOne(anyInt())).thenReturn(user);
-        when(courseRepository.findByOrganizerIdAndStatusOrderByIdDesc(anyInt(), any(), any()))
-                .thenReturn(Collections.singletonList(courseSupplier.getValidEntityWithId()));
-
-        Optional<List<Course>> courses =
-                courseService.findByOrganizerIdAndStatus(user.getId(), Course.Status.ONGOING, null);
-
-        verify(userRepository, times(1)).findOne(anyInt());
-        verify(courseRepository, times(1))
-                .findByOrganizerIdAndStatusOrderByIdDesc(anyInt(), any(), any());
-        assertTrue(courses.isPresent());
-    }
-
-    @Test
     public void findByStatusTest() throws Exception {
         when(courseRepository.findByStatusOrderByIdDesc(any(), any()))
                 .thenReturn(Collections.emptyList());

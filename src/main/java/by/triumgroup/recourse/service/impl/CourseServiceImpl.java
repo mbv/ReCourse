@@ -49,22 +49,6 @@ public class CourseServiceImpl
     }
 
     @Override
-    public Optional<List<Course>> findByOrganizerId(Integer id, Pageable pageable) {
-        return wrapJPACallToOptional(() -> (ifExistsWithRole(userRepository, id, User.Role.ORGANIZER))
-                ? repository.findByOrganizerIdOrderByIdDesc(id, pageable)
-                : null
-        );
-    }
-
-    @Override
-    public Optional<List<Course>> findByOrganizerIdAndStatus(Integer id, Course.Status status, Pageable pageable) {
-        return wrapJPACallToOptional(() -> (ifExistsWithRole(userRepository, id, User.Role.ORGANIZER))
-                ? repository.findByOrganizerIdAndStatusOrderByIdDesc(id, status, pageable)
-                : null
-        );
-    }
-
-    @Override
     public List<Course> findByStatus(Course.Status status, Pageable pageable) {
         return wrapJPACall(() -> repository.findByStatusOrderByIdDesc(status, pageable));
     }
