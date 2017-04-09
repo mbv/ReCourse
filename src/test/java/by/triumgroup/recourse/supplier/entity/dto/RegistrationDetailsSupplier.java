@@ -1,6 +1,7 @@
 package by.triumgroup.recourse.supplier.entity.dto;
 
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
+import by.triumgroup.recourse.entity.model.User;
 
 import java.util.function.Supplier;
 
@@ -12,6 +13,7 @@ public class RegistrationDetailsSupplier implements Supplier<RegistrationDetails
         result.setSurname("Shimko");
         result.setPassword("password");
         result.setPasswordConfirmation("password");
+        result.setGender(User.Gender.MALE);
         return result;
     }
 }

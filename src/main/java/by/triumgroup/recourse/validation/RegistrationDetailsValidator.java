@@ -26,10 +26,10 @@ public class RegistrationDetailsValidator implements Validator {
     public void validate(Object o, Errors errors) {
         RegistrationDetails registrationDetails = (RegistrationDetails) o;
         if (userRepository.findByEmail(registrationDetails.getEmail()) != null){
-            errors.rejectValue("email", "User already exists");
+            errors.rejectValue("email", "user", "User is already exists");
         }
         if (!registrationDetails.getPassword().equals(registrationDetails.getPasswordConfirmation())){
-            errors.rejectValue("password", "Passwords do not match");
+            errors.rejectValue("password", "password", "Passwords do not match");
         }
     }
 

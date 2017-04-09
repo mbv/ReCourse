@@ -4,10 +4,13 @@ import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.impl.UserServiceImpl;
 import by.triumgroup.recourse.supplier.bean.DefaultTestBeansSupplier;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserServiceTestBeansSupplier extends DefaultTestBeansSupplier<UserService, UserRepository> {
+
+    private PasswordEncoder passwordEncoder;
+
     public UserServiceTestBeansSupplier() {
         super(UserServiceImpl.class, UserRepository.class);
     }
@@ -15,6 +18,8 @@ public class UserServiceTestBeansSupplier extends DefaultTestBeansSupplier<UserS
     @Override
     protected void createTestBeans() {
         mockedBean = Mockito.mock(UserRepository.class);
-        beanUnderTest = new UserServiceImpl(mockedBean, new RegistrationDetailsValidator(mockedBean));
+        beanUnderTest = new UserServiceImpl(mockedBean, passwordEncoder);
+        passwordEncoder = Mockito.mock(PasswordEncoder.class);
     }
+
 }

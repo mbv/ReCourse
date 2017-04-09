@@ -5,32 +5,29 @@ import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
-import static by.triumgroup.recourse.service.exception.wrapper.ServiceExceptionWrapper.tryCallJPA;
+import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.wrapToBoolean;
 import static by.triumgroup.recourse.service.util.RepositoryCallWrapper.wrapToOptional;
 
 @Component
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
     private final UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    private RegistrationDetailsValidator registrationDetailsValidator;
-
-    public UserServiceImpl(UserRepository userRepository, RegistrationDetailsValidator registrationDetailsValidator) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         super(userRepository);
         this.userRepository = userRepository;
-        this.registrationDetailsValidator = registrationDetailsValidator;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User findByEmail(String email) throws ServiceException {
-        return tryCallJPA(() -> userRepository.findByEmail(email));
+    public Optional<User> findByEmail(String email) throws ServiceException {
+        return wrapToOptional(() -> userRepository.findByEmail(email));
     }
 
     @Override
@@ -44,7 +41,15 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public void register(@Valid RegistrationDetails registrationDetails, Errors result) throws ServiceException {
-        registrationDetailsValidator.validate(registrationDetails, result);
+    public Optional<Boolean> register(RegistrationDetails registrationDetails) throws ServiceException {
+        User newUser = new User();
+        newUser.setEmail(registrationDetails.getEmail());
+        newUser.setName(registrationDetails.getName());
+        newUser.setSurname(registrationDetails.getSurname());
+        newUser.setBirthday(registrationDetails.getBirthday());
+        newUser.setGender(registrationDetails.getGender());
+        newUser.setPasswordHash(passwordEncoder.encode(registrationDetails.getPassword()));
+
+        return wrapToBoolean(() -> userRepository.save(newUser));
     }
 }

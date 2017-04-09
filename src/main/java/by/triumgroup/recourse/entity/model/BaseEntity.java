@@ -21,6 +21,9 @@ public class BaseEntity<ID> implements Serializable{
         this.id = id;
     }
 
+    public BaseEntity() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
