@@ -1,4 +1,4 @@
-package by.triumgroup.recourse.entity;
+package by.triumgroup.recourse.entity.model;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +22,9 @@ public class BaseEntity<ID> implements Serializable{
 
     public void setId(ID id) {
         this.id = id;
+    }
+
+    public BaseEntity() {
     }
 
     @Override

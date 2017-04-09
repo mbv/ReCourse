@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service;
 
-import by.triumgroup.recourse.entity.TeacherFeedback;
+import by.triumgroup.recourse.entity.model.TeacherFeedback;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

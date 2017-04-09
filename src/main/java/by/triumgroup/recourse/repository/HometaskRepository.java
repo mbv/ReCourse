@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.repository;
 
-import by.triumgroup.recourse.entity.Hometask;
+import by.triumgroup.recourse.entity.model.Hometask;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

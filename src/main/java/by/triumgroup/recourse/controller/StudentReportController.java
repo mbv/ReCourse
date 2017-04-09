@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.controller;
 
-import by.triumgroup.recourse.entity.StudentReport;
+import by.triumgroup.recourse.entity.model.StudentReport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

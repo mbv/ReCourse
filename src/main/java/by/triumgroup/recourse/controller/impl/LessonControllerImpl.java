@@ -2,8 +2,8 @@ package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.LessonController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.Hometask;
-import by.triumgroup.recourse.entity.Lesson;
+import by.triumgroup.recourse.entity.model.Hometask;
+import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.LessonService;
 import org.slf4j.Logger;

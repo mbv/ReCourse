@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.TeacherFeedbackController;
-import by.triumgroup.recourse.entity.TeacherFeedback;
+import by.triumgroup.recourse.entity.model.TeacherFeedback;
 import by.triumgroup.recourse.service.TeacherFeedbackService;
 import org.slf4j.Logger;
 

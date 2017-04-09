@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service.impl;
 
-import by.triumgroup.recourse.entity.Mark;
+import by.triumgroup.recourse.entity.model.Mark;
 import by.triumgroup.recourse.repository.MarkRepository;
 import by.triumgroup.recourse.service.MarkService;
 

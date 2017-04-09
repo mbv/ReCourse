@@ -2,10 +2,9 @@ package by.triumgroup.recourse.controller;
 
 import by.triumgroup.recourse.configuration.MainConfiguration;
 import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
-import by.triumgroup.recourse.entity.BaseEntity;
-import by.triumgroup.recourse.supplier.entity.EntitySupplier;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.supplier.bean.TestBeansSupplier;
+import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +22,10 @@ import java.util.Optional;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,125 +33,138 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @ContextConfiguration
 @SpringBootTest(classes = MainConfiguration.class)
-public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID, TController extends CrudController<E, ID>, TService extends CrudService<E, ID>> {
-    private EntitySupplier<E, ID> entitySupplier;
+public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> {
+    private String idRequest;
+
+    private String generalRequest;
 
     protected MockMvc mockMvc;
 
-    private CrudService<E, ID> crudService;
-
-    private CrudController<E, ID> crudController;
-
-    private String singleEntityRequest;
-
-    private String baseUrlRequest;
-
-    CrudControllerTest(EntitySupplier<E, ID> entitySupplier, TestBeansSupplier<TController, TService> testBeansSupplier, String baseUrl){
-        this.entitySupplier = entitySupplier;
-        this.singleEntityRequest = String.format("/%s/1", baseUrl);
-        this.baseUrlRequest = String.format("/%s/", baseUrl);
-        this.crudController = testBeansSupplier.getBeanUnderTest();
-        this.crudService = testBeansSupplier.getMockedBean();
-    }
-
     @Before
     public void initTests() {
+        this.idRequest = String.format("/%s/{id}", getEntityName());
+        this.generalRequest = String.format("/%s/", getEntityName());
         mockMvc = MockMvcBuilders
-                .standaloneSetup(crudController)
+                .standaloneSetup(getController())
                 .setControllerAdvice(new RestExceptionHandler())
                 .alwaysDo(print())
                 .build();
     }
 
+    protected abstract CrudController<E,ID> getController();
+
+    protected abstract CrudService<E,ID> getService();
+
+    protected abstract String getEntityName();
+
+    protected abstract EntitySupplier<E,ID> getEntitySupplier();
+
     @Test
     public void getExistingEntityTest() throws Exception {
-        when(crudService.findById(any())).thenReturn(Optional.of(entitySupplier.getValidEntityWithId()));
+        E entity = getEntitySupplier().getValidEntityWithId();
+        when(getService().findById(any())).thenReturn(Optional.of(entity));
 
-        getJson(singleEntityRequest)
+        getEntityById(entity.getId())
             .andExpect(status().isOk());
     }
 
     @Test
     public void getNotExistingEntityTest() throws Exception {
-        when(crudService.findById(any())).thenReturn(Optional.empty());
+        when(getService().findById(any())).thenReturn(Optional.empty());
 
-        getJson(singleEntityRequest)
+        getEntityById(getEntitySupplier().getAnyId())
             .andExpect(status().isNotFound());
     }
 
     @Test
     public void createValidEntityTest() throws Exception {
-        when(crudService.add(any())).thenReturn(Optional.of(entitySupplier.getValidEntityWithId()));
+        when(getService().add(any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
 
-        postJson(baseUrlRequest, TestUtil.toJson(entitySupplier.getValidEntityWithoutId()))
+        postEntity(getEntitySupplier().getValidEntityWithoutId())
             .andExpect(status().isOk());
     }
 
     @Test
     public void createInvalidEntityTest() throws Exception {
-        postJson(baseUrlRequest, TestUtil.toJson(entitySupplier.getInvalidEntity()))
+        postEntity(getEntitySupplier().getInvalidEntity())
             .andExpect(status().isBadRequest());
     }
 
     @Test
     public void updateNotExistingEntityTest() throws Exception {
-        when(crudService.update(any(), any())).thenReturn(Optional.empty());
+        when(getService().update(any(), any())).thenReturn(Optional.empty());
 
-        putJson(singleEntityRequest, TestUtil.toJson(entitySupplier.getValidEntityWithoutId()))
+        putEntityById(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
             .andExpect(status().isNotFound());
     }
 
     @Test
     public void updateEntityValidDataTest() throws Exception {
-        when(crudService.update(any(), any())).thenReturn(Optional.of(entitySupplier.getValidEntityWithId()));
+        when(getService().update(any(), any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
 
-        putJson(singleEntityRequest, TestUtil.toJson(entitySupplier.getValidEntityWithoutId()))
+        putEntityById(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
             .andExpect(status().isOk());
     }
 
     @Test
     public void updateEntityInvalidDataTest() throws Exception {
-        putJson(singleEntityRequest, TestUtil.toJson(entitySupplier.getInvalidEntity()))
+        putEntityById(getEntitySupplier().getAnyId(), getEntitySupplier().getInvalidEntity())
             .andExpect(status().isBadRequest());
     }
 
     @Test
     public void deleteExistingEntityTest() throws Exception {
-        when(crudService.delete(any())).thenReturn(Optional.of(true));
+        when(getService().delete(any())).thenReturn(Optional.of(true));
 
-        deleteJson(singleEntityRequest).
+        deleteEntityById(getEntitySupplier().getAnyId()).
                 andExpect(status().isOk());
     }
 
     @Test
     public void deleteNotExistingEntityTest() throws Exception {
-        when(crudService.delete(any())).thenReturn(Optional.empty());
-        deleteJson(singleEntityRequest).
+        when(getService().delete(any())).thenReturn(Optional.empty());
+        deleteEntityById(getEntitySupplier().getAnyId()).
                 andExpect(status().isNotFound());
     }
 
-    private ResultActions deleteJson(String url) throws Exception {
-        return mockMvc.perform(delete(url)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON));
+    protected ResultActions deleteEntityById(ID id) throws Exception {
+        return sendDelete(idRequest, id);
     }
 
-    private ResultActions postJson(String url, String content) throws Exception {
-        return mockMvc.perform(post(url)
-                .content(content)
+    protected ResultActions postEntity(E entity) throws Exception {
+        return sendPost(generalRequest, entity);
+    }
+
+    protected ResultActions getEntityById(ID id) throws Exception {
+        return sendGet(idRequest, id);
+    }
+
+    protected ResultActions putEntityById(ID id, E entity) throws Exception {
+        return sendPut(idRequest, entity, id);
+    }
+
+    protected ResultActions sendDelete(String urlTemplate, Object... urlParams) throws Exception {
+        return mockMvc.perform(delete(urlTemplate, urlParams)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
     }
 
-    private ResultActions getJson(String url) throws Exception {
-        return mockMvc.perform(get(url)
+    protected ResultActions sendPost(String urlTemplate, Object content, Object... urlParams) throws Exception {
+        return mockMvc.perform(post(urlTemplate, urlParams)
+                .content(TestUtil.toJson(content))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
     }
 
-    private ResultActions putJson(String url, String content) throws Exception {
-        return mockMvc.perform(put(url)
-                .content(content)
+    protected ResultActions sendGet(String urlTemplate, Object... urlParams) throws Exception {
+        return mockMvc.perform(get(urlTemplate, urlParams)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+    }
+
+    protected ResultActions sendPut(String urlTemplate, Object content, Object... urlParams) throws Exception {
+        return mockMvc.perform(put(urlTemplate, urlParams)
+                .content(TestUtil.toJson(content))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
     }

@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service;
 
-import by.triumgroup.recourse.entity.Hometask;
+import by.triumgroup.recourse.entity.model.Hometask;
 
 import java.util.Optional;
 

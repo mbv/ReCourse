@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service;
 
-import by.triumgroup.recourse.entity.Mark;
+import by.triumgroup.recourse.entity.model.Mark;
 
 import java.util.Optional;
 

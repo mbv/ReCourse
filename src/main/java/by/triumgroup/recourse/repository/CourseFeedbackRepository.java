@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.repository;
 
-import by.triumgroup.recourse.entity.CourseFeedback;
+import by.triumgroup.recourse.entity.model.CourseFeedback;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

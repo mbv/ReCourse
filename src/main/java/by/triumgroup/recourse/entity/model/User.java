@@ -1,4 +1,4 @@
-package by.triumgroup.recourse.entity;
+package by.triumgroup.recourse.entity.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

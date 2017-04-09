@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.controller;
 
-import by.triumgroup.recourse.entity.HometaskSolution;
-import by.triumgroup.recourse.entity.Mark;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.Mark;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

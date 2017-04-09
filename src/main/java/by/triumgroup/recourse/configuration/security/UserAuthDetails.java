@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.configuration.security;
 
-import by.triumgroup.recourse.entity.User;
+import by.triumgroup.recourse.entity.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;

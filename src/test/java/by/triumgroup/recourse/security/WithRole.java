@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.security;
 
-import by.triumgroup.recourse.entity.User;
+import by.triumgroup.recourse.entity.model.User;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
 import java.lang.annotation.Retention;

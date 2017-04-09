@@ -1,8 +1,8 @@
 package by.triumgroup.recourse.controller;
 
-import by.triumgroup.recourse.entity.HometaskSolution;
-import by.triumgroup.recourse.entity.StudentReport;
-import by.triumgroup.recourse.entity.TeacherFeedback;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.StudentReport;
+import by.triumgroup.recourse.entity.model.TeacherFeedback;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 

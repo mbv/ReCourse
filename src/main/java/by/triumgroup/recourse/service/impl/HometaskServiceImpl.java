@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service.impl;
 
-import by.triumgroup.recourse.entity.Hometask;
+import by.triumgroup.recourse.entity.model.Hometask;
 import by.triumgroup.recourse.repository.HometaskRepository;
 import by.triumgroup.recourse.service.HometaskService;
 

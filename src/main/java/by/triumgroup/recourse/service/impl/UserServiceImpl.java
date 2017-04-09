@@ -1,29 +1,36 @@
 package by.triumgroup.recourse.service.impl;
 
-import by.triumgroup.recourse.entity.User;
+import by.triumgroup.recourse.entity.dto.RegistrationDetails;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import by.triumgroup.recourse.util.RepositoryCallWrapper;
 
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToBoolean;
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
 
+@Component
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
     private final UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         super(userRepository);
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User findByEmail(String email) throws ServiceException {
-        return wrapJPACall(() -> userRepository.findByEmail(email));
+    public Optional<User> findByEmail(String email) throws ServiceException {
+        return wrapJPACallToOptional(() -> userRepository.findByEmail(email));
     }
-
 
     @Override
     public <S extends User> Optional<S> update(S entity, Integer integer) throws ServiceException {
@@ -33,5 +40,18 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
             entity.setPasswordHash(existingUser.getPasswordHash());
         }
         return super.update(entity, integer);
+    }
+
+    @Override
+    public Optional<Boolean> register(RegistrationDetails registrationDetails) throws ServiceException {
+        User newUser = new User();
+        newUser.setEmail(registrationDetails.getEmail());
+        newUser.setName(registrationDetails.getName());
+        newUser.setSurname(registrationDetails.getSurname());
+        newUser.setBirthday(registrationDetails.getBirthday());
+        newUser.setGender(registrationDetails.getGender());
+        newUser.setPasswordHash(passwordEncoder.encode(registrationDetails.getPassword()));
+
+        return wrapJPACallToBoolean(() -> userRepository.save(newUser));
     }
 }

@@ -1,4 +1,4 @@
-package by.triumgroup.recourse.entity;
+package by.triumgroup.recourse.entity.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.SafeHtml;
@@ -9,13 +9,12 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
-@Table(name = "teacher_feedback")
-public class TeacherFeedback extends BaseEntity<Integer> {
+@Table(name = "course_feedback")
+public class CourseFeedback extends BaseEntity<Integer> {
 
     @NotNull
-    @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "teacher_id")
-    private User teacher;
+    @Column(columnDefinition = "INT(11)", nullable = false)
+    private Long courseId;
 
     @NotNull
     @ManyToOne(targetEntity = User.class)
@@ -34,22 +33,36 @@ public class TeacherFeedback extends BaseEntity<Integer> {
     @Column(columnDefinition = "TEXT")
     private String report;
 
-    public TeacherFeedback() {
+    @NotNull
+    @SafeHtml
+    @NotEmpty
+    @Column(columnDefinition = "TEXT")
+    private String pros;
+
+    @NotNull
+    @SafeHtml
+    @NotEmpty
+    @Column(columnDefinition = "TEXT")
+    private String cons;
+
+    public CourseFeedback() {
     }
 
-    public TeacherFeedback(User teacher, User student, String heading, String report) {
-        this.teacher = teacher;
+    public CourseFeedback(Long courseId, User student, String heading, String report, String pros, String cons) {
+        this.courseId = courseId;
         this.student = student;
         this.heading = heading;
         this.report = report;
+        this.pros = pros;
+        this.cons = cons;
     }
 
-    public User getTeacher() {
-        return teacher;
+    public Long getCourseId() {
+        return courseId;
     }
 
-    public void setTeacher(User teacher) {
-        this.teacher = teacher;
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
     }
 
     public User getStudent() {
@@ -76,22 +89,38 @@ public class TeacherFeedback extends BaseEntity<Integer> {
         this.report = report;
     }
 
+    public String getPros() {
+        return pros;
+    }
+
+    public void setPros(String pros) {
+        this.pros = pros;
+    }
+
+    public String getCons() {
+        return cons;
+    }
+
+    public void setCons(String cons) {
+        this.cons = cons;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        TeacherFeedback that = (TeacherFeedback) o;
-        return Objects.equals(teacher, that.teacher) &&
+        CourseFeedback that = (CourseFeedback) o;
+        return Objects.equals(courseId, that.courseId) &&
                 Objects.equals(student, that.student) &&
                 Objects.equals(heading, that.heading) &&
-                Objects.equals(report, that.report);
+                Objects.equals(report, that.report) &&
+                Objects.equals(pros, that.pros) &&
+                Objects.equals(cons, that.cons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), teacher, student, heading, report);
+        return Objects.hash(super.hashCode(), courseId, student, heading, report, pros, cons);
     }
-
-
 }

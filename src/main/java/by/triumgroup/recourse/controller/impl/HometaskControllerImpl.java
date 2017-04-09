@@ -1,8 +1,8 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.HometaskController;
-import by.triumgroup.recourse.entity.Hometask;
-import by.triumgroup.recourse.entity.HometaskSolution;
+import by.triumgroup.recourse.entity.model.Hometask;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.util.ServiceCallWrapper;

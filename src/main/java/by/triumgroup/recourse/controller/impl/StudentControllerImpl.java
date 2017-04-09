@@ -2,9 +2,9 @@ package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.StudentController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.HometaskSolution;
-import by.triumgroup.recourse.entity.StudentReport;
-import by.triumgroup.recourse.entity.TeacherFeedback;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.StudentReport;
+import by.triumgroup.recourse.entity.model.TeacherFeedback;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.StudentReportService;
 import by.triumgroup.recourse.service.TeacherFeedbackService;

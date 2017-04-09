@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service.impl;
 
-import by.triumgroup.recourse.entity.CourseFeedback;
+import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.repository.CourseFeedbackRepository;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import org.springframework.data.domain.Pageable;

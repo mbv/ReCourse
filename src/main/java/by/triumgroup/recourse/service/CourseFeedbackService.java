@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service;
 
-import by.triumgroup.recourse.entity.CourseFeedback;
+import by.triumgroup.recourse.entity.model.CourseFeedback;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

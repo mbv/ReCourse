@@ -1,4 +1,4 @@
-package by.triumgroup.recourse.entity;
+package by.triumgroup.recourse.entity.model;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;

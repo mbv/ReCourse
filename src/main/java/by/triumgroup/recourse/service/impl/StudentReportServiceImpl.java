@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service.impl;
 
-import by.triumgroup.recourse.entity.StudentReport;
+import by.triumgroup.recourse.entity.model.StudentReport;
 import by.triumgroup.recourse.repository.StudentReportRepository;
 import by.triumgroup.recourse.service.StudentReportService;
 import org.springframework.data.domain.Pageable;

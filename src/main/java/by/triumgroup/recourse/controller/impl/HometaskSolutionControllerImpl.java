@@ -2,8 +2,8 @@ package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.HometaskSolution;
-import by.triumgroup.recourse.entity.Mark;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.Mark;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.MarkService;
 import org.slf4j.Logger;

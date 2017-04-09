@@ -1,14 +1,83 @@
 package by.triumgroup.recourse.service;
 
-import by.triumgroup.recourse.entity.User;
+import by.triumgroup.recourse.entity.dto.RegistrationDetails;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.UserRepository;
+import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.service.impl.UserServiceImpl;
-import by.triumgroup.recourse.supplier.bean.TestBeansSupplier;
-import by.triumgroup.recourse.supplier.entity.impl.UserSupplier;
+import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
+import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class UserServiceTest extends CrudServiceTest<User, Integer, UserService, UserRepository> {
+import java.util.Optional;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
+
+public class UserServiceTest extends CrudServiceTest<User, Integer> {
+
+    private RegistrationDetailsSupplier registrationDetailsSupplier;
+
+    private UserService userService;
+
+    private UserRepository userRepository;
+
+    private PasswordEncoder passwordEncoder;
+
+    private UserSupplier userSupplier;
 
     public UserServiceTest() {
-        super(new TestBeansSupplier<>(UserServiceImpl.class, UserRepository.class), new UserSupplier());
+        registrationDetailsSupplier = new RegistrationDetailsSupplier();
+        userRepository = Mockito.mock(UserRepository.class);
+        passwordEncoder = Mockito.mock(PasswordEncoder.class);
+        userService = new UserServiceImpl(userRepository, passwordEncoder);
+        userSupplier = new UserSupplier();
+    }
+
+    @Test
+    public void registrationSuccessTest() throws Exception {
+        RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
+        when(userRepository.save(Matchers.<User>any())).thenReturn(userSupplier.getValidEntityWithId());
+
+        Optional<Boolean> result = userService.register(registrationDetails);
+
+        verify(userRepository, times(1)).save(Matchers.<User>any());
+        verify(passwordEncoder, times(1)).encode(registrationDetails.getPassword());
+        Assert.assertTrue(result.isPresent());
+    }
+
+    @Test
+    public void registrationExceptionTest() throws Exception {
+        RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
+        when(userRepository.save(Matchers.<User>any())).thenThrow(new DataIntegrityViolationException(""));
+
+        thrown.expect(ServiceException.class);
+
+        userService.register(registrationDetails);
+    }
+
+
+    @Override
+    protected CrudService<User, Integer> getCrudService() {
+        return userService;
+    }
+
+    @Override
+    protected CrudRepository<User, Integer> getCrudRepository() {
+        return userRepository;
+    }
+
+    @Override
+    protected EntitySupplier<User, Integer> getEntitySupplier() {
+        return userSupplier;
     }
 }
+

@@ -1,6 +1,6 @@
-package by.triumgroup.recourse.supplier.entity;
+package by.triumgroup.recourse.supplier.entity.model;
 
-import by.triumgroup.recourse.entity.BaseEntity;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import org.springframework.data.util.Pair;
 
 public interface EntitySupplier<E extends BaseEntity<ID>, ID> {

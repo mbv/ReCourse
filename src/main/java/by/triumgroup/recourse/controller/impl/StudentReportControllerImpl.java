@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.StudentReportController;
-import by.triumgroup.recourse.entity.StudentReport;
+import by.triumgroup.recourse.entity.model.StudentReport;
 import by.triumgroup.recourse.service.StudentReportService;
 import org.slf4j.Logger;
 

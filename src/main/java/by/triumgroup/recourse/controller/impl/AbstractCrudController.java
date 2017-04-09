@@ -3,7 +3,7 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.BaseEntity;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;

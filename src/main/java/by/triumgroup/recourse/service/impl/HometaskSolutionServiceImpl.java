@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service.impl;
 
-import by.triumgroup.recourse.entity.HometaskSolution;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.repository.HometaskSolutionRepository;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import org.springframework.data.domain.Pageable;

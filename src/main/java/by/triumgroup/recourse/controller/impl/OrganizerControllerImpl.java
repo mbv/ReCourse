@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.OrganizerController;
-import by.triumgroup.recourse.entity.Course;
+import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.service.CourseService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;

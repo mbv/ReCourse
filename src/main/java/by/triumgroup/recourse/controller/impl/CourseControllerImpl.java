@@ -1,10 +1,10 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.CourseController;
-import by.triumgroup.recourse.entity.Course;
-import by.triumgroup.recourse.entity.CourseFeedback;
-import by.triumgroup.recourse.entity.Lesson;
-import by.triumgroup.recourse.entity.StudentReport;
+import by.triumgroup.recourse.entity.model.Course;
+import by.triumgroup.recourse.entity.model.CourseFeedback;
+import by.triumgroup.recourse.entity.model.Lesson;
+import by.triumgroup.recourse.entity.model.StudentReport;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;

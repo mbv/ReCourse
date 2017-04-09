@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.repository;
 
 
-import by.triumgroup.recourse.entity.StudentReport;
+import by.triumgroup.recourse.entity.model.StudentReport;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

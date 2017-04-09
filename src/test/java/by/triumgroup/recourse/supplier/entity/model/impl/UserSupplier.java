@@ -1,7 +1,7 @@
-package by.triumgroup.recourse.supplier.entity.impl;
+package by.triumgroup.recourse.supplier.entity.model.impl;
 
-import by.triumgroup.recourse.entity.User;
-import by.triumgroup.recourse.supplier.entity.EntitySupplier;
+import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import org.springframework.data.util.Pair;
 
 public class UserSupplier implements EntitySupplier<User,Integer> {

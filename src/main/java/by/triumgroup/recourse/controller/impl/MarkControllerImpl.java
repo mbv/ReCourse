@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.MarkController;
-import by.triumgroup.recourse.entity.Mark;
+import by.triumgroup.recourse.entity.model.Mark;
 import by.triumgroup.recourse.service.MarkService;
 import org.slf4j.Logger;
 

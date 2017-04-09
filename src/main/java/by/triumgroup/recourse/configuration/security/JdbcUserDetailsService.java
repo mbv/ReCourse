@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.configuration.security;
 
-import by.triumgroup.recourse.entity.User;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.UserRepository;
 import org.slf4j.Logger;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.service.impl;
 
-import by.triumgroup.recourse.entity.BaseEntity;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
 import org.springframework.data.repository.CrudRepository;
 
