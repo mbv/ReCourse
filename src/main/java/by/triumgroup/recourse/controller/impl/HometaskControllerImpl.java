@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.HometaskController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Hometask;
@@ -34,5 +35,11 @@ public class HometaskControllerImpl
             Optional<List<HometaskSolution>> solutions = hometaskSolutionService.findByHometaskId(hometaskId, pageable);
             return solutions.orElseThrow(NotFoundException::new);
         });
+    }
+
+    @Override
+    protected boolean hasAuthorityToPerform(Hometask entity, UserAuthDetails authDetails) {
+        // TODO: Resolve authority
+        return true;
     }
 }

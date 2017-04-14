@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.LessonController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Hometask;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
@@ -33,5 +35,10 @@ public class LessonControllerImpl
             Optional<Hometask> callResult = hometaskService.findByLessonId(lessonId);
             return callResult.orElseThrow(NotFoundException::new);
         });
+    }
+
+    @Override
+    protected boolean hasAuthorityToPerform(Lesson entity, UserAuthDetails authDetails) {
+        return Objects.equals(entity.getTeacher().getId(), authDetails.getId());
     }
 }

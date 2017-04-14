@@ -1,6 +1,9 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CrudController;
+import by.triumgroup.recourse.controller.exception.AccessDeniedException;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.BaseEntity;
@@ -24,6 +27,14 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
         this.crudService = crudService;
     }
 
+    protected abstract boolean hasAuthorityToPerform(E entity, UserAuthDetails authDetails);
+
+    private void checkAuthority(E entity, UserAuthDetails authDetails) {
+        if (!authDetails.isAdmin() && !hasAuthorityToPerform(entity, authDetails)) {
+            throw new AccessDeniedException();
+        }
+    }
+
     public E getById(@PathVariable("id") ID id) {
         return wrapServiceCall(logger, () -> {
             Optional<E> callResult = crudService.findById(id);
@@ -36,7 +47,8 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
     }
 
     @Override
-    public <S extends E> S create(@Valid @RequestBody S entity) {
+    public <S extends E> S create(@Valid @RequestBody S entity, @Auth UserAuthDetails authDetails) {
+        checkAuthority(entity, authDetails);
         return wrapServiceCall(logger, () -> {
             Optional<S> callResult = crudService.add(entity);
             return callResult.orElseThrow(BadRequestException::new);
@@ -44,7 +56,8 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
     }
 
     @Override
-    public <S extends E> S update(@Valid @RequestBody S entity, @PathVariable("id") ID id) {
+    public <S extends E> S update(@Valid @RequestBody S entity, @PathVariable("id") ID id, @Auth UserAuthDetails authDetails) {
+        checkAuthority(entity, authDetails);
         return wrapServiceCall(logger, () -> {
             Optional<S> callResult = crudService.update(entity, id);
             return callResult.orElseThrow(NotFoundException::new);
@@ -52,7 +65,8 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
     }
 
     @Override
-    public void delete(@PathVariable("id") ID id) {
+    public void delete(@PathVariable("id") ID id, @Auth UserAuthDetails authDetails) {
+        checkAuthority(getById(id), authDetails);
         wrapServiceCall(logger, () -> crudService.delete(id).orElseThrow(NotFoundException::new));
     }
 }

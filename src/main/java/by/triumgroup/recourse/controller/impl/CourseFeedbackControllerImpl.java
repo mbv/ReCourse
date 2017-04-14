@@ -1,9 +1,12 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseFeedbackController;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import org.slf4j.Logger;
+
+import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -15,5 +18,11 @@ public class CourseFeedbackControllerImpl
 
     public CourseFeedbackControllerImpl(CourseFeedbackService courseFeedbackService) {
         super(courseFeedbackService, logger);
+    }
+
+
+    @Override
+    protected boolean hasAuthorityToPerform(CourseFeedback entity, UserAuthDetails authDetails) {
+        return Objects.equals(entity.getStudent().getId(), authDetails.getId());
     }
 }
