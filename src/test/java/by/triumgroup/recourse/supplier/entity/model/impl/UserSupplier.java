@@ -1,10 +1,9 @@
 package by.triumgroup.recourse.supplier.entity.model.impl;
 
 import by.triumgroup.recourse.entity.model.User;
-import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
-import org.springframework.data.util.Pair;
+import by.triumgroup.recourse.supplier.entity.model.EntityIntegerPKSupplier;
 
-public class UserSupplier implements EntitySupplier<User,Integer> {
+public class UserSupplier implements EntityIntegerPKSupplier<User> {
     @Override
     public User getValidEntityWithoutId() {
         User user = new User();
@@ -19,15 +18,5 @@ public class UserSupplier implements EntitySupplier<User,Integer> {
     @Override
     public User getInvalidEntity() {
         return new User();
-    }
-
-    @Override
-    public Integer getAnyId() {
-        return 1;
-    }
-
-    @Override
-    public Pair<Integer, Integer> getDifferentIds() {
-        return Pair.of(1, 2);
     }
 }

@@ -14,7 +14,7 @@ public class HometaskSolution extends BaseEntity<Integer> {
 
     @NotNull
     @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long hometaskId;
+    private Integer hometaskId;
 
     @NotNull
     @ManyToOne(targetEntity = User.class)
@@ -35,18 +35,18 @@ public class HometaskSolution extends BaseEntity<Integer> {
     public HometaskSolution() {
     }
 
-    public HometaskSolution(Long hometaskId, User student, String solution, Mark mark) {
+    public HometaskSolution(Integer hometaskId, User student, String solution, Mark mark) {
         this.hometaskId = hometaskId;
         this.student = student;
         this.solution = solution;
         this.mark = mark;
     }
 
-    public Long getHometaskId() {
+    public Integer getHometaskId() {
         return hometaskId;
     }
 
-    public void setHometaskId(Long hometaskId) {
+    public void setHometaskId(Integer hometaskId) {
         this.hometaskId = hometaskId;
     }
 

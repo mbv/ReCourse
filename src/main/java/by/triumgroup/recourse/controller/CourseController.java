@@ -25,13 +25,10 @@ public interface CourseController extends CrudController<Course, Integer> {
     List<StudentReport> getReports(
             @PathVariable("courseId") Integer courseId, Pageable pageable);
 
-    @GetMapping("search")
+    @GetMapping(value = "search", params = "title")
     List<Course> searchByTitle(@RequestParam("title") String title, Pageable pageable);
 
-    @GetMapping("all")
-    List<Course> getAll(
-            @RequestParam(value = "status", required = false) Course.Status status,
-            Pageable pageable
-    );
+    @GetMapping(value = "search", params = "status")
+    List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable);
 
 }

@@ -1,5 +1,8 @@
-package by.triumgroup.recourse.controller;
+package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.controller.CrudController;
+import by.triumgroup.recourse.controller.CrudControllerTest;
+import by.triumgroup.recourse.controller.UserController;
 import by.triumgroup.recourse.controller.impl.UserControllerImpl;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;

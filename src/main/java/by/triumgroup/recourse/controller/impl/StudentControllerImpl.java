@@ -38,17 +38,26 @@ public class StudentControllerImpl implements StudentController {
 
     @Override
     public List<StudentReport> getReports(@PathVariable("studentId") Integer studentId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> studentReportService.findByStudentId(studentId, pageable));
+        return wrapServiceCall(logger, () -> {
+            Optional<List<StudentReport>> reports = studentReportService.findByStudentId(studentId, pageable);
+            return reports.orElseThrow(NotFoundException::new);
+        });
     }
 
     @Override
     public List<TeacherFeedback> getTeacherFeedbacks(@PathVariable("studentId") Integer studentId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> teacherFeedbackService.findByStudentId(studentId, pageable));
+        return wrapServiceCall(logger, () -> {
+            Optional<List<TeacherFeedback>> feedbacks = teacherFeedbackService.findByStudentId(studentId, pageable);
+            return feedbacks.orElseThrow(NotFoundException::new);
+        });
     }
 
     @Override
     public List<HometaskSolution> getSolutions(@PathVariable("studentId") Integer studentId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> hometaskSolutionService.findByStudentId(studentId, pageable));
+        return wrapServiceCall(logger, () -> {
+            Optional<List<HometaskSolution>> solutions = hometaskSolutionService.findByStudentId(studentId, pageable);
+            return solutions.orElseThrow(NotFoundException::new);
+        });
     }
 
     @Override

@@ -14,7 +14,7 @@ public class Hometask extends BaseEntity<Integer>{
 
     @NotNull
     @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long lessonId;
+    private Integer lessonId;
 
     @NotNull
     @SafeHtml
@@ -24,16 +24,16 @@ public class Hometask extends BaseEntity<Integer>{
     public Hometask() {
     }
 
-    public Hometask(long lessonId, String task) {
+    public Hometask(Integer lessonId, String task) {
         this.lessonId = lessonId;
         this.task = task;
     }
 
-    public Long getLessonId() {
+    public Integer getLessonId() {
         return lessonId;
     }
 
-    public void setLessonId(Long lessonId) {
+    public void setLessonId(Integer lessonId) {
         this.lessonId = lessonId;
     }
 

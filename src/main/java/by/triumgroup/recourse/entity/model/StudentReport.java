@@ -24,7 +24,7 @@ public class StudentReport extends BaseEntity<Integer>{
 
     @NotNull
     @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long courseId;
+    private Integer courseId;
 
     @NotNull
     @SafeHtml
@@ -40,7 +40,7 @@ public class StudentReport extends BaseEntity<Integer>{
     public StudentReport() {
     }
 
-    public StudentReport( User student, User teacher, Long courseId, String heading, String report) {
+    public StudentReport( User student, User teacher, Integer courseId, String heading, String report) {
         this.student = student;
         this.teacher = teacher;
         this.courseId = courseId;
@@ -64,11 +64,11 @@ public class StudentReport extends BaseEntity<Integer>{
         this.teacher = teacher;
     }
 
-    public Long getCourseId() {
+    public Integer getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(Long courseId) {
+    public void setCourseId(Integer courseId) {
         this.courseId = courseId;
     }
 

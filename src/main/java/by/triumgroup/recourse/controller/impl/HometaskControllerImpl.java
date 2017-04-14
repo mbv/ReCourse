@@ -1,6 +1,7 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.HometaskController;
+import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Hometask;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.service.HometaskService;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -28,7 +30,9 @@ public class HometaskControllerImpl
 
     @Override
     public List<HometaskSolution> getSolutions(@PathVariable("hometaskId") Integer hometaskId, Pageable pageable) {
-        return ServiceCallWrapper.wrapServiceCall(logger, () ->
-                hometaskSolutionService.findByHometaskId(hometaskId, pageable));
+        return ServiceCallWrapper.wrapServiceCall(logger, () -> {
+            Optional<List<HometaskSolution>> solutions = hometaskSolutionService.findByHometaskId(hometaskId, pageable);
+            return solutions.orElseThrow(NotFoundException::new);
+        });
     }
 }

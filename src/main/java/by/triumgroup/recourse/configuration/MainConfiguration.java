@@ -11,6 +11,8 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 
 @Configuration
 @Import({
@@ -46,5 +48,13 @@ public class MainConfiguration extends SpringBootServletInitializer {
     @Bean
     RegistrationDetailsValidator registrationDetailsValidator(UserRepository userRepository) {
         return new RegistrationDetailsValidator(userRepository);
+    }
+
+    @Bean
+    PageableHandlerMethodArgumentResolver pageableHandlerMethodArgumentResolver() {
+        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setOneIndexedParameters(true);
+        resolver.setFallbackPageable(new PageRequest(0, Integer.MAX_VALUE));
+        return resolver;
     }
 }

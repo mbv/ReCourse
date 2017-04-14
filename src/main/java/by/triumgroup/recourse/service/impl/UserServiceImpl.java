@@ -7,11 +7,9 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import by.triumgroup.recourse.util.RepositoryCallWrapper;
 
 import java.util.Optional;
 
-import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToBoolean;
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
 

@@ -23,7 +23,7 @@ public class Mark extends BaseEntity<Integer> {
 
     @NotNull
     @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long solutionId;
+    private Integer solutionId;
 
     @NotNull
     @SafeHtml
@@ -34,7 +34,7 @@ public class Mark extends BaseEntity<Integer> {
     public Mark() {
     }
 
-    public Mark(int score, Long solutionId, String comment) {
+    public Mark(int score, Integer solutionId, String comment) {
         this.score = score;
         this.solutionId = solutionId;
         this.comment = comment;
@@ -48,11 +48,11 @@ public class Mark extends BaseEntity<Integer> {
         this.score = score;
     }
 
-    public Long getSolutionId() {
+    public Integer getSolutionId() {
         return solutionId;
     }
 
-    public void setSolutionId(Long solutionId) {
+    public void setSolutionId(Integer solutionId) {
         this.solutionId = solutionId;
     }
 

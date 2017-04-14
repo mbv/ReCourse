@@ -1,57 +1,28 @@
 package by.triumgroup.recourse.controller;
 
-import by.triumgroup.recourse.configuration.MainConfiguration;
-import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
 import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
-import by.triumgroup.recourse.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration
-@SpringBootTest(classes = MainConfiguration.class)
-public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> {
+public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends AbstractControllerTest {
     private String idRequest;
 
     private String generalRequest;
 
-    protected MockMvc mockMvc;
-
     @Before
-    public void initTests() {
+    public void initUrls() {
         this.idRequest = String.format("/%s/{id}", getEntityName());
         this.generalRequest = String.format("/%s/", getEntityName());
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(getController())
-                .setControllerAdvice(new RestExceptionHandler())
-                .alwaysDo(print())
-                .build();
     }
-
-    protected abstract CrudController<E,ID> getController();
 
     protected abstract CrudService<E,ID> getService();
 
@@ -143,29 +114,4 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> {
         return sendPut(idRequest, entity, id);
     }
 
-    protected ResultActions sendDelete(String urlTemplate, Object... urlParams) throws Exception {
-        return mockMvc.perform(delete(urlTemplate, urlParams)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-    }
-
-    protected ResultActions sendPost(String urlTemplate, Object content, Object... urlParams) throws Exception {
-        return mockMvc.perform(post(urlTemplate, urlParams)
-                .content(TestUtil.toJson(content))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-    }
-
-    protected ResultActions sendGet(String urlTemplate, Object... urlParams) throws Exception {
-        return mockMvc.perform(get(urlTemplate, urlParams)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-    }
-
-    protected ResultActions sendPut(String urlTemplate, Object content, Object... urlParams) throws Exception {
-        return mockMvc.perform(put(urlTemplate, urlParams)
-                .content(TestUtil.toJson(content))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-    }
 }

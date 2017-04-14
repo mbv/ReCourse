@@ -14,7 +14,7 @@ public class CourseFeedback extends BaseEntity<Integer> {
 
     @NotNull
     @Column(columnDefinition = "INT(11)", nullable = false)
-    private Long courseId;
+    private Integer courseId;
 
     @NotNull
     @ManyToOne(targetEntity = User.class)
@@ -48,7 +48,7 @@ public class CourseFeedback extends BaseEntity<Integer> {
     public CourseFeedback() {
     }
 
-    public CourseFeedback(Long courseId, User student, String heading, String report, String pros, String cons) {
+    public CourseFeedback(Integer courseId, User student, String heading, String report, String pros, String cons) {
         this.courseId = courseId;
         this.student = student;
         this.heading = heading;
@@ -57,11 +57,11 @@ public class CourseFeedback extends BaseEntity<Integer> {
         this.cons = cons;
     }
 
-    public Long getCourseId() {
+    public Integer getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(Long courseId) {
+    public void setCourseId(Integer courseId) {
         this.courseId = courseId;
     }
 

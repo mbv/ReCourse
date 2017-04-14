@@ -1,6 +1,7 @@
 package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.CourseController;
+import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.entity.model.Lesson;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -43,17 +45,26 @@ public class CourseControllerImpl
 
     @Override
     public List<Lesson> getLessons(@PathVariable("courseId") Integer courseId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> lessonService.findByCourseId(courseId, pageable));
+        return wrapServiceCall(logger, () -> {
+            Optional<List<Lesson>> lessons = lessonService.findByCourseId(courseId, pageable);
+            return lessons.orElseThrow(NotFoundException::new);
+        });
     }
 
     @Override
     public List<CourseFeedback> getFeedbacks(@PathVariable("courseId") Integer courseId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> courseFeedbackService.findByCourseId(courseId, pageable));
+        return wrapServiceCall(logger, () -> {
+            Optional<List<CourseFeedback>> feedbacks = courseFeedbackService.findByCourseId(courseId, pageable);
+            return feedbacks.orElseThrow(NotFoundException::new);
+        });
     }
 
     @Override
     public List<StudentReport> getReports(@PathVariable("courseId") Integer courseId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> studentReportService.findByCourseId(courseId, pageable));
+        return wrapServiceCall(logger, () -> {
+            Optional<List<StudentReport>> reports = studentReportService.findByCourseId(courseId, pageable);
+            return reports.orElseThrow(NotFoundException::new);
+        });
     }
 
     @Override
@@ -62,7 +73,7 @@ public class CourseControllerImpl
     }
 
     @Override
-    public List<Course> getAll(@RequestParam(value = "status", required = false) Course.Status status, Pageable pageable) {
+    public List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable) {
         return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable));
     }
 }
