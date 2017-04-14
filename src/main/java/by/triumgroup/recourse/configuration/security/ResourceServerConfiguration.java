@@ -39,6 +39,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                    // TODO Need to be configured
                     .antMatchers("/**").permitAll()
                     .anyRequest().authenticated();
     }
