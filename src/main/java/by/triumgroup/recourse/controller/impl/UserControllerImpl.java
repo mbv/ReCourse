@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.UserController;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.ControllerException;
@@ -42,5 +43,10 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
             logger.warn("Error while user registration");
             throw new ControllerException(e);
         }
+    }
+
+    @Override
+    protected boolean hasAuthorityToPerform(User entity, UserAuthDetails authDetails) {
+        return authDetails.isAdmin();
     }
 }

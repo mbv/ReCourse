@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.MarkController;
 import by.triumgroup.recourse.entity.model.Mark;
 import by.triumgroup.recourse.service.MarkService;
@@ -15,5 +16,11 @@ public class MarkControllerImpl
 
     public MarkControllerImpl(MarkService markService) {
         super(markService, logger);
+    }
+
+    @Override
+    protected boolean hasAuthorityToPerform(Mark entity, UserAuthDetails authDetails) {
+        // TODO: Resolve authority
+        return true;
     }
 }

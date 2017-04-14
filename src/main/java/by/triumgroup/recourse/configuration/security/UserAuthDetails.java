@@ -21,6 +21,10 @@ public class UserAuthDetails extends User implements UserDetails, Serializable {
         );
     }
 
+    public boolean isAdmin() {
+        return getRole() == Role.ORGANIZER;
+    }
+
     @Override
     public String getPassword() {
         return getPasswordHash();
