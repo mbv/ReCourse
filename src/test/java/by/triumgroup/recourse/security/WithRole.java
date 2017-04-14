@@ -9,5 +9,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithRoleSecurityContextFactory.class)
 public @interface WithRole {
-    User.Role value();
+    User.Role[] value();
 }

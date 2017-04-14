@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.configuration.security;
 
+import by.triumgroup.recourse.entity.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +40,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/user/**").hasAuthority("ORGANIZER")
+                .antMatchers("/user/**").hasAuthority(User.Role.ORGANIZER.name())
                 .anyRequest().authenticated();
     }
 }

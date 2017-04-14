@@ -1,10 +1,23 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.MarkController;
+import by.triumgroup.recourse.controller.exception.BadRequestException;
+import by.triumgroup.recourse.entity.model.Hometask;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.entity.model.Mark;
+import by.triumgroup.recourse.service.HometaskService;
+import by.triumgroup.recourse.service.HometaskSolutionService;
+import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.MarkService;
 import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -13,14 +26,45 @@ public class MarkControllerImpl
         implements MarkController {
 
     private static final Logger logger = getLogger(MarkControllerImpl.class);
+    private final HometaskSolutionService hometaskSolutionService;
+    private final HometaskService hometaskService;
+    private final LessonService lessonService;
 
-    public MarkControllerImpl(MarkService markService) {
+    public MarkControllerImpl(
+            MarkService markService,
+            HometaskSolutionService hometaskSolutionService,
+            HometaskService hometaskService,
+            LessonService lessonService
+    ) {
         super(markService, logger);
+        this.hometaskSolutionService = hometaskSolutionService;
+        this.hometaskService = hometaskService;
+        this.lessonService = lessonService;
+    }
+
+    @Override
+    public <S extends Mark> S create(@Valid @RequestBody S entity, @Auth UserAuthDetails authDetails) {
+        Optional<HometaskSolution> solution = hometaskSolutionService.findById(entity.getSolutionId());
+        if (solution.isPresent()) {
+            if (solution.get().getMark() != null) {
+                throw new BadRequestException();
+            }
+        }
+        return super.create(entity, authDetails);
     }
 
     @Override
     protected boolean hasAuthorityToPerform(Mark entity, UserAuthDetails authDetails) {
-        // TODO: Resolve authority
+        Optional<HometaskSolution> hometaskSolution = hometaskSolutionService.findById(entity.getSolutionId());
+        if (hometaskSolution.isPresent()) {
+            Optional<Hometask> hometask = hometaskService.findById(hometaskSolution.get().getHometaskId());
+            if (hometask.isPresent()) {
+                Optional<Lesson> lesson = lessonService.findById(hometask.get().getLessonId());
+                if (lesson.isPresent()) {
+                    return Objects.equals(lesson.get().getTeacher().getId(), authDetails.getId());
+                }
+            }
+        }
         return true;
     }
 }

@@ -1,6 +1,8 @@
 package by.triumgroup.recourse.controller;
 
 import by.triumgroup.recourse.entity.model.BaseEntity;
+import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.security.WithRole;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import org.junit.Before;
@@ -31,6 +33,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     protected abstract EntitySupplier<E,ID> getEntitySupplier();
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void getExistingEntityTest() throws Exception {
         E entity = getEntitySupplier().getValidEntityWithId();
         when(getService().findById(any())).thenReturn(Optional.of(entity));
@@ -40,6 +43,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void getNotExistingEntityTest() throws Exception {
         when(getService().findById(any())).thenReturn(Optional.empty());
 
@@ -48,6 +52,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void createValidEntityTest() throws Exception {
         when(getService().add(any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
 
@@ -56,12 +61,14 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void createInvalidEntityTest() throws Exception {
         postEntity(getEntitySupplier().getInvalidEntity())
             .andExpect(status().isBadRequest());
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void updateNotExistingEntityTest() throws Exception {
         when(getService().update(any(), any())).thenReturn(Optional.empty());
 
@@ -70,6 +77,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void updateEntityValidDataTest() throws Exception {
         when(getService().update(any(), any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
 
@@ -78,12 +86,14 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void updateEntityInvalidDataTest() throws Exception {
         putEntityById(getEntitySupplier().getAnyId(), getEntitySupplier().getInvalidEntity())
             .andExpect(status().isBadRequest());
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void deleteExistingEntityTest() throws Exception {
         when(getService().delete(any())).thenReturn(Optional.of(true));
 
@@ -92,6 +102,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
+    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void deleteNotExistingEntityTest() throws Exception {
         when(getService().delete(any())).thenReturn(Optional.empty());
         deleteEntityById(getEntitySupplier().getAnyId()).
