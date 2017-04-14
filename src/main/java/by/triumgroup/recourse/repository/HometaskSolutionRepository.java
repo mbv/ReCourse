@@ -1,0 +1,17 @@
+package by.triumgroup.recourse.repository;
+
+import by.triumgroup.recourse.entity.model.HometaskSolution;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import java.util.List;
+
+public interface HometaskSolutionRepository extends PagingAndSortingRepository<HometaskSolution, Integer> {
+
+    List<HometaskSolution> findByHometaskId(Integer id, Pageable pageable);
+
+    List<HometaskSolution> findByStudentId(Integer id, Pageable pageable);
+
+    HometaskSolution findByStudentIdAndHometaskId(Integer studentId, Integer hometaskId);
+
+}
