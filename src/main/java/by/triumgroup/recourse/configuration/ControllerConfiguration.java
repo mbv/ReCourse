@@ -57,11 +57,6 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public OrganizerController organizerController(CourseService courseService) {
-        return new OrganizerControllerImpl(courseService);
-    }
-
-    @Bean
     public StudentController studentController(
             StudentReportService studentReportService,
             TeacherFeedbackService teacherFeedbackService,

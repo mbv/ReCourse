@@ -1,6 +1,5 @@
 package by.triumgroup.recourse.entity.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.SafeHtml;
@@ -49,11 +48,8 @@ public class User extends BaseEntity<Integer> {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM ('STUDENT', 'TEACHER', 'ORGANIZER')")
+    @Column(columnDefinition = "ENUM ('STUDENT', 'TEACHER', 'ADMIN')")
     private Role role;
-
-    @JsonIgnore
-    private boolean isDeleted;
 
     public User() {
     }
@@ -66,7 +62,6 @@ public class User extends BaseEntity<Integer> {
         gender = user.gender;
         birthday = user.birthday;
         role = user.role;
-        isDeleted = user.isDeleted;
     }
 
     public String getEmail() {
@@ -125,22 +120,13 @@ public class User extends BaseEntity<Integer> {
         this.role = role;
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         User user = (User) o;
-        return isDeleted == user.isDeleted &&
-                Objects.equals(email, user.email) &&
+        return Objects.equals(email, user.email) &&
                 Objects.equals(passwordHash, user.passwordHash) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(surname, user.surname) &&
@@ -151,7 +137,7 @@ public class User extends BaseEntity<Integer> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), email, passwordHash, name, surname, gender, birthday, role, isDeleted);
+        return Objects.hash(super.hashCode(), email, passwordHash, name, surname, gender, birthday, role);
     }
 
     public enum Gender {
@@ -159,6 +145,6 @@ public class User extends BaseEntity<Integer> {
     }
 
     public enum Role {
-        STUDENT, TEACHER, ORGANIZER
+        STUDENT, TEACHER, ADMIN
     }
 }

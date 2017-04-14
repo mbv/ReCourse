@@ -9,7 +9,7 @@ public class UserSupplier implements EntityIntegerPKSupplier<User> {
         User user = new User();
         user.setName("Ivan");
         user.setSurname("Shimko");
-        user.setRole(User.Role.ORGANIZER);
+        user.setRole(User.Role.TEACHER);
         user.setEmail("a@b.com");
         user.setGender(User.Gender.MALE);
         return user;

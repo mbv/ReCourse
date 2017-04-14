@@ -31,6 +31,10 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
         });
     }
 
+    public Iterable<E> getAll() {
+        return wrapServiceCall(logger, crudService::findAll);
+    }
+
     @Override
     public <S extends E> S create(@Valid @RequestBody S entity) {
         return wrapServiceCall(logger, () -> {

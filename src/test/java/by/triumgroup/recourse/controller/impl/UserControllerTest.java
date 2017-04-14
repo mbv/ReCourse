@@ -3,7 +3,6 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.UserController;
-import by.triumgroup.recourse.controller.impl.UserControllerImpl;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
@@ -49,7 +48,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
         when(userService.register(any())).thenReturn(Optional.of(true));
 
-        sendPost("/user/register", registrationDetails)
+        sendPost("/users/register", registrationDetails)
                 .andExpect(status().isOk());
 
         verify(registrationDetailsValidator, times(1)).validate(any(), any());
@@ -66,7 +65,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         }).when(registrationDetailsValidator).validate(any(), any());
         when(userService.register(any())).thenReturn(Optional.of(true));
 
-        sendPost("/user/register", registrationDetails)
+        sendPost("/users/register", registrationDetails)
                 .andExpect(status().isBadRequest());
 
         verify(registrationDetailsValidator, times(1)).validate(any(), any());
@@ -74,7 +73,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
 
     @Override
     protected String getEntityName() {
-        return "user";
+        return "users";
     }
 
     @Override

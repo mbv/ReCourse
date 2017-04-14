@@ -10,6 +10,9 @@ public interface CrudController<E extends BaseEntity<ID>, ID> {
     @GetMapping("{id}")
     E getById(@PathVariable("id") ID id) throws ControllerException;
 
+    @GetMapping
+    Iterable<E> getAll() throws ControllerException;
+
     @PostMapping
     <S extends E> S create(@RequestBody S entity) throws ControllerException;
 
@@ -18,5 +21,4 @@ public interface CrudController<E extends BaseEntity<ID>, ID> {
 
     @DeleteMapping("{id}")
     void delete(@PathVariable("id") ID id) throws ControllerException;
-
 }

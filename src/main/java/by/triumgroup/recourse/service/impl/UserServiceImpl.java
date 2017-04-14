@@ -31,13 +31,13 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public <S extends User> Optional<S> update(S entity, Integer integer) throws ServiceException {
-        Optional<User> updatingUser = wrapJPACallToOptional(() -> userRepository.findOne(integer));
+    public <S extends User> Optional<S> update(S entity, Integer id) throws ServiceException {
+        Optional<User> updatingUser = wrapJPACallToOptional(() -> userRepository.findOne(id));
         if (updatingUser.isPresent()){
             User existingUser = updatingUser.get();
             entity.setPasswordHash(existingUser.getPasswordHash());
         }
-        return super.update(entity, integer);
+        return super.update(entity, id);
     }
 
     @Override

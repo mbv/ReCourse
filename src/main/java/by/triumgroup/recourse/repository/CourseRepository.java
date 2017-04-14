@@ -16,11 +16,5 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, Int
 
     List<Course> findByTeacherIdAndStatusOrderByIdDesc(Integer id, Course.Status status, Pageable pageable);
 
-    List<Course> findByOrganizerIdOrderByIdDesc(Integer id, Pageable pageable);
-
-    List<Course> findByOrganizerIdAndStatusOrderByIdDesc(Integer id, Course.Status status, Pageable pageable);
-
     List<Course> findByStatusOrderByIdDesc(Course.Status status, Pageable pageable);
-
-    List<Course> findAllByOrderByIdDesc(Pageable pageable);
 }

@@ -14,10 +14,6 @@ public interface CourseService extends CrudService<Course, Integer> {
 
     Optional<List<Course>> findByTeacherIdAndStatus(Integer id, Course.Status status, Pageable pageable);
 
-    Optional<List<Course>> findByOrganizerId(Integer id, Pageable pageable);
-
-    Optional<List<Course>> findByOrganizerIdAndStatus(Integer id, Course.Status status, Pageable pageable);
-
     List<Course> findByStatus(Course.Status status, Pageable pageable);
 
 }

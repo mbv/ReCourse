@@ -19,8 +19,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CourseControllerTest extends CrudControllerTest<Course, Integer> {
-    private static final String COURSE_ID_REQUEST = "/course/1/{param}";
-    private static final String COURSE_SEARCH_REQUEST = "/course/search?{name}={value}";
+    private static final String COURSE_ID_REQUEST = "/courses/1/{param}";
+    private static final String COURSE_SEARCH_REQUEST = "/courses/search?{name}={value}";
     private final CourseService courseService;
     private final LessonService lessonService;
     private final CourseFeedbackService courseFeedbackService;
@@ -114,7 +114,7 @@ public class CourseControllerTest extends CrudControllerTest<Course, Integer> {
 
     @Override
     protected String getEntityName() {
-        return "course";
+        return "courses";
     }
 
     @Override
