@@ -5,9 +5,12 @@ import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
 import by.triumgroup.recourse.util.TestUtil;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -24,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ContextConfiguration
 @SpringBootTest(classes = MainConfiguration.class)
 public abstract class AbstractControllerTest {
+    @Autowired
+    FilterChainProxy springSecurityFilterChain;
     private MockMvc mockMvc;
 
     @Before
@@ -33,6 +38,7 @@ public abstract class AbstractControllerTest {
                 .setControllerAdvice(new RestExceptionHandler())
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .alwaysDo(print())
+                .apply(SecurityMockMvcConfigurers.springSecurity(springSecurityFilterChain))
                 .build();
     }
 

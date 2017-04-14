@@ -7,6 +7,7 @@ import by.triumgroup.recourse.entity.model.Hometask;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.HometaskSolutionService;
+import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSupplier;
 import org.assertj.core.util.Lists;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class HometaskControllerTest extends CrudControllerTest<Hometask, Integer> {
     private static final String SOLUTIONS_REQUEST = "/hometask/1/solutions";
+    private LessonService lessonService;
     private HometaskController hometaskController;
     private HometaskService hometaskService;
     private HometaskSupplier hometaskSupplier;
@@ -29,7 +31,8 @@ public class HometaskControllerTest extends CrudControllerTest<Hometask, Integer
     public HometaskControllerTest() {
         hometaskService = Mockito.mock(HometaskService.class);
         hometaskSolutionService = Mockito.mock(HometaskSolutionService.class);
-        hometaskController = new HometaskControllerImpl(hometaskService, hometaskSolutionService);
+        lessonService = Mockito.mock(LessonService.class);
+        hometaskController = new HometaskControllerImpl(hometaskService, hometaskSolutionService, lessonService);
         hometaskSupplier = new HometaskSupplier();
     }
 
