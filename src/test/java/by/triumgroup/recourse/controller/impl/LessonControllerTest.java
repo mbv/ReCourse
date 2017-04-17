@@ -4,6 +4,7 @@ import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.LessonController;
 import by.triumgroup.recourse.entity.model.Lesson;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.LessonService;
@@ -68,5 +69,11 @@ public class LessonControllerTest extends CrudControllerTest<Lesson, Integer> {
     @Override
     protected EntitySupplier<Lesson, Integer> getEntitySupplier() {
         return lessonSupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(Lesson entity, User validUserWithId) {
+        validUserWithId.setId(entity.getTeacher().getId());
+        return validUserWithId;
     }
 }

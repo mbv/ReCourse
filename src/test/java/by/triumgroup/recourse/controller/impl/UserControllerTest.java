@@ -90,4 +90,10 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
     protected EntitySupplier<User, Integer> getEntitySupplier() {
         return entitySupplier;
     }
+
+    @Override
+    protected User prepareAuthorizedUser(User entity, User validUserWithId) {
+        validUserWithId.setRole(User.Role.ORGANIZER);
+        return validUserWithId;
+    }
 }

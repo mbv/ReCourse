@@ -2,9 +2,9 @@ package by.triumgroup.recourse.controller;
 
 import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.entity.model.User;
-import by.triumgroup.recourse.security.WithRole;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.ResultActions;
@@ -19,6 +19,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     private String idRequest;
 
     private String generalRequest;
+    private UserSupplier userSupplier = new UserSupplier();
 
     @Before
     public void initUrls() {
@@ -33,7 +34,6 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     protected abstract EntitySupplier<E,ID> getEntitySupplier();
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void getExistingEntityTest() throws Exception {
         E entity = getEntitySupplier().getValidEntityWithId();
         when(getService().findById(any())).thenReturn(Optional.of(entity));
@@ -43,7 +43,6 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void getNotExistingEntityTest() throws Exception {
         when(getService().findById(any())).thenReturn(Optional.empty());
 
@@ -52,60 +51,54 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void createValidEntityTest() throws Exception {
         when(getService().add(any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
 
-        postEntity(getEntitySupplier().getValidEntityWithoutId())
+        postEntityAuthorized(getEntitySupplier().getValidEntityWithoutId())
             .andExpect(status().isOk());
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void createInvalidEntityTest() throws Exception {
         postEntity(getEntitySupplier().getInvalidEntity())
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void updateNotExistingEntityTest() throws Exception {
         when(getService().update(any(), any())).thenReturn(Optional.empty());
 
-        putEntityById(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
             .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void updateEntityValidDataTest() throws Exception {
         when(getService().update(any(), any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
 
-        putEntityById(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
             .andExpect(status().isOk());
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void updateEntityInvalidDataTest() throws Exception {
         putEntityById(getEntitySupplier().getAnyId(), getEntitySupplier().getInvalidEntity())
             .andExpect(status().isBadRequest());
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void deleteExistingEntityTest() throws Exception {
         when(getService().delete(any())).thenReturn(Optional.of(true));
-
-        deleteEntityById(getEntitySupplier().getAnyId()).
+        E entity = getEntitySupplier().getValidEntityWithId();
+        deleteEntityByIdAuthorized(entity.getId(), entity).
                 andExpect(status().isOk());
     }
 
     @Test
-    @WithRole({User.Role.ORGANIZER, User.Role.STUDENT, User.Role.TEACHER})
     public void deleteNotExistingEntityTest() throws Exception {
         when(getService().delete(any())).thenReturn(Optional.empty());
-        deleteEntityById(getEntitySupplier().getAnyId()).
+        E entity = getEntitySupplier().getValidEntityWithId();
+        deleteEntityByIdAuthorized(entity.getId(), entity).
                 andExpect(status().isNotFound());
     }
 
@@ -125,4 +118,29 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
         return sendPut(idRequest, entity, id);
     }
 
+    protected ResultActions deleteEntityByIdAuthorized(ID id, E entity) throws Exception {
+        when(getService().findById(id)).thenReturn(Optional.of(entity));
+        User user = prepareAuthorizedUser(entity);
+        return sendDelete(idRequest, user, id);
+    }
+
+    protected ResultActions postEntityAuthorized(E entity) throws Exception {
+        User user = prepareAuthorizedUser(entity);
+        return sendPost(generalRequest, entity, user);
+    }
+
+    protected ResultActions getEntityByIdAuthorized(ID id) throws Exception {
+        return sendGet(idRequest, id);
+    }
+
+    protected ResultActions putEntityByIdAuthorized(ID id, E entity) throws Exception {
+        User user = prepareAuthorizedUser(entity);
+        return sendPut(idRequest, entity, user, id);
+    }
+
+    private User prepareAuthorizedUser(E entity){
+        return prepareAuthorizedUser(entity, userSupplier.getValidEntityWithId());
+    }
+
+    protected abstract User prepareAuthorizedUser(E entity, User validUserWithId);
 }
