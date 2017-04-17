@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -28,15 +27,13 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     private static final Logger logger = getLogger(UserControllerImpl.class);
     private UserService userService;
     private RegistrationDetailsValidator registrationDetailsValidator;
-    private AuthorizationServerTokenServices authorizationServerTokenServices;
     private DefaultTokenServices defaultTokenServices;
 
     @Autowired
-    public UserControllerImpl(UserService userService, RegistrationDetailsValidator registrationDetailsValidator, AuthorizationServerTokenServices authorizationServerTokenServices, DefaultTokenServices defaultTokenServices) {
+    public UserControllerImpl(UserService userService, RegistrationDetailsValidator registrationDetailsValidator, DefaultTokenServices defaultTokenServices) {
         super(userService, logger);
         this.userService = userService;
         this.registrationDetailsValidator = registrationDetailsValidator;
-        this.authorizationServerTokenServices = authorizationServerTokenServices;
         this.defaultTokenServices = defaultTokenServices;
     }
 
@@ -57,7 +54,7 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     @Override
     public void logout(OAuth2Authentication principal) {
-        OAuth2AccessToken accessToken = authorizationServerTokenServices.getAccessToken(principal);
+        OAuth2AccessToken accessToken = defaultTokenServices.getAccessToken(principal);
         defaultTokenServices.revokeToken(accessToken.getValue());
     }
 
