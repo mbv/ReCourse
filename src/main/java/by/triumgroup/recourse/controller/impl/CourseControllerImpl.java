@@ -3,10 +3,7 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.model.Course;
-import by.triumgroup.recourse.entity.model.CourseFeedback;
-import by.triumgroup.recourse.entity.model.Lesson;
-import by.triumgroup.recourse.entity.model.StudentReport;
+import by.triumgroup.recourse.entity.model.*;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
@@ -81,6 +77,6 @@ public class CourseControllerImpl
 
     @Override
     protected boolean hasAuthorityToPerform(Course entity, UserAuthDetails authDetails) {
-        return Objects.equals(entity.getOrganizer().getId(), authDetails.getId());
+        return authDetails.getRole() == User.Role.ADMIN;
     }
 }

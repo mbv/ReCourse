@@ -62,6 +62,7 @@ public class User extends BaseEntity<Integer> {
         gender = user.gender;
         birthday = user.birthday;
         role = user.role;
+        setId(user.getId());
     }
 
     public String getEmail() {

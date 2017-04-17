@@ -22,7 +22,7 @@ public class UserAuthDetails extends User implements UserDetails, Serializable {
     }
 
     public boolean isAdmin() {
-        return getRole() == Role.ORGANIZER;
+        return getRole() == Role.ADMIN;
     }
 
     @Override

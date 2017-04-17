@@ -96,7 +96,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
 
     @Override
     protected User prepareAuthorizedUser(User entity, User validUserWithId) {
-        validUserWithId.setRole(User.Role.ORGANIZER);
+        validUserWithId.setRole(User.Role.ADMIN);
         return validUserWithId;
     }
 }
