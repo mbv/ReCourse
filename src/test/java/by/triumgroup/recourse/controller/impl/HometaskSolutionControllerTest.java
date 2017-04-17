@@ -4,6 +4,7 @@ import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.MarkService;
@@ -67,5 +68,11 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
     @Override
     protected EntitySupplier<HometaskSolution, Integer> getEntitySupplier() {
         return hometaskSolutionSupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(HometaskSolution entity, User validUserWithId) {
+        validUserWithId.setId(entity.getStudent().getId());
+        return validUserWithId;
     }
 }

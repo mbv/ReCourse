@@ -3,11 +3,18 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.MarkController;
-import by.triumgroup.recourse.entity.model.Mark;
+import by.triumgroup.recourse.entity.model.*;
 import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSolutionSupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.MarkSupplier;
 import org.mockito.Mockito;
+
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
 
 public class MarkControllerTest extends CrudControllerTest<Mark, Integer> {
     private LessonService lessonService;
@@ -16,6 +23,9 @@ public class MarkControllerTest extends CrudControllerTest<Mark, Integer> {
     private MarkController markController;
     private MarkService markService;
     private MarkSupplier markSupplier;
+    private HometaskSolutionSupplier hometaskSolutionSupplier;
+    private LessonSupplier lessonSupplier;
+    private HometaskSupplier hometaskSupplier;
 
     public MarkControllerTest() {
         markService = Mockito.mock(MarkService.class);
@@ -24,6 +34,9 @@ public class MarkControllerTest extends CrudControllerTest<Mark, Integer> {
         hometaskService = Mockito.mock(HometaskService.class);
         markController = new MarkControllerImpl(markService, hometaskSolutionService, hometaskService, lessonService);
         markSupplier = new MarkSupplier();
+        hometaskSolutionSupplier = new HometaskSolutionSupplier();
+        lessonSupplier = new LessonSupplier();
+        hometaskSupplier = new HometaskSupplier();
     }
 
     @Override
@@ -44,5 +57,17 @@ public class MarkControllerTest extends CrudControllerTest<Mark, Integer> {
     @Override
     protected EntitySupplier<Mark, Integer> getEntitySupplier() {
         return markSupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(Mark entity, User validUserWithId) {
+        HometaskSolution hometaskSolution = hometaskSolutionSupplier.getValidEntityWithId();
+        when(hometaskSolutionService.findById(entity.getSolutionId())).thenReturn(Optional.of(hometaskSolution));
+        Hometask hometask = hometaskSupplier.getValidEntityWithId();
+        when(hometaskService.findById(hometaskSolution.getHometaskId())).thenReturn(Optional.of(hometask));
+        Lesson lesson = lessonSupplier.getValidEntityWithId();
+        validUserWithId.setId(lesson.getTeacher().getId());
+        when(lessonService.findById(hometask.getLessonId())).thenReturn(Optional.of(lesson));
+        return validUserWithId;
     }
 }

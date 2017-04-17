@@ -4,12 +4,15 @@ import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.HometaskController;
 import by.triumgroup.recourse.entity.model.Hometask;
+import by.triumgroup.recourse.entity.model.Lesson;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -27,6 +30,7 @@ public class HometaskControllerTest extends CrudControllerTest<Hometask, Integer
     private HometaskService hometaskService;
     private HometaskSupplier hometaskSupplier;
     private HometaskSolutionService hometaskSolutionService;
+    private LessonSupplier lessonSupplier;
 
     public HometaskControllerTest() {
         hometaskService = Mockito.mock(HometaskService.class);
@@ -34,6 +38,7 @@ public class HometaskControllerTest extends CrudControllerTest<Hometask, Integer
         lessonService = Mockito.mock(LessonService.class);
         hometaskController = new HometaskControllerImpl(hometaskService, hometaskSolutionService, lessonService);
         hometaskSupplier = new HometaskSupplier();
+        lessonSupplier = new LessonSupplier();
     }
 
     @Test
@@ -68,5 +73,13 @@ public class HometaskControllerTest extends CrudControllerTest<Hometask, Integer
     @Override
     protected EntitySupplier<Hometask, Integer> getEntitySupplier() {
         return hometaskSupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(Hometask entity, User validUserWithId) {
+        Lesson lesson = lessonSupplier.getValidEntityWithId();
+        validUserWithId.setId(lesson.getTeacher().getId());
+        when(lessonService.findById(entity.getLessonId())).thenReturn(Optional.of(lesson));
+        return validUserWithId;
     }
 }

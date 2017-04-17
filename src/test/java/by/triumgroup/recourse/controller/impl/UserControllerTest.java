@@ -3,7 +3,6 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.UserController;
-import by.triumgroup.recourse.controller.impl.UserControllerImpl;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
@@ -90,5 +89,11 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
     @Override
     protected EntitySupplier<User, Integer> getEntitySupplier() {
         return entitySupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(User entity, User validUserWithId) {
+        validUserWithId.setRole(User.Role.ORGANIZER);
+        return validUserWithId;
     }
 }

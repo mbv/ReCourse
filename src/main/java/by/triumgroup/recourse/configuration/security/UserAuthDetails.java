@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public class UserAuthDetails extends User implements UserDetails, Serializable {
 
-    UserAuthDetails(User user) {
+    public UserAuthDetails(User user) {
         super(user);
     }
 
