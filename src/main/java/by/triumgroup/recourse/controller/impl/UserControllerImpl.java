@@ -10,6 +10,11 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +28,16 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     private static final Logger logger = getLogger(UserControllerImpl.class);
     private UserService userService;
     private RegistrationDetailsValidator registrationDetailsValidator;
+    private AuthorizationServerTokenServices authorizationServerTokenServices;
+    private DefaultTokenServices defaultTokenServices;
 
-    public UserControllerImpl(UserService userService, RegistrationDetailsValidator registrationDetailsValidator) {
+    @Autowired
+    public UserControllerImpl(UserService userService, RegistrationDetailsValidator registrationDetailsValidator, AuthorizationServerTokenServices authorizationServerTokenServices, DefaultTokenServices defaultTokenServices) {
         super(userService, logger);
         this.userService = userService;
         this.registrationDetailsValidator = registrationDetailsValidator;
+        this.authorizationServerTokenServices = authorizationServerTokenServices;
+        this.defaultTokenServices = defaultTokenServices;
     }
 
     @InitBinder("registrationDetails")
@@ -43,6 +53,12 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
             logger.warn("Error while user registration");
             throw new ControllerException(e);
         }
+    }
+
+    @Override
+    public void logout(OAuth2Authentication principal) {
+        OAuth2AccessToken accessToken = authorizationServerTokenServices.getAccessToken(principal);
+        defaultTokenServices.revokeToken(accessToken.getValue());
     }
 
     @Override

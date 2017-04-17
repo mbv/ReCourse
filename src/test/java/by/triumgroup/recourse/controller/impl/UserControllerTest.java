@@ -38,7 +38,11 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         userService = Mockito.mock(UserService.class);
         registrationDetailsValidator = Mockito.mock(RegistrationDetailsValidator.class);
         when(registrationDetailsValidator.supports(RegistrationDetails.class)).thenReturn(true);
-        userController = new UserControllerImpl(userService, registrationDetailsValidator);
+        userController = new UserControllerImpl(
+                userService,
+                registrationDetailsValidator,
+                null,
+                null);
         entitySupplier = new UserSupplier();
         registrationDetailsSupplier = new RegistrationDetailsSupplier();
     }
