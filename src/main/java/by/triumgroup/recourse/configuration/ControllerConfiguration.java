@@ -15,7 +15,7 @@ public class ControllerConfiguration {
 
     @Bean
     public UserController userController(UserService userService, RegistrationDetailsValidator registrationDetailsValidator, AuthorizationServerTokenServices authorizationServerTokenServices, DefaultTokenServices defaultTokenServices) {
-        return new UserControllerImpl(userService, registrationDetailsValidator, authorizationServerTokenServices, defaultTokenServices);
+        return new UserControllerImpl(userService, registrationDetailsValidator, defaultTokenServices);
     }
 
     @Bean

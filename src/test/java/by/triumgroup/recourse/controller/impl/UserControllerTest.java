@@ -41,7 +41,6 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         userController = new UserControllerImpl(
                 userService,
                 registrationDetailsValidator,
-                null,
                 null);
         entitySupplier = new UserSupplier();
         registrationDetailsSupplier = new RegistrationDetailsSupplier();
