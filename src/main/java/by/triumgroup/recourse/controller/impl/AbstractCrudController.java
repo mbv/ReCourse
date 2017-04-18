@@ -29,7 +29,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
 
     protected abstract boolean hasAuthorityToPerform(E entity, UserAuthDetails authDetails);
 
-    private void checkAuthority(E entity, UserAuthDetails authDetails) {
+    protected void checkAuthority(E entity, UserAuthDetails authDetails) {
         if (!authDetails.isAdmin() && !hasAuthorityToPerform(entity, authDetails)) {
             throw new AccessDeniedException();
         }

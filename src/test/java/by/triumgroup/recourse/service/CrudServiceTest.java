@@ -32,7 +32,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     public ExpectedException thrown = ExpectedException.none();
 
     @Captor
-    private ArgumentCaptor<E> captor;
+    protected ArgumentCaptor<E> captor;
 
     @Before
     public void initTests() {
@@ -102,7 +102,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     }
 
     @Test
-    public void addInvalidEntityTest() throws Exception {
+    public void addEntityExceptionTest() throws Exception {
         when(getCrudRepository().save(Matchers.<E>any())).thenThrow(new DataIntegrityViolationException(""));
 
         thrown.expect(ServiceException.class);
@@ -144,7 +144,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     }
 
     @Test
-    public void updateInvalidEntityTest() throws Exception {
+    public void updateEntityExceptionTest() throws Exception {
         when(getCrudRepository().save(Matchers.<E>any())).thenThrow(new DataIntegrityViolationException(""));
         when(getCrudRepository().exists(any())).thenReturn(true);
 
@@ -172,7 +172,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Assert.assertFalse(actual.isPresent());
     }
 
-    private void verifyCallsForUpdate(){
+    protected void verifyCallsForUpdate(){
         verify(getCrudRepository(), times(1)).exists(any());
         verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
     }

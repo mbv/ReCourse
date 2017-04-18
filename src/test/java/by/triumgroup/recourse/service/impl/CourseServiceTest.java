@@ -7,12 +7,17 @@ import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
+import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.CourseSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.util.Pair;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +57,58 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     @Override
     protected EntitySupplier<Course, Integer> getEntitySupplier() {
         return courseSupplier;
+    }
+
+    @Test
+    @Override
+    public void updateEntityWithoutIdTest() throws Exception {
+        Course expectedEntity = getEntitySupplier().getValidEntityWithoutId();
+        Integer parameterId = getEntitySupplier().getAnyId();
+        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
+        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        when(getCrudRepository().exists(parameterId)).thenReturn(true);
+
+        Optional<Course> actualResult = getCrudService().update(expectedEntity, parameterId);
+
+        verify(getCrudRepository()).save(captor.capture());
+        verifyCallsForUpdate();
+        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
+        Assert.assertEquals(parameterId, captor.getValue().getId());
+    }
+
+    @Test
+    @Override
+    public void updateEntityWithDifferentParameterIdTest() throws Exception {
+        Pair<Integer, Integer> ids = getEntitySupplier().getDifferentIds();
+        Integer entityId = ids.getFirst();
+        Integer parameterId = ids.getSecond();
+        Course expectedEntity = getEntitySupplier().getValidEntityWithoutId();
+        expectedEntity.setId(entityId);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
+        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        when(getCrudRepository().exists(parameterId)).thenReturn(true);
+
+        Optional<Course> actualResult = getCrudService().update(expectedEntity, parameterId);
+
+        verify(getCrudRepository()).save(captor.capture());
+        verifyCallsForUpdate();
+        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
+        Assert.assertEquals(parameterId, captor.getValue().getId());
+    }
+
+    @Test
+    @Override
+    public void updateEntityExceptionTest() throws Exception {
+        Course course = courseSupplier.getValidEntityWithId();
+        when(getCrudRepository().findOne(course.getId())).thenReturn(course);
+        when(getCrudRepository().save(Matchers.<Course>any())).thenThrow(new DataIntegrityViolationException(""));
+        when(getCrudRepository().exists(any())).thenReturn(true);
+
+        thrown.expect(ServiceException.class);
+
+        getCrudService().update(course, course.getId());
+
+        verifyCallsForUpdate();
     }
 
     @Test
