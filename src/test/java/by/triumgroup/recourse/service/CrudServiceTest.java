@@ -3,6 +3,7 @@ package by.triumgroup.recourse.service;
 import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
+import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,6 +19,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Pair;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Matchers.any;
@@ -64,6 +66,16 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
 
         verify(getCrudRepository(), times(1)).findOne(id);
         Assert.assertFalse(entity.isPresent());
+    }
+
+    @Test
+    public void findAllEntitiesTest() throws Exception {
+        when(getCrudRepository().findAll()).thenReturn(Lists.newArrayList(getEntitySupplier().getValidEntityWithId()));
+
+        List<E> list = Lists.newArrayList(getCrudService().findAll());
+
+        verify(getCrudRepository(), times(1)).findAll();
+        Assert.assertEquals(1, list.size());
     }
 
     @Test

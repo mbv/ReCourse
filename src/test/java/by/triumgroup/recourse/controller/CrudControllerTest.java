@@ -5,6 +5,7 @@ import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.ResultActions;
@@ -48,6 +49,14 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
 
         getEntityById(getEntitySupplier().getAnyId())
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getAllEntitiesTest() throws Exception {
+        when(getService().findAll()).thenReturn(Lists.emptyList());
+
+        sendGet(generalRequest)
+                .andExpect(status().isOk());
     }
 
     @Test
