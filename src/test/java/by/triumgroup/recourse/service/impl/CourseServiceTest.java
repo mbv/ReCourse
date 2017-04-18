@@ -84,9 +84,9 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
         Integer parameterId = ids.getSecond();
         Course expectedEntity = getEntitySupplier().getValidEntityWithoutId();
         expectedEntity.setId(entityId);
-        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
-        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
-        when(getCrudRepository().exists(parameterId)).thenReturn(true);
+        when(courseRepository.findOne(parameterId)).thenReturn(expectedEntity);
+        when(courseRepository.save(expectedEntity)).thenReturn(expectedEntity);
+        when(courseRepository.exists(parameterId)).thenReturn(true);
 
         Optional<Course> actualResult = getCrudService().update(expectedEntity, parameterId);
 
@@ -100,15 +100,35 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     @Override
     public void updateEntityExceptionTest() throws Exception {
         Course course = courseSupplier.getValidEntityWithId();
-        when(getCrudRepository().findOne(course.getId())).thenReturn(course);
-        when(getCrudRepository().save(Matchers.<Course>any())).thenThrow(new DataIntegrityViolationException(""));
-        when(getCrudRepository().exists(any())).thenReturn(true);
+        when(courseRepository.findOne(course.getId())).thenReturn(course);
+        when(courseRepository.save(Matchers.<Course>any())).thenThrow(new DataIntegrityViolationException(""));
+        when(courseRepository.exists(any())).thenReturn(true);
 
         thrown.expect(ServiceException.class);
 
         getCrudService().update(course, course.getId());
 
         verifyCallsForUpdate();
+    }
+
+    @Test
+    public void updateCourseWithNewTeacherTest() throws  Exception{
+        Pair<Integer, Integer> teacherIds = courseSupplier.getDifferentIds();
+        Course newCourse = courseSupplier.getValidEntityWithId();
+        Course oldCourse = courseSupplier.getValidEntityWithId();
+        oldCourse.setId(newCourse.getId());
+        Integer courseId = newCourse.getId();
+        oldCourse.getTeacher().setId(teacherIds.getFirst());
+        newCourse.getTeacher().setId(teacherIds.getSecond());
+        when(courseRepository.findOne(courseId)).thenReturn(oldCourse);
+        when(courseRepository.save(Matchers.<Course>any())).thenReturn(newCourse);
+        when(courseRepository.exists(courseId)).thenReturn(true);
+
+        Optional<Course> result = courseService.update(newCourse, courseId);
+
+        verify(courseRepository, times(1)).updateTeacher(courseId, newCourse.getTeacher().getId());
+        verifyCallsForUpdate();
+        Assert.assertEquals(newCourse, result.orElse(null));
     }
 
     @Test
