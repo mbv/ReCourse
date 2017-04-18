@@ -5,21 +5,7 @@
     <title>ReCourse</title>
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="css/select.min.css">
-    <script type="text/javascript" src="lib/angular.min.js"></script>
-    <script type="text/javascript" src="lib/angular-ui-router.min.js"></script>
-    <script type="text/javascript" src="lib/angular-resource.min.js"></script>
-    <script type="text/javascript" src="lib/angular-sanitize.min.js"></script>
-    <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="lib/bootstrap.min.js"></script>
-    <script type="text/javascript" src="lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
-    <script type="text/javascript" src="lib/select.min.js"></script>
-    <script type="text/javascript" src="app/application.js"></script>
-    <script type="text/javascript" src="app/applicationStates.js"></script>
-    <script type="text/javascript" src="app/propertyFilter.js"></script>
-    <script type="text/javascript" src="app/entityModal.controller.js"></script>
-    <script type="text/javascript" src="app/usersList.controller.js"></script>
-    <script type="text/javascript" src="app/coursesList.controller.js"></script>
-    <script type="text/javascript" src="app/entityList.controller.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/login-form.css">
 </head>
 <body ng-app="app">
     <header>
@@ -32,6 +18,7 @@
                     <li ui-sref-active="active"><a ui-sref="about">About</a></li>
                 </ul>
             </div>
+
         </nav>
     </header>
     <main style="margin-top: 70px;">
@@ -39,5 +26,22 @@
             Loading...
         </ui-view>
     </main>
+    <script type="text/javascript" src="lib/angular.min.js"></script>
+    <script type="text/javascript" src="lib/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="lib/angular-resource.min.js"></script>
+    <script type="text/javascript" src="lib/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <script type="text/javascript" src="lib/select.min.js"></script>
+    <script type="text/javascript" src="app/application.js"></script>
+    <script type="text/javascript" src="app/auth.service.js"></script>
+    <script type="text/javascript" src="app/applicationStates.js"></script>
+    <script type="text/javascript" src="app/propertyFilter.js"></script>
+    <script type="text/javascript" src="app/login.controller.js"></script>
+    <script type="text/javascript" src="app/entityModal.controller.js"></script>
+    <script type="text/javascript" src="app/usersList.controller.js"></script>
+    <script type="text/javascript" src="app/coursesList.controller.js"></script>
+    <script type="text/javascript" src="app/entityList.controller.js"></script>
 </body>
 </html>
