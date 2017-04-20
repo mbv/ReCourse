@@ -28,7 +28,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     private final DataSource dataSource;
     private final PasswordEncoder passwordEncoder;
-    private final TokenEnhancer tokenEnhancer;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
 
@@ -37,13 +36,11 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             DataSource dataSource,
             PasswordEncoder passwordEncoder,
             @Qualifier("authenticationManagerBean") AuthenticationManager authenticationManager,
-            UserDetailsService userDetailsService,
-            TokenEnhancer tokenEnhancer) {
+            UserDetailsService userDetailsService) {
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
-        this.tokenEnhancer = tokenEnhancer;
     }
 
     @Bean
@@ -62,8 +59,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .authorizationCodeServices(authorizationCodeServices())
                 .tokenStore(tokenStore())
                 .authenticationManager(this.authenticationManager)
-                .userDetailsService(userDetailsService)
-                .tokenEnhancer(tokenEnhancer);
+                .userDetailsService(userDetailsService);
     }
 
     @Override
@@ -84,7 +80,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         DefaultTokenServices tokenServices = new DefaultTokenServices();
         tokenServices.setSupportRefreshToken(true);
         tokenServices.setTokenStore(tokenStore());
-        tokenServices.setTokenEnhancer(tokenEnhancer);
         return tokenServices;
     }
 }
