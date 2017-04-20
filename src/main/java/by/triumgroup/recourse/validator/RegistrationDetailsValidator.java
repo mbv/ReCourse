@@ -1,4 +1,4 @@
-package by.triumgroup.recourse.validation;
+package by.triumgroup.recourse.validator;
 
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.repository.UserRepository;

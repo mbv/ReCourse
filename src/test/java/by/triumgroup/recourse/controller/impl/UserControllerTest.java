@@ -10,7 +10,7 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validator.RegistrationDetailsValidator;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.validation.Errors;

@@ -1,7 +1,7 @@
 package by.triumgroup.recourse.controller.exception;
 
-import by.triumgroup.recourse.validation.FieldErrorInfo;
-import by.triumgroup.recourse.validation.ValidationErrorInfo;
+import by.triumgroup.recourse.entity.dto.FieldErrorInfo;
+import by.triumgroup.recourse.entity.dto.ValidationErrorInfo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -8,7 +8,7 @@ import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validator.RegistrationDetailsValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -38,7 +38,7 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @InitBinder("registrationDetails")
-    public void initBinder(WebDataBinder webDataBinder){
+    private void addRegistrationDetailValidator(WebDataBinder webDataBinder){
         webDataBinder.addValidators(registrationDetailsValidator);
     }
 

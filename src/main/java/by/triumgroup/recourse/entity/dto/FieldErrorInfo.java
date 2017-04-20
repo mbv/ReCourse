@@ -1,4 +1,4 @@
-package by.triumgroup.recourse.validation;
+package by.triumgroup.recourse.entity.dto;
 
 import org.springframework.validation.FieldError;
 
