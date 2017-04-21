@@ -22,9 +22,8 @@ public class ControllerConfiguration {
     public CourseController courseController(
             CourseService courseService,
             LessonService lessonService,
-            CourseFeedbackService courseFeedbackService,
-            StudentReportService studentReportService) {
-        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService, studentReportService);
+            CourseFeedbackService courseFeedbackService) {
+        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService);
     }
 
     @Bean
@@ -65,30 +64,15 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public StudentController studentController(
-            StudentReportService studentReportService,
-            TeacherFeedbackService teacherFeedbackService,
-            HometaskSolutionService hometaskSolutionService) {
-        return new StudentControllerImpl(studentReportService, teacherFeedbackService, hometaskSolutionService);
-    }
-
-    @Bean
-    public StudentReportController studentReportController(StudentReportService studentReportService) {
-        return new StudentReportControllerImpl(studentReportService);
+    public StudentController studentController(HometaskSolutionService hometaskSolutionService) {
+        return new StudentControllerImpl(hometaskSolutionService);
     }
 
     @Bean
     public TeacherController teacherController(
             CourseService courseService,
-            LessonService lessonService,
-            StudentReportService studentReportService,
-            TeacherFeedbackService teacherFeedbackService) {
-        return new TeacherControllerImpl(courseService, lessonService, studentReportService, teacherFeedbackService);
-    }
-
-    @Bean
-    public TeacherFeedbackController teacherFeedbackController(TeacherFeedbackService teacherFeedbackService) {
-        return new TeacherFeedbackControllerImpl(teacherFeedbackService);
+            LessonService lessonService) {
+        return new TeacherControllerImpl(courseService, lessonService);
     }
 
 }

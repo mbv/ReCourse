@@ -3,7 +3,6 @@ package by.triumgroup.recourse.controller;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.entity.model.Lesson;
-import by.triumgroup.recourse.entity.model.StudentReport;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +18,6 @@ public interface CourseController extends CrudController<Course, Integer> {
 
     @GetMapping("{courseId}/feedbacks")
     List<CourseFeedback> getFeedbacks(
-            @PathVariable("courseId") Integer courseId, Pageable pageable);
-
-    @GetMapping("{courseId}/reports")
-    List<StudentReport> getReports(
             @PathVariable("courseId") Integer courseId, Pageable pageable);
 
     @GetMapping(value = "search", params = "title")

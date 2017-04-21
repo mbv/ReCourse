@@ -4,12 +4,8 @@ import by.triumgroup.recourse.controller.TeacherController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.Lesson;
-import by.triumgroup.recourse.entity.model.StudentReport;
-import by.triumgroup.recourse.entity.model.TeacherFeedback;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
-import by.triumgroup.recourse.service.StudentReportService;
-import by.triumgroup.recourse.service.TeacherFeedbackService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,19 +22,10 @@ public class TeacherControllerImpl implements TeacherController {
     private static final Logger logger = getLogger(TeacherControllerImpl.class);
     private final CourseService courseService;
     private final LessonService lessonService;
-    private final StudentReportService studentReportService;
-    private final TeacherFeedbackService teacherFeedbackService;
 
-    public TeacherControllerImpl(
-            CourseService courseService,
-            LessonService lessonService,
-            StudentReportService studentReportService,
-            TeacherFeedbackService teacherFeedbackService
-    ) {
+    public TeacherControllerImpl(CourseService courseService, LessonService lessonService) {
         this.courseService = courseService;
         this.lessonService = lessonService;
-        this.studentReportService = studentReportService;
-        this.teacherFeedbackService = teacherFeedbackService;
     }
 
     @Override
@@ -75,19 +62,4 @@ public class TeacherControllerImpl implements TeacherController {
         });
     }
 
-    @Override
-    public List<StudentReport> getReports(@PathVariable("teacherId") Integer teacherId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> {
-            Optional<List<StudentReport>> reports = studentReportService.findByTeacherId(teacherId, pageable);
-            return reports.orElseThrow(NotFoundException::new);
-        });
-    }
-
-    @Override
-    public List<TeacherFeedback> getFeedbacks(@PathVariable("teacherId") Integer teacherId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> {
-            Optional<List<TeacherFeedback>> feedbacks = teacherFeedbackService.findByTeacherId(teacherId, pageable);
-            return feedbacks.orElseThrow(NotFoundException::new);
-        });
-    }
 }

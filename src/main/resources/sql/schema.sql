@@ -58,29 +58,6 @@ CREATE TABLE `course_student` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-
-DROP TABLE IF EXISTS `teacher_feedback` CASCADE;
-CREATE TABLE `teacher_feedback` (
-  `id`         INT         NOT NULL AUTO_INCREMENT,
-  `teacher_id` INT         NOT NULL,
-  `student_id` INT         NOT NULL,
-  `heading`    VARCHAR(50) NULL,
-  `report`     TEXT        NULL,
-  CONSTRAINT `PK_Teacher feedback` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `unique_feedback` UNIQUE (`teacher_id` ASC, `student_id` ASC),
-  CONSTRAINT `FK_teacher_feedback_user`
-  FOREIGN KEY (`teacher_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT `FK_teacher_feedback_user_02`
-  FOREIGN KEY (`student_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-
 DROP TABLE IF EXISTS `course_feedback` CASCADE;
 CREATE TABLE `course_feedback` (
   `id`         INT         NOT NULL AUTO_INCREMENT,
@@ -103,34 +80,6 @@ CREATE TABLE `course_feedback` (
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
-
-
-DROP TABLE IF EXISTS `student_report` CASCADE;
-CREATE TABLE `student_report` (
-  `id`         INT         NOT NULL AUTO_INCREMENT,
-  `student_id` INT         NOT NULL,
-  `teacher_id` INT         NOT NULL,
-  `course_id`  INT         NOT NULL,
-  `heading`    VARCHAR(50) NULL,
-  `report`     TEXT        NULL,
-  CONSTRAINT `PK_Student report` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `unique_report` UNIQUE (`student_id` ASC, `teacher_id` ASC, `course_id` ASC),
-  CONSTRAINT `FK_student_report_course`
-  FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT `FK_student_report_user`
-  FOREIGN KEY (`student_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT `FK_student_report_user_02`
-  FOREIGN KEY (`teacher_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
 
 DROP TABLE IF EXISTS `lesson` CASCADE;
 CREATE TABLE `lesson` (

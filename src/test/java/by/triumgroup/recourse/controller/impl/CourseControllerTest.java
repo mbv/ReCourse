@@ -5,10 +5,12 @@ import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.User;
-import by.triumgroup.recourse.service.*;
+import by.triumgroup.recourse.service.CourseFeedbackService;
+import by.triumgroup.recourse.service.CourseService;
+import by.triumgroup.recourse.service.CrudService;
+import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.CourseSupplier;
-import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -25,19 +27,15 @@ public class CourseControllerTest extends CrudControllerTest<Course, Integer> {
     private final CourseService courseService;
     private final LessonService lessonService;
     private final CourseFeedbackService courseFeedbackService;
-    private final StudentReportService studentReportService;
     private final CourseController courseController;
     private final CourseSupplier courseSupplier;
-    private final LessonSupplier lessonSupplier;
 
     public CourseControllerTest() {
         courseService = Mockito.mock(CourseService.class);
         lessonService = Mockito.mock(LessonService.class);
         courseFeedbackService = Mockito.mock(CourseFeedbackService.class);
-        studentReportService = Mockito.mock(StudentReportService.class);
-        courseController = new CourseControllerImpl(courseService, lessonService, courseFeedbackService, studentReportService);
+        courseController = new CourseControllerImpl(courseService, lessonService, courseFeedbackService);
         courseSupplier = new CourseSupplier();
-        lessonSupplier = new LessonSupplier();
     }
 
     @Test
@@ -65,20 +63,6 @@ public class CourseControllerTest extends CrudControllerTest<Course, Integer> {
     public void getFeedbacksExistingCourseTest() throws Exception{
         when(courseFeedbackService.findByCourseId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
         sendGet(COURSE_ID_REQUEST, "feedbacks")
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getReportsNotExistingCourseTest() throws Exception{
-        when(studentReportService.findByCourseId(any(), any())).thenReturn(Optional.empty());
-        sendGet(COURSE_ID_REQUEST, "reports")
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void getReportsExistingCourseTest() throws Exception{
-        when(studentReportService.findByCourseId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
-        sendGet(COURSE_ID_REQUEST, "reports")
                 .andExpect(status().isOk());
     }
 

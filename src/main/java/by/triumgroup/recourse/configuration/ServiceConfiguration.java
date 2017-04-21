@@ -59,19 +59,5 @@ public class ServiceConfiguration {
         return new MarkServiceImpl(markRepository);
     }
 
-    @Bean
-    public StudentReportService studentReportService(
-            StudentReportRepository studentReportRepository,
-            CourseRepository courseRepository,
-            UserRepository userRepository) {
-        return new StudentReportServiceImpl(studentReportRepository, courseRepository, userRepository);
-    }
-
-    @Bean
-    public TeacherFeedbackService teacherFeedbackService(
-            TeacherFeedbackRepository teacherFeedbackRepository,
-            UserRepository userRepository) {
-        return new TeacherFeedbackServiceImpl(teacherFeedbackRepository, userRepository);
-    }
 
 }
