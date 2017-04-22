@@ -41,4 +41,9 @@ public class TeacherFeedbackServiceImpl
                 : null
         );
     }
+
+    @Override
+    protected String getEntityName() {
+        return "teacher feedback";
+    }
 }

@@ -5,9 +5,13 @@ import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
+import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Validator;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToBoolean;
@@ -16,13 +20,15 @@ import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOpt
 @Component
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
+    private RegistrationDetailsValidator registrationDetailsValidator;
     private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RegistrationDetailsValidator registrationDetailsValidator) {
         super(userRepository);
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.registrationDetailsValidator = registrationDetailsValidator;
     }
 
     @Override
@@ -42,6 +48,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     @Override
     public Optional<Boolean> register(RegistrationDetails registrationDetails) throws ServiceException {
+        validate(registrationDetails, "registration details");
         User newUser = new User();
         newUser.setEmail(registrationDetails.getEmail());
         newUser.setName(registrationDetails.getName());
@@ -52,4 +59,15 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
         return wrapJPACallToBoolean(() -> userRepository.save(newUser));
     }
+
+    @Override
+    protected List<Validator> getValidators() {
+        return Collections.singletonList(registrationDetailsValidator);
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "user";
+    }
+
 }

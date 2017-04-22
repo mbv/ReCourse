@@ -52,4 +52,9 @@ public class StudentReportServiceImpl
                 : null
         );
     }
+
+    @Override
+    protected String getEntityName() {
+        return "student report";
+    }
 }

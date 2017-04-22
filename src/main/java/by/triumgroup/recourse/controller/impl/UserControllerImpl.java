@@ -8,14 +8,11 @@ import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
-import by.triumgroup.recourse.validator.RegistrationDetailsValidator;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
@@ -26,20 +23,13 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     private static final Logger logger = getLogger(UserControllerImpl.class);
     private UserService userService;
-    private RegistrationDetailsValidator registrationDetailsValidator;
     private DefaultTokenServices defaultTokenServices;
 
     @Autowired
-    public UserControllerImpl(UserService userService, RegistrationDetailsValidator registrationDetailsValidator, DefaultTokenServices defaultTokenServices) {
+    public UserControllerImpl(UserService userService, DefaultTokenServices defaultTokenServices) {
         super(userService, logger);
         this.userService = userService;
-        this.registrationDetailsValidator = registrationDetailsValidator;
         this.defaultTokenServices = defaultTokenServices;
-    }
-
-    @InitBinder("registrationDetails")
-    private void addRegistrationDetailValidator(WebDataBinder webDataBinder){
-        webDataBinder.addValidators(registrationDetailsValidator);
     }
 
     @Override

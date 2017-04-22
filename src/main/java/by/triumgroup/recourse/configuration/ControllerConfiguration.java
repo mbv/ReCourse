@@ -4,7 +4,7 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.controller.*;
 import by.triumgroup.recourse.controller.impl.*;
 import by.triumgroup.recourse.service.*;
-import by.triumgroup.recourse.validator.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
@@ -15,7 +15,7 @@ public class ControllerConfiguration {
 
     @Bean
     public UserController userController(UserService userService, RegistrationDetailsValidator registrationDetailsValidator, AuthorizationServerTokenServices authorizationServerTokenServices, DefaultTokenServices defaultTokenServices) {
-        return new UserControllerImpl(userService, registrationDetailsValidator, defaultTokenServices);
+        return new UserControllerImpl(userService, defaultTokenServices);
     }
 
     @Bean

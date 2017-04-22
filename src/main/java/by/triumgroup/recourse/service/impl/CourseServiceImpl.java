@@ -73,6 +73,11 @@ public class CourseServiceImpl
         return wrapJPACall(() -> repository.findByStatusOrderByIdDesc(status, pageable));
     }
 
+    @Override
+    protected String getEntityName() {
+        return "course";
+    }
+
     private Optional<Boolean> updateTeacher(Course course, User newTeacher){
         return wrapJPACallToBoolean(() -> repository.updateTeacher(course.getId(), newTeacher.getId()));
     }

@@ -3,6 +3,7 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.repository.*;
 import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.service.impl.*;
+import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,8 +15,9 @@ public class ServiceConfiguration {
     @Bean
     public UserService userService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
-        return new UserServiceImpl(userRepository, passwordEncoder);
+            PasswordEncoder passwordEncoder,
+            RegistrationDetailsValidator registrationDetailsValidator) {
+        return new UserServiceImpl(userRepository, passwordEncoder, registrationDetailsValidator);
     }
 
     @Bean

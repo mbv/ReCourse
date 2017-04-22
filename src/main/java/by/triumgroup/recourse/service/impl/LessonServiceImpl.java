@@ -52,4 +52,9 @@ public class LessonServiceImpl
                 : null
         );
     }
+
+    @Override
+    protected String getEntityName() {
+        return "lesson";
+    }
 }

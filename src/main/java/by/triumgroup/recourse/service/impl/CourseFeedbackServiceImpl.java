@@ -31,4 +31,9 @@ public class CourseFeedbackServiceImpl
                 : null
         );
     }
+
+    @Override
+    protected String getEntityName() {
+        return "course feedback";
+    }
 }

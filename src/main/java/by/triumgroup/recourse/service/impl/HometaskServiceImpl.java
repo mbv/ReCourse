@@ -23,4 +23,9 @@ public class HometaskServiceImpl
     public Optional<Hometask> findByLessonId(Integer id) {
         return wrapJPACallToOptional(() -> repository.findByLessonId(id));
     }
+
+    @Override
+    protected String getEntityName() {
+        return "hometask";
+    }
 }

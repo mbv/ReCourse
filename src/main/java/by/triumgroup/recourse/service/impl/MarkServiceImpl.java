@@ -23,4 +23,9 @@ public class MarkServiceImpl
     public Optional<Mark> findBySolutionId(Integer id) {
         return wrapJPACallToOptional(() -> repository.findBySolutionId(id));
     }
+
+    @Override
+    protected String getEntityName() {
+        return "mark";
+    }
 }

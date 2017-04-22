@@ -52,4 +52,9 @@ public class HometaskSolutionServiceImpl
                 : null
         );
     }
+
+    @Override
+    protected String getEntityName() {
+        return "hometask solution";
+    }
 }
