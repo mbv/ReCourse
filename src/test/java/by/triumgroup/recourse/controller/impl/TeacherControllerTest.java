@@ -5,8 +5,6 @@ import by.triumgroup.recourse.controller.TeacherController;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
-import by.triumgroup.recourse.service.StudentReportService;
-import by.triumgroup.recourse.service.TeacherFeedbackService;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,16 +20,12 @@ public class TeacherControllerTest extends AbstractControllerTest {
     private static final String TEACHER_ID_REQUEST_PARAMS = "/teacher/1/{param}?{name}={value}";
     private CourseService courseService;
     private LessonService lessonService;
-    private StudentReportService studentReportService;
-    private TeacherFeedbackService teacherFeedbackService;
     private TeacherController teacherController;
 
     public TeacherControllerTest() {
         courseService = Mockito.mock(CourseService.class);
         lessonService = Mockito.mock(LessonService.class);
-        studentReportService = Mockito.mock(StudentReportService.class);
-        teacherFeedbackService = Mockito.mock(TeacherFeedbackService.class);
-        teacherController = new TeacherControllerImpl(courseService, lessonService, studentReportService, teacherFeedbackService);
+        teacherController = new TeacherControllerImpl(courseService, lessonService);
     }
 
     @Test
@@ -81,34 +75,6 @@ public class TeacherControllerTest extends AbstractControllerTest {
         when(lessonService.findByTeacherIdAndCourseId(any(), any(), any())).thenReturn(Optional.of(Lists.emptyList()));
         sendGet(TEACHER_ID_REQUEST_PARAMS, "lessons", "courseId", 1)
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getReportsExistingTeacherTest() throws Exception {
-        when(studentReportService.findByTeacherId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
-        sendGet(TEACHER_ID_REQUEST, "reports")
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getReportsNotExistingTeacherTest() throws Exception {
-        when(studentReportService.findByTeacherId(any(), any())).thenReturn(Optional.empty());
-        sendGet(TEACHER_ID_REQUEST, "reports")
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void getFeedbacksExistingTeacherTest() throws Exception {
-        when(teacherFeedbackService.findByTeacherId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
-        sendGet(TEACHER_ID_REQUEST, "feedbacks")
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getFeedbacksNotExistingTeacherTest() throws Exception {
-        when(teacherFeedbackService.findByTeacherId(any(), any())).thenReturn(Optional.empty());
-        sendGet(TEACHER_ID_REQUEST, "feedbacks")
-                .andExpect(status().isNotFound());
     }
 
     @Override
