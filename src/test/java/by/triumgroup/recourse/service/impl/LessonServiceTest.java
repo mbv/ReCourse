@@ -11,11 +11,14 @@ import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import by.triumgroup.recourse.validation.exception.ServiceValidationException;
+import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.validation.Errors;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,12 +34,15 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     private CourseRepository courseRepository;
     private UserRepository userRepository;
     private UserSupplier userSupplier;
+    private LessonTimeValidator lessonTimeValidator;
 
     public LessonServiceTest() {
         lessonRepository = Mockito.mock(LessonRepository.class);
         courseRepository = Mockito.mock(CourseRepository.class);
         userRepository = Mockito.mock(UserRepository.class);
-        lessonService = new LessonServiceImpl(lessonRepository, courseRepository, userRepository);
+        lessonTimeValidator = Mockito.mock(LessonTimeValidator.class);
+        when(lessonTimeValidator.supports(any())).thenCallRealMethod();
+        lessonService = new LessonServiceImpl(lessonRepository, courseRepository, userRepository, lessonTimeValidator);
         lessonSupplier = new LessonSupplier();
         userSupplier = new UserSupplier();
     }
@@ -153,13 +159,52 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     @Test
     @Override
     public void addEntityWithForbiddenUserRolesTest() throws Exception {
+        when(lessonRepository.canAddLesson(any(), any(), any())).thenReturn(true);
         super.addEntityWithForbiddenUserRolesTest();
     }
 
     @Test
     @Override
     public void updateEntityWithForbiddenUserRolesTest() throws Exception {
+        when(lessonRepository.canUpdateLesson(any(), any(), any(), any())).thenReturn(true);
         super.updateEntityWithForbiddenUserRolesTest();
+    }
+
+    @Test
+    public void updateLessonWithInvalidTimeTest() throws Exception {
+        Lesson lesson = lessonSupplier.getValidEntityWithoutId();
+        Integer parameterId = lessonSupplier.getAnyId();
+        doAnswer(invocationOnMock -> {
+            Errors errors = (Errors)invocationOnMock.getArguments()[1];
+            errors.rejectValue("", "");
+            return null;
+        }).when(lessonTimeValidator).validate(any(), any());
+        when(lessonRepository.exists(parameterId)).thenReturn(true);
+        when(lessonRepository.findOne(parameterId)).thenReturn(lesson);
+        setupAllowedRoles(lesson);
+
+        thrown.expect(ServiceValidationException.class);
+
+        lessonService.update(lesson, parameterId);
+
+        verify(lessonRepository, times(0)).save(lesson);
+    }
+
+    @Test
+    public void addLessonWithInvalidTimeTest() throws Exception {
+        Lesson lesson = lessonSupplier.getValidEntityWithId();
+        doAnswer(invocationOnMock -> {
+            Errors errors = (Errors)invocationOnMock.getArguments()[1];
+            errors.rejectValue("", "");
+            return null;
+        }).when(lessonTimeValidator).validate(any(), any());
+        setupAllowedRoles(lesson);
+
+        thrown.expect(ServiceValidationException.class);
+
+        lessonService.add(lesson);
+
+        verify(lessonRepository, times(0)).save(lesson);
     }
 
     @Override

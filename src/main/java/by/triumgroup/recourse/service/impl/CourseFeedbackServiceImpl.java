@@ -51,8 +51,8 @@ public class CourseFeedbackServiceImpl
         UserFieldInfo<CourseFeedback, Integer> studentFieldInfo = new UserFieldInfo<>(
                 CourseFeedback::getStudent,
                 "student",
-                Collections.singletonList(User.Role.STUDENT)
+                User.Role.STUDENT
         );
-        return Collections.singletonList(new UserRoleValidator<>(Collections.singletonList(studentFieldInfo), userRepository));
+        return Collections.singletonList(new UserRoleValidator<>(studentFieldInfo, userRepository));
     }
 }

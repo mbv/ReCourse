@@ -7,6 +7,7 @@ import by.triumgroup.recourse.validation.support.UserFieldInfo;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Collections;
 import java.util.List;
 
 public class UserRoleValidator<E extends BaseEntity<ID>, ID> implements Validator {
@@ -14,8 +15,13 @@ public class UserRoleValidator<E extends BaseEntity<ID>, ID> implements Validato
     private List<UserFieldInfo<E, ID>> allowedRoles;
     private UserRepository userRepository;
 
-    public UserRoleValidator(List<UserFieldInfo<E, ID>> allowedRoles, UserRepository userRepository) {
-        this.allowedRoles = allowedRoles;
+    public UserRoleValidator(List<UserFieldInfo<E, ID>> fieldsInfo, UserRepository userRepository) {
+        this.allowedRoles = fieldsInfo;
+        this.userRepository = userRepository;
+    }
+
+    public UserRoleValidator(UserFieldInfo<E, ID> fieldInfo, UserRepository userRepository) {
+        this.allowedRoles = Collections.singletonList(fieldInfo);
         this.userRepository = userRepository;
     }
 

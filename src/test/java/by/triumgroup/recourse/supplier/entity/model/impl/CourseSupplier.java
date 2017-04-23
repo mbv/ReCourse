@@ -14,7 +14,7 @@ public class CourseSupplier implements EntityIntegerPKSupplier<Course> {
         course.setDescription("Description");
         course.setMaxStudents(10);
         course.setStatus(Course.Status.ONGOING);
-        User teacher = userSupplier.getValidEntityWithId();
+        User teacher = userSupplier.getWithRole(User.Role.TEACHER);
         teacher.setId(teacher.getId() + 1);
         course.setTeacher(teacher);
         return course;

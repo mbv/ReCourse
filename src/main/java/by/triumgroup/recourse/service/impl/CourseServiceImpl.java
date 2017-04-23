@@ -6,6 +6,7 @@ import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.validation.support.UserFieldInfo;
+import by.triumgroup.recourse.validation.validator.CourseTeacherValidator;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
@@ -21,11 +22,13 @@ public class CourseServiceImpl
 
     private final CourseRepository repository;
     private final UserRepository userRepository;
+    private CourseTeacherValidator courseTeacherValidator;
 
-    public CourseServiceImpl(CourseRepository repository, UserRepository userRepository) {
+    public CourseServiceImpl(CourseRepository repository, UserRepository userRepository, CourseTeacherValidator courseTeacherValidator) {
         super(repository);
         this.repository = repository;
         this.userRepository = userRepository;
+        this.courseTeacherValidator = courseTeacherValidator;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class CourseServiceImpl
             Course oldCourse = existingCourse.get();
             newCourse.setId(id);
             validateEntity(newCourse);
-            if (isNewTeacher(oldCourse, newCourse)){
+            if (!Objects.equals(newCourse.getTeacher().getId(), oldCourse.getTeacher().getId())){
                 canSave = updateTeacher(newCourse, newCourse.getTeacher()).isPresent();
             }
             if (canSave){
@@ -83,15 +86,15 @@ public class CourseServiceImpl
         UserFieldInfo<Course, Integer> teacherFieldInfo = new UserFieldInfo<>(
                 Course::getTeacher,
                 "teacher",
-                Collections.singletonList(User.Role.TEACHER));
-        return Collections.singletonList(new UserRoleValidator<>(Collections.singletonList(teacherFieldInfo), userRepository));
+                User.Role.TEACHER);
+        return Arrays.asList(
+                new UserRoleValidator<>(teacherFieldInfo, userRepository),
+                courseTeacherValidator
+        );
     }
 
     private Optional<Boolean> updateTeacher(Course course, User newTeacher){
         return wrapJPACallToBoolean(() -> repository.updateTeacher(course.getId(), newTeacher.getId()));
     }
 
-    private boolean isNewTeacher(Course oldCourse, Course newCourse) {
-        return !Objects.equals(newCourse.getTeacher().getId(), oldCourse.getTeacher().getId());
-    }
 }

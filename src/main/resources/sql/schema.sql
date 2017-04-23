@@ -159,6 +159,70 @@ CREATE TABLE `mark`
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- -----------------------------------------------------------
+-- Stored functions
+-- -----------------------------------------------------------
+
+DROP FUNCTION IF EXISTS `can_add_lesson`;
+DELIMITER ;;
+CREATE FUNCTION `can_add_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME) RETURNS BOOL
+  BEGIN
+    RETURN can_update_lesson(`teacher_id`, `new_lesson_start_time`, `new_lesson_duration`, -1);
+  END ;;
+DELIMITER ;
+
+
+DROP FUNCTION IF EXISTS `can_update_lesson`;
+DELIMITER ;;
+CREATE FUNCTION `can_update_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME, `lesson_id` INT) RETURNS BOOL
+  BEGIN
+    DECLARE result BOOL;
+    SELECT NOT EXISTS(
+        SELECT
+            `id`
+        FROM
+            `lesson`
+        WHERE
+            `lesson`.`teacher_id` = `teacher_id`
+            AND `new_lesson_start_time` <= ADDTIME(`start_time`, `duration`)
+            AND ADDTIME(`new_lesson_start_time`, `new_lesson_duration`) >= `start_time`
+            AND `lesson_id` != `id`)
+    INTO result;
+    RETURN result;
+  END ;;
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS `can_update_teacher`;
+DELIMITER ;;
+CREATE FUNCTION `can_update_teacher`(`course_id` INT, `new_teacher_id` INT) RETURNS BOOL
+  BEGIN
+    DECLARE result BOOL;
+    SELECT NOT EXISTS(
+      SELECT
+        `id`
+      FROM
+        `lesson`
+      WHERE
+        NOT can_update_lesson(`new_teacher_id`, `start_time`, `duration`, `id`)
+        AND lesson.`course_id` = `course_id`
+    ) INTO result;
+    RETURN result;
+  END ;;
+DELIMITER ;
+
+-- -----------------------------------------------------------
+-- Stored functions
+-- -----------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `update_teacher`;
+DELIMITER ;;
+CREATE PROCEDURE `update_teacher`(`course_id` INT, `new_teacher_id` INT)
+  BEGIN
+    UPDATE `lesson` SET `teacher_id` = `new_teacher_id` WHERE `lesson`.`course_id` = `course_id` AND `start_time` >= now();
+  END ;;
+DELIMITER ;
+
+
+-- -----------------------------------------------------------
 -- Spring OAuth2 required tables
 -- -----------------------------------------------------------
 DROP TABLE IF EXISTS `oauth_access_token`;

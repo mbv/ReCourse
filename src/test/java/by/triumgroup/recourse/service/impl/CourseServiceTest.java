@@ -10,6 +10,7 @@ import by.triumgroup.recourse.service.CrudServiceTest;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.CourseSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import by.triumgroup.recourse.validation.validator.CourseTeacherValidator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -33,11 +34,14 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     private CourseRepository courseRepository;
     private CourseSupplier courseSupplier;
     private UserSupplier userSupplier;
+    private CourseTeacherValidator courseTeacherValidator;
 
     public CourseServiceTest() {
         userRepository = Mockito.mock(UserRepository.class);
         courseRepository = Mockito.mock(CourseRepository.class);
-        courseService = new CourseServiceImpl(courseRepository, userRepository);
+        courseTeacherValidator = Mockito.mock(CourseTeacherValidator.class);
+        when(courseTeacherValidator.supports(any())).thenCallRealMethod();
+        courseService = new CourseServiceImpl(courseRepository, userRepository, courseTeacherValidator);
         courseSupplier = new CourseSupplier();
         userSupplier = new UserSupplier();
     }

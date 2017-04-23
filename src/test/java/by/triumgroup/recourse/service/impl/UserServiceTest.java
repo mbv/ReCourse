@@ -44,7 +44,7 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
         userRepository = Mockito.mock(UserRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         registrationDetailsValidator = Mockito.mock(RegistrationDetailsValidator.class);
-        when(registrationDetailsValidator.supports(RegistrationDetails.class)).thenReturn(true);
+        when(registrationDetailsValidator.supports(any())).thenCallRealMethod();
         userService = new UserServiceImpl(userRepository, passwordEncoder, registrationDetailsValidator);
         userSupplier = new UserSupplier();
     }

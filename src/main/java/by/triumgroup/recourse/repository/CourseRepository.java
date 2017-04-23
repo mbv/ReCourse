@@ -4,6 +4,7 @@ import by.triumgroup.recourse.entity.model.Course;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,9 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, Int
     List<Course> findByStatusOrderByIdDesc(Course.Status status, Pageable pageable);
 
     @Modifying
-    @Query( value = "UPDATE recourse.lesson set teacher_id = :teacherId WHERE (start_time > current_timestamp) AND (course_id = :courseId)",
-            nativeQuery = true)
-    void updateTeacher(@Param("courseId") Integer courseId, @Param("teacherId") Integer teacherId);
+    @Procedure("recourse.update_teacher")
+    void updateTeacher(@Param("course_id") Integer courseId, @Param("new_teacher_id") Integer teacherId);
+
+    @Query(value = "SELECT recourse.can_update_teacher(:course_id, :new_teacher_id", nativeQuery = true)
+    boolean canUpdateTeacher(@Param("course_id") Integer courseId, @Param("new_teacher_id") Integer teacher_id);
 }

@@ -67,8 +67,8 @@ public class HometaskSolutionServiceImpl
         UserFieldInfo<HometaskSolution, Integer> studentFieldInfo = new UserFieldInfo<>(
                 HometaskSolution::getStudent,
                 "student",
-                Collections.singletonList(User.Role.STUDENT)
+                User.Role.STUDENT
         );
-        return Collections.singletonList(new UserRoleValidator<>(Collections.singletonList(studentFieldInfo), userRepository));
+        return Collections.singletonList(new UserRoleValidator<>(studentFieldInfo, userRepository));
     }
 }

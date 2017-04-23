@@ -169,14 +169,15 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     @Test
     public void updateEntityExceptionTest() throws Exception {
         E entity = getEntitySupplier().getValidEntityWithoutId();
+        ID parameterId = getEntitySupplier().getAnyId();
         when(getCrudRepository().save(Matchers.<E>any())).thenThrow(new DataIntegrityViolationException(""));
         when(getCrudRepository().exists(any())).thenReturn(true);
-        when(getCrudRepository().findOne(entity.getId())).thenReturn(entity);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(entity);
         setupAllowedRoles(entity);
 
         thrown.expect(ServiceException.class);
 
-        getCrudService().update(entity, entity.getId());
+        getCrudService().update(entity, parameterId);
 
         verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
     }
