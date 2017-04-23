@@ -5,15 +5,14 @@ import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CourseService;
+import by.triumgroup.recourse.validation.support.UserFieldInfo;
+import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.Validator;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
-import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToBoolean;
-import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.*;
 import static by.triumgroup.recourse.util.RoleUtil.ifExistsWithRole;
 
 public class CourseServiceImpl
@@ -37,6 +36,7 @@ public class CourseServiceImpl
         if (existingCourse.isPresent()) {
             Course oldCourse = existingCourse.get();
             newCourse.setId(id);
+            validateEntity(newCourse);
             if (isNewTeacher(oldCourse, newCourse)){
                 canSave = updateTeacher(newCourse, newCourse.getTeacher()).isPresent();
             }
@@ -76,6 +76,15 @@ public class CourseServiceImpl
     @Override
     protected String getEntityName() {
         return "course";
+    }
+
+    @Override
+    protected List<Validator> getValidators() {
+        UserFieldInfo<Course, Integer> teacherFieldInfo = new UserFieldInfo<>(
+                Course::getTeacher,
+                "teacher",
+                Collections.singletonList(User.Role.TEACHER));
+        return Collections.singletonList(new UserRoleValidator<>(Collections.singletonList(teacherFieldInfo), userRepository));
     }
 
     private Optional<Boolean> updateTeacher(Course course, User newTeacher){

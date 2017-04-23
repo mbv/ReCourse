@@ -6,8 +6,12 @@ import by.triumgroup.recourse.repository.HometaskRepository;
 import by.triumgroup.recourse.repository.HometaskSolutionRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.HometaskSolutionService;
+import by.triumgroup.recourse.validation.support.UserFieldInfo;
+import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.Validator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,5 +60,15 @@ public class HometaskSolutionServiceImpl
     @Override
     protected String getEntityName() {
         return "hometask solution";
+    }
+
+    @Override
+    protected List<Validator> getValidators() {
+        UserFieldInfo<HometaskSolution, Integer> studentFieldInfo = new UserFieldInfo<>(
+                HometaskSolution::getStudent,
+                "student",
+                Collections.singletonList(User.Role.STUDENT)
+        );
+        return Collections.singletonList(new UserRoleValidator<>(Collections.singletonList(studentFieldInfo), userRepository));
     }
 }

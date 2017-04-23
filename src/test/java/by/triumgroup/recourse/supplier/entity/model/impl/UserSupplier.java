@@ -19,4 +19,10 @@ public class UserSupplier implements EntityIntegerPKSupplier<User> {
     public User getInvalidEntity() {
         return new User();
     }
+
+    public User getWithRole(User.Role role) {
+        User result = getValidEntityWithId();
+        result.setRole(role);
+        return result;
+    }
 }

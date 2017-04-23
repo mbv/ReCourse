@@ -3,7 +3,7 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.repository.*;
 import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.service.impl.*;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,8 +30,9 @@ public class ServiceConfiguration {
     @Bean
     public CourseFeedbackService courseFeedbackService(
             CourseFeedbackRepository courseFeedbackRepository,
-            CourseRepository courseRepository) {
-        return new CourseFeedbackServiceImpl(courseFeedbackRepository, courseRepository);
+            CourseRepository courseRepository,
+            UserRepository userRepository) {
+        return new CourseFeedbackServiceImpl(courseFeedbackRepository, courseRepository, userRepository);
     }
 
     @Bean

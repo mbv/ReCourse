@@ -150,6 +150,18 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
         Assert.assertFalse(result.isPresent());
     }
 
+    @Test
+    @Override
+    public void addEntityWithForbiddenUserRolesTest() throws Exception {
+        super.addEntityWithForbiddenUserRolesTest();
+    }
+
+    @Test
+    @Override
+    public void updateEntityWithForbiddenUserRolesTest() throws Exception {
+        super.updateEntityWithForbiddenUserRolesTest();
+    }
+
     @Override
     protected CrudService<Lesson, Integer> getCrudService() {
         return lessonService;
@@ -163,5 +175,17 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     @Override
     protected EntitySupplier<Lesson, Integer> getEntitySupplier() {
         return lessonSupplier;
+    }
+
+    @Override
+    protected void setupAllowedRoles(Lesson entity) {
+        Integer teacherId = entity.getTeacher().getId();
+        when(userRepository.findOne(teacherId)).thenReturn(userSupplier.getWithRole(User.Role.TEACHER));
+    }
+
+    @Override
+    protected void setupForbiddenRoles(Lesson entity) {
+        Integer teacherId = entity.getTeacher().getId();
+        when(userRepository.findOne(teacherId)).thenReturn(userSupplier.getWithRole(User.Role.STUDENT));
     }
 }

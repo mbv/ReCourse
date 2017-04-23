@@ -7,7 +7,6 @@ import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
-import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.CourseSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
@@ -15,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Pair;
 
@@ -28,9 +26,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
-    private UserRepository userRepository;
     private CourseService courseService;
     private CourseRepository courseRepository;
     private CourseSupplier courseSupplier;
@@ -60,58 +58,6 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     }
 
     @Test
-    @Override
-    public void updateEntityWithoutIdTest() throws Exception {
-        Course expectedEntity = getEntitySupplier().getValidEntityWithoutId();
-        Integer parameterId = getEntitySupplier().getAnyId();
-        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
-        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
-        when(getCrudRepository().exists(parameterId)).thenReturn(true);
-
-        Optional<Course> actualResult = getCrudService().update(expectedEntity, parameterId);
-
-        verify(getCrudRepository()).save(captor.capture());
-        verifyCallsForUpdate();
-        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
-        Assert.assertEquals(parameterId, captor.getValue().getId());
-    }
-
-    @Test
-    @Override
-    public void updateEntityWithDifferentParameterIdTest() throws Exception {
-        Pair<Integer, Integer> ids = getEntitySupplier().getDifferentIds();
-        Integer entityId = ids.getFirst();
-        Integer parameterId = ids.getSecond();
-        Course expectedEntity = getEntitySupplier().getValidEntityWithoutId();
-        expectedEntity.setId(entityId);
-        when(courseRepository.findOne(parameterId)).thenReturn(expectedEntity);
-        when(courseRepository.save(expectedEntity)).thenReturn(expectedEntity);
-        when(courseRepository.exists(parameterId)).thenReturn(true);
-
-        Optional<Course> actualResult = getCrudService().update(expectedEntity, parameterId);
-
-        verify(getCrudRepository()).save(captor.capture());
-        verifyCallsForUpdate();
-        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
-        Assert.assertEquals(parameterId, captor.getValue().getId());
-    }
-
-    @Test
-    @Override
-    public void updateEntityExceptionTest() throws Exception {
-        Course course = courseSupplier.getValidEntityWithId();
-        when(courseRepository.findOne(course.getId())).thenReturn(course);
-        when(courseRepository.save(Matchers.<Course>any())).thenThrow(new DataIntegrityViolationException(""));
-        when(courseRepository.exists(any())).thenReturn(true);
-
-        thrown.expect(ServiceException.class);
-
-        getCrudService().update(course, course.getId());
-
-        verifyCallsForUpdate();
-    }
-
-    @Test
     public void updateCourseWithNewTeacherTest() throws  Exception{
         Pair<Integer, Integer> teacherIds = courseSupplier.getDifferentIds();
         Course newCourse = courseSupplier.getValidEntityWithId();
@@ -123,11 +69,12 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
         when(courseRepository.findOne(courseId)).thenReturn(oldCourse);
         when(courseRepository.save(Matchers.<Course>any())).thenReturn(newCourse);
         when(courseRepository.exists(courseId)).thenReturn(true);
+        setupAllowedRoles(newCourse);
 
         Optional<Course> result = courseService.update(newCourse, courseId);
 
         verify(courseRepository, times(1)).updateTeacher(courseId, newCourse.getTeacher().getId());
-        verifyCallsForUpdate();
+        verify(getCrudRepository(), times(1)).save(Matchers.<Course>any());
         Assert.assertEquals(newCourse, result.orElse(null));
     }
 
@@ -196,5 +143,29 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
 
         verify(courseRepository, times(1))
                 .findByStatusOrderByIdDesc(any(), any());
+    }
+
+    @Test
+    @Override
+    public void addEntityWithForbiddenUserRolesTest() throws Exception {
+        super.addEntityWithForbiddenUserRolesTest();
+    }
+
+    @Test
+    @Override
+    public void updateEntityWithForbiddenUserRolesTest() throws Exception {
+        super.updateEntityWithForbiddenUserRolesTest();
+    }
+
+    @Override
+    protected void setupAllowedRoles(Course entity) {
+        Integer teacherId = entity.getTeacher().getId();
+        when(userRepository.findOne(teacherId)).thenReturn(userSupplier.getWithRole(User.Role.TEACHER));
+    }
+
+    @Override
+    protected void setupForbiddenRoles(Course entity) {
+        Integer teacherId = entity.getTeacher().getId();
+        when(userRepository.findOne(teacherId)).thenReturn(userSupplier.getWithRole(User.Role.STUDENT));
     }
 }

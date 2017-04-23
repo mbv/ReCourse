@@ -1,18 +1,17 @@
 package by.triumgroup.recourse.service;
 
 import by.triumgroup.recourse.entity.model.BaseEntity;
+import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
+import by.triumgroup.recourse.validation.exception.ServiceValidationException;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Matchers;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.repository.CrudRepository;
@@ -33,6 +32,8 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
 
     @Captor
     protected ArgumentCaptor<E> captor;
+
+    protected UserRepository userRepository = Mockito.mock(UserRepository.class);
 
     @Before
     public void initTests() {
@@ -82,6 +83,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     public void addValidEntityTest() throws Exception {
         E expectedEntity = getEntitySupplier().getValidEntityWithoutId();
         when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        setupAllowedRoles(expectedEntity);
 
         Optional<E> actualResult = getCrudService().add(expectedEntity);
 
@@ -93,6 +95,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     public void addEntityWithExistingIdTest() throws Exception {
         E entity = getEntitySupplier().getValidEntityWithId();
         when(getCrudRepository().save(entity)).thenReturn(entity);
+        setupAllowedRoles(entity);
 
         getCrudService().add(entity);
 
@@ -101,13 +104,16 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Assert.assertNull(captor.getValue().getId());
     }
 
+
     @Test
     public void addEntityExceptionTest() throws Exception {
+        E invalidEntity = getEntitySupplier().getValidEntityWithoutId();
         when(getCrudRepository().save(Matchers.<E>any())).thenThrow(new DataIntegrityViolationException(""));
+        setupAllowedRoles(invalidEntity);
 
         thrown.expect(ServiceException.class);
 
-        getCrudService().add(getEntitySupplier().getInvalidEntity());
+        getCrudService().add(invalidEntity);
     }
 
     @Test
@@ -116,11 +122,13 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         ID parameterId = getEntitySupplier().getAnyId();
         when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
         when(getCrudRepository().exists(parameterId)).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
+        setupAllowedRoles(expectedEntity);
 
         Optional<E> actualResult = getCrudService().update(expectedEntity, parameterId);
 
         verify(getCrudRepository()).save(captor.capture());
-        verifyCallsForUpdate();
+        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
         Assert.assertEquals(expectedEntity, actualResult.orElse(null));
         Assert.assertEquals(parameterId, captor.getValue().getId());
     }
@@ -134,25 +142,43 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         expectedEntity.setId(entityId);
         when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
         when(getCrudRepository().exists(parameterId)).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
+        setupAllowedRoles(expectedEntity);
 
         Optional<E> actualResult = getCrudService().update(expectedEntity, parameterId);
 
         verify(getCrudRepository()).save(captor.capture());
-        verifyCallsForUpdate();
+        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
         Assert.assertEquals(expectedEntity, actualResult.orElse(null));
         Assert.assertEquals(parameterId, captor.getValue().getId());
     }
 
     @Test
+    public void updateNotExistingEntityTest() throws Exception {
+        E entity = getEntitySupplier().getValidEntityWithoutId();
+        ID parameterId = getEntitySupplier().getAnyId();
+        when(getCrudRepository().exists(parameterId)).thenReturn(false);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(null);
+
+        Optional<E> actualResult = getCrudService().update(entity, parameterId);
+
+        verify(getCrudRepository(), times(0)).save(entity);
+        Assert.assertFalse(actualResult.isPresent());
+    }
+
+    @Test
     public void updateEntityExceptionTest() throws Exception {
+        E entity = getEntitySupplier().getValidEntityWithoutId();
         when(getCrudRepository().save(Matchers.<E>any())).thenThrow(new DataIntegrityViolationException(""));
         when(getCrudRepository().exists(any())).thenReturn(true);
+        when(getCrudRepository().findOne(entity.getId())).thenReturn(entity);
+        setupAllowedRoles(entity);
 
         thrown.expect(ServiceException.class);
 
-        getCrudService().update(getEntitySupplier().getInvalidEntity(), getEntitySupplier().getAnyId());
+        getCrudService().update(entity, entity.getId());
 
-        verifyCallsForUpdate();
+        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
     }
 
     @Test
@@ -172,8 +198,30 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Assert.assertFalse(actual.isPresent());
     }
 
-    protected void verifyCallsForUpdate(){
-        verify(getCrudRepository(), times(1)).exists(any());
-        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
+    public void addEntityWithForbiddenUserRolesTest() throws Exception {
+        E entity = getEntitySupplier().getValidEntityWithoutId();
+        setupForbiddenRoles(entity);
+
+        thrown.expect(ServiceValidationException.class);
+
+        getCrudService().add(entity);
+        verify(getCrudRepository(), times(0)).save(entity);
     }
+
+    public void updateEntityWithForbiddenUserRolesTest() throws Exception {
+        E entity = getEntitySupplier().getValidEntityWithId();
+        when(getCrudRepository().exists(any())).thenReturn(true);
+        when(getCrudRepository().findOne(any())).thenReturn(entity);
+        setupForbiddenRoles(entity);
+
+        thrown.expect(ServiceValidationException.class);
+
+        getCrudService().update(entity, entity.getId());
+        verify(getCrudRepository(), times(0)).save(entity);
+    }
+
+    protected abstract void setupAllowedRoles(E entity);
+
+    protected abstract void setupForbiddenRoles(E entity);
+
 }

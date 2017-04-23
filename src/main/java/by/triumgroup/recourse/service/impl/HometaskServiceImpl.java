@@ -3,7 +3,10 @@ package by.triumgroup.recourse.service.impl;
 import by.triumgroup.recourse.entity.model.Hometask;
 import by.triumgroup.recourse.repository.HometaskRepository;
 import by.triumgroup.recourse.service.HometaskService;
+import org.springframework.validation.Validator;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
@@ -27,5 +30,10 @@ public class HometaskServiceImpl
     @Override
     protected String getEntityName() {
         return "hometask";
+    }
+
+    @Override
+    protected List<Validator> getValidators() {
+        return Collections.emptyList();
     }
 }

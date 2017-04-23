@@ -4,7 +4,7 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.controller.*;
 import by.triumgroup.recourse.controller.impl.*;
 import by.triumgroup.recourse.service.*;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;

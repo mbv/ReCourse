@@ -63,4 +63,10 @@ public class HometaskServiceTest extends CrudServiceTest<Hometask, Integer> {
         verify(hometaskRepository, times(1)).findByLessonId(anyInt());
         assertFalse(hometask.isPresent());
     }
+
+    @Override
+    protected void setupAllowedRoles(Hometask entity) { }
+
+    @Override
+    protected void setupForbiddenRoles(Hometask entity) { }
 }

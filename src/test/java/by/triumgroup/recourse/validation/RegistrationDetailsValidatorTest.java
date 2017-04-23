@@ -4,6 +4,7 @@ import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
+import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

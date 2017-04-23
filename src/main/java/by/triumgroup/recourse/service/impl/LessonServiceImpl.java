@@ -6,8 +6,12 @@ import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.LessonService;
+import by.triumgroup.recourse.validation.support.UserFieldInfo;
+import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.Validator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,5 +60,15 @@ public class LessonServiceImpl
     @Override
     protected String getEntityName() {
         return "lesson";
+    }
+
+    @Override
+    protected List<Validator> getValidators() {
+        UserFieldInfo<Lesson, Integer> studentFieldInfo = new UserFieldInfo<>(
+                Lesson::getTeacher,
+                "teacher",
+                Collections.singletonList(User.Role.TEACHER)
+        );
+        return Collections.singletonList(new UserRoleValidator<>(Collections.singletonList(studentFieldInfo), userRepository));
     }
 }

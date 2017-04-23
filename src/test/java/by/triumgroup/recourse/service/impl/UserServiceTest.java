@@ -9,7 +9,7 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import by.triumgroup.recourse.validation.exception.ServiceValidationException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -113,5 +113,11 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
     protected EntitySupplier<User, Integer> getEntitySupplier() {
         return userSupplier;
     }
+
+    @Override
+    protected void setupAllowedRoles(User entity) { }
+
+    @Override
+    protected void setupForbiddenRoles(User entity) { }
 }
 

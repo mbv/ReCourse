@@ -74,8 +74,5 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
 
     protected abstract String getEntityName();
 
-    protected List<Validator> getValidators() {
-        return Collections.emptyList();
-    }
-
+    protected abstract List<Validator> getValidators();
 }
