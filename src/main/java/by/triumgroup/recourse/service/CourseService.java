@@ -11,7 +11,7 @@ public interface CourseService extends CrudService<Course, Integer> {
 
     List<Course> findByStatus(Course.Status status, Pageable pageable);
 
-    boolean registerStudentToCourse(Integer studentId, Course courseId);
+    void registerStudentToCourse(Integer studentId, Integer courseId);
 
-    boolean removeStudentFromCourse(Integer studentId, Course courseId);
+    void removeStudentFromCourse(Integer studentId, Integer courseId);
 }
