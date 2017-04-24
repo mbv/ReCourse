@@ -6,6 +6,8 @@ import by.triumgroup.recourse.repository.LessonRepository;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
+
 public class LessonTimeValidator implements Validator {
 
     private LessonRepository lessonRepository;
@@ -23,11 +25,11 @@ public class LessonTimeValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Lesson newLesson = (Lesson) o;
         if (newLesson.getId() ==  null){
-            if (!lessonRepository.canAddLesson(newLesson.getStartTime(), newLesson.getTeacher().getId(), newLesson.getDuration())){
+            if (!wrapJPACall(() -> lessonRepository.canAddLesson(newLesson.getStartTime(), newLesson.getTeacher().getId(), newLesson.getDuration()))) {
                 reject(errors);
             }
         } else {
-            Lesson oldLesson = lessonRepository.findOne(newLesson.getId());
+            Lesson oldLesson = wrapJPACall(() -> lessonRepository.findOne(newLesson.getId()));
             if (shouldCheckUpdating(newLesson, oldLesson)){
                 if (!lessonRepository.canUpdateLesson(
                         newLesson.getStartTime(),

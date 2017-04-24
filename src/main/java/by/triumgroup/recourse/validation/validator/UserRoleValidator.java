@@ -10,6 +10,8 @@ import org.springframework.validation.Validator;
 import java.util.Collections;
 import java.util.List;
 
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
+
 public class UserRoleValidator<E extends BaseEntity<ID>, ID> implements Validator {
 
     private List<UserFieldInfo<E, ID>> allowedRoles;
@@ -36,7 +38,7 @@ public class UserRoleValidator<E extends BaseEntity<ID>, ID> implements Validato
         E entity = (E) o;
         for (UserFieldInfo<E, ID> userFieldInfo : allowedRoles) {
             Integer id = userFieldInfo.getUserFieldGetter().apply(entity).getId();
-            User user = userRepository.findOne(id);
+            User user = wrapJPACall(() -> userRepository.findOne(id));
             if (userFieldInfo.getAllowedRoles().stream().noneMatch(role -> role == user.getRole())) {
                 String fieldName = userFieldInfo.getFieldName();
                 errors.rejectValue(fieldName, fieldName, String.format("%s has invalid role", fieldName));
