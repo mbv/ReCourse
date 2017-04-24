@@ -6,64 +6,68 @@ function AuthService($http, $state, $cookies) {
 
     var self = {
         needToRemember: true,
-        isAuthorized: isAuthorized,
+        isAuthorized: false,
         checkAuthorization: checkAuthorization,
-        login: login,
-        logout: logout
+        signIn: signIn,
+        signOut: signOut
     };
 
     return self;
 
-    function checkAuthorization(toState) {
-        refreshToken = $cookies.get('recourse-refresh-token');
-        if (!!refreshToken) {
-            loginWithCookieStoredRefreshToken(refreshToken);
+    function checkAuthorization() {
+        var accessToken = $cookies.get('recourse-access-token');
+        if (!!accessToken) {
+            checkAccessToken(accessToken);
         } else {
-            $state.go('login');
+            $state.go('signIn');
         }
     }
-
-    function isAuthorized() {
-        return !!self.needToRemember && !!$cookies.get('recourse-refresh-token');
+    
+    function checkAccessToken(accessToken) {
+        $http(oauthRequestConfig('/ReCourse/oauth/check_token', { token: accessToken })).then(function(response) {
+            if (!!response.data.user_name) {
+                self.isAuthorized = true;
+                injectAccessTokenToOutgoingHttpRequests(accessToken);
+                $state.go('home');
+            } else {
+                $cookies.remove('recourse-access-token');
+                $state.go('signIn');
+            }
+        });
     }
 
-    function login(username, password, needToRemember) {
-        self.needToRemember = needToRemember;
-        makeAccessTokenRequest({
+    function signIn(username, password, needToRemember) {
+        var requestParams = {
             username: username,
             password: password,
             grant_type: 'password'
-        });
-    }
+        };
 
-    function loginWithCookieStoredRefreshToken(refreshToken) {
-        makeAccessTokenRequest({
-            refresh_token: refreshToken,
-            grant_type: 'refresh_token'
-        });
-    }
-
-    function makeAccessTokenRequest(requestParams) {
         $http(oauthRequestConfig('/ReCourse/oauth/token', requestParams))
-            .then(handleAccessTokenRequest);
+            .then(function (response) {
+                handleAccessTokenRequest(response, needToRemember);
+            });
     }
 
-    function logout() {
-        rejectAccessTokenFromOutgoingHttpRequests();
-        $cookies.remove('recourse-refresh-token');
-        $state.go('home');
+    function signOut() {
+        makeLogoutRequest(function () {
+            $cookies.remove('recourse-access-token');
+            self.isAuthorized = false;
+            $state.go('signIn');
+        });
     }
 
-    function handleAccessTokenRequest(response) {
+    function handleAccessTokenRequest(response, needToRemember) {
         var accessToken = response.data.access_token;
-        var refreshToken = response.data.refresh_token;
 
-        if (!!accessToken && !!refreshToken) {
+        if (!!accessToken) {
             injectAccessTokenToOutgoingHttpRequests(accessToken);
-            if (self.needToRemember) {
-                $cookies.put('recourse-refresh-token', refreshToken);
+            self.isAuthorized = true;
+            if (needToRemember) {
+                $cookies.put('recourse-access-token', accessToken);
             }
         }
+
         $state.go('home');
     }
 
@@ -71,8 +75,8 @@ function AuthService($http, $state, $cookies) {
         $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
     }
 
-    function rejectAccessTokenFromOutgoingHttpRequests() {
-        $http.defaults.headers.common['Authorization'] = undefined;
+    function makeLogoutRequest(callback) {
+        $http.post('/ReCourse/api/users/logout').then(callback);
     }
 
     function oauthRequestConfig(url, params) {

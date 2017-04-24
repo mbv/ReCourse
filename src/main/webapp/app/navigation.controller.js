@@ -5,6 +5,14 @@ angular
 function NavigationController(AuthService) {
     var self = this;
 
-    self.signUp = function() {}
-    self.authService = AuthService;
+    self.isAuthorized = isAuthorized;
+    self.signOut = signOut;
+
+    function isAuthorized() {
+        return AuthService.isAuthorized;
+    }
+
+    function signOut() {
+        AuthService.signOut();
+    }
 }
