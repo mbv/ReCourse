@@ -17,21 +17,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TeacherControllerTest extends AbstractControllerTest {
     private static final String TEACHER_ID_REQUEST = "/teacher/1/{param}";
     private static final String TEACHER_ID_REQUEST_PARAMS = "/teacher/1/{param}?{name}={value}";
-    private CourseService courseService;
     private LessonService lessonService;
     private TeacherController teacherController;
 
     public TeacherControllerTest() {
-        courseService = Mockito.mock(CourseService.class);
         lessonService = Mockito.mock(LessonService.class);
-        teacherController = new TeacherControllerImpl(courseService, lessonService);
-    }
-
-    @Test
-    public void getCoursesInvalidStatusTest() throws Exception {
-        when(courseService.findByStatus(any(), any())).thenReturn(Lists.emptyList());
-        sendGet(TEACHER_ID_REQUEST_PARAMS, "courses", "status", "NOT_A_VALID_STATUS")
-                .andExpect(status().isBadRequest());
+        teacherController = new TeacherControllerImpl(lessonService);
     }
 
     @Test

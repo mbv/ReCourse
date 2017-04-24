@@ -72,7 +72,7 @@ public class ControllerConfiguration {
     public TeacherController teacherController(
             CourseService courseService,
             LessonService lessonService) {
-        return new TeacherControllerImpl(courseService, lessonService);
+        return new TeacherControllerImpl(lessonService);
     }
 
 }

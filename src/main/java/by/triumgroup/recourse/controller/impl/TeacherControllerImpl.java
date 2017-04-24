@@ -2,9 +2,7 @@ package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.TeacherController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.Lesson;
-import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
@@ -20,20 +18,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class TeacherControllerImpl implements TeacherController {
 
     private static final Logger logger = getLogger(TeacherControllerImpl.class);
-    private final CourseService courseService;
     private final LessonService lessonService;
 
-    public TeacherControllerImpl(CourseService courseService, LessonService lessonService) {
-        this.courseService = courseService;
+    public TeacherControllerImpl(LessonService lessonService) {
         this.lessonService = lessonService;
-    }
-
-    @Override
-    public List<Course> getCoursesByStatus(
-            @RequestParam(value = "status") Course.Status status,
-            Pageable pageable
-    ) {
-        return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable));
     }
 
     @Override
