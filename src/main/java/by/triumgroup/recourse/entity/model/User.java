@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.SafeHtml;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -50,6 +52,10 @@ public class User extends BaseEntity<Integer> {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "ENUM ('STUDENT', 'TEACHER', 'ADMIN')")
     private Role role;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "students")
+    private Set<Course> courses;
 
     public User() {
     }
@@ -119,6 +125,10 @@ public class User extends BaseEntity<Integer> {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
     }
 
     @Override

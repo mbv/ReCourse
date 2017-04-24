@@ -23,9 +23,8 @@ public class ServiceConfiguration {
 
     @Bean
     public CourseService courseService(
-            CourseRepository courseRepository,
-            UserRepository userRepository) {
-        return new CourseServiceImpl(courseRepository, userRepository);
+            CourseRepository courseRepository) {
+        return new CourseServiceImpl(courseRepository);
     }
 
     @Bean

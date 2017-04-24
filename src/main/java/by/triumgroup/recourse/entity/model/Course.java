@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.entity.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "course")
@@ -31,6 +33,14 @@ public class Course extends BaseEntity<Integer> {
     @Min(1)
     @Max(100)
     private Integer maxStudents;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name="course_student",
+            joinColumns=@JoinColumn(name="course_id", referencedColumnName="id"),
+            inverseJoinColumns=@JoinColumn(name="student_id", referencedColumnName="id"))
+    private Set<User> students;
 
     public Course() {
     }
@@ -72,6 +82,10 @@ public class Course extends BaseEntity<Integer> {
 
     public void setMaxStudents(Integer maxStudents) {
         this.maxStudents = maxStudents;
+    }
+
+    public Set<User> getStudents() {
+        return students;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     public CourseServiceTest() {
         userRepository = Mockito.mock(UserRepository.class);
         courseRepository = Mockito.mock(CourseRepository.class);
-        courseService = new CourseServiceImpl(courseRepository, userRepository);
+        courseService = new CourseServiceImpl(courseRepository);
         courseSupplier = new CourseSupplier();
         userSupplier = new UserSupplier();
     }

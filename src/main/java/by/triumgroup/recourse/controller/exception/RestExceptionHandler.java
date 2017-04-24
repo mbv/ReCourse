@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.controller.exception;
 
-import by.triumgroup.recourse.entity.dto.FieldErrorInfo;
+import by.triumgroup.recourse.entity.dto.ErrorMessage;
 import by.triumgroup.recourse.entity.dto.ValidationErrorInfo;
 import by.triumgroup.recourse.validation.exception.ServiceValidationException;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +31,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(responseBody);
     }
 
+//    @ExceptionHandler(ServiceValidationException)
+
     private ValidationErrorInfo createValidationErrorInfo(BindingResult bindingResult, HttpStatus status) {
         return new ValidationErrorInfo(
                 status.getReasonPhrase(),
@@ -38,7 +40,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 bindingResult
                         .getFieldErrors()
                         .stream()
-                        .map(FieldErrorInfo::fromFieldError)
+                        .map(ErrorMessage::fromFieldError)
                         .collect(Collectors.toList()));
     }
 }
