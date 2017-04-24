@@ -8,7 +8,6 @@ import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.CourseSupplier;
-import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.data.repository.CrudRepository;
@@ -31,7 +30,7 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     public CourseServiceTest() {
         userRepository = Mockito.mock(UserRepository.class);
         courseRepository = Mockito.mock(CourseRepository.class);
-        courseService = new CourseServiceImpl(courseRepository);
+        courseService = new CourseServiceImpl(courseRepository, userRepository);
         courseSupplier = new CourseSupplier();
     }
 

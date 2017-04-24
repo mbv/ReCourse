@@ -10,7 +10,7 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
-import by.triumgroup.recourse.validation.exception.ServiceValidationException;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -56,7 +56,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
     public void registrationWithFailedValidationTest() throws Exception {
         RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
         BindingResult bindingResult = new BeanPropertyBindingResult(registrationDetails, "registration details");
-        when(userService.register(any())).thenThrow(new ServiceValidationException(bindingResult));
+        when(userService.register(any())).thenThrow(new ServiceBadRequestException(bindingResult));
 
         sendPost("/users/register", registrationDetails)
                 .andExpect(status().isBadRequest());

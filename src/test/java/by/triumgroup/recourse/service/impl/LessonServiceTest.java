@@ -11,7 +11,7 @@ import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
-import by.triumgroup.recourse.validation.exception.ServiceValidationException;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
@@ -183,7 +183,7 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
         when(lessonRepository.findOne(parameterId)).thenReturn(lesson);
         setupAllowedRoles(lesson);
 
-        thrown.expect(ServiceValidationException.class);
+        thrown.expect(ServiceBadRequestException.class);
 
         lessonService.update(lesson, parameterId);
 
@@ -200,7 +200,7 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
         }).when(lessonTimeValidator).validate(any(), any());
         setupAllowedRoles(lesson);
 
-        thrown.expect(ServiceValidationException.class);
+        thrown.expect(ServiceBadRequestException.class);
 
         lessonService.add(lesson);
 

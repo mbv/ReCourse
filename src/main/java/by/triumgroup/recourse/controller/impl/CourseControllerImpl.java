@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
@@ -64,6 +65,28 @@ public class CourseControllerImpl
     @Override
     public List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable) {
         return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable));
+    }
+
+    @Override
+    public void registerToCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, authDetails.getId()));
+    }
+
+    @Override
+    public void unregisterFromCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, authDetails.getId()));
+    }
+
+    @Override
+    public void registerStudentToCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails);
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, studentId));
+    }
+
+    @Override
+    public void unregisterStudentFromCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails);
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, studentId));
     }
 
     @Override

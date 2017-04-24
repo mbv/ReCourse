@@ -9,8 +9,8 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
-import by.triumgroup.recourse.validation.exception.ServiceValidationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -71,7 +71,7 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
         }).when(registrationDetailsValidator).validate(any(), any());
         when(userRepository.save(Matchers.<User>any())).thenReturn(userSupplier.getValidEntityWithId());
 
-        thrown.expect(ServiceValidationException.class);
+        thrown.expect(ServiceBadRequestException.class);
 
         userService.register(registrationDetails);
     }

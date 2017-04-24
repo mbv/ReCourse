@@ -4,7 +4,7 @@ import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
-import by.triumgroup.recourse.validation.exception.ServiceValidationException;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
@@ -203,7 +203,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         E entity = getEntitySupplier().getValidEntityWithoutId();
         setupForbiddenRoles(entity);
 
-        thrown.expect(ServiceValidationException.class);
+        thrown.expect(ServiceBadRequestException.class);
 
         getCrudService().add(entity);
         verify(getCrudRepository(), times(0)).save(entity);
@@ -215,7 +215,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         when(getCrudRepository().findOne(any())).thenReturn(entity);
         setupForbiddenRoles(entity);
 
-        thrown.expect(ServiceValidationException.class);
+        thrown.expect(ServiceBadRequestException.class);
 
         getCrudService().update(entity, entity.getId());
         verify(getCrudRepository(), times(0)).save(entity);
