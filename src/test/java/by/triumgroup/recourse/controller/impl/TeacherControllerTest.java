@@ -2,7 +2,6 @@ package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.AbstractControllerTest;
 import by.triumgroup.recourse.controller.TeacherController;
-import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
 import org.assertj.core.util.Lists;
@@ -29,29 +28,8 @@ public class TeacherControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void getCoursesExistingTeacherTest() throws Exception {
-        when(courseService.findByTeacherId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
-        sendGet(TEACHER_ID_REQUEST, "courses")
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void getCoursesNotExistingTeacherTest() throws Exception {
-        when(courseService.findByTeacherId(any(), any())).thenReturn(Optional.empty());
-        sendGet(TEACHER_ID_REQUEST, "courses")
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void getCoursesByStatusExistingTeacherTest() throws Exception {
-        when(courseService.findByTeacherIdAndStatus(any(), any(), any())).thenReturn(Optional.of(Lists.emptyList()));
-        sendGet(TEACHER_ID_REQUEST_PARAMS, "courses", "status", Course.Status.ONGOING)
-                .andExpect(status().isOk());
-    }
-
-    @Test
     public void getCoursesInvalidStatusTest() throws Exception {
-        when(courseService.findByTeacherId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
+        when(courseService.findByStatus(any(), any())).thenReturn(Lists.emptyList());
         sendGet(TEACHER_ID_REQUEST_PARAMS, "courses", "status", "NOT_A_VALID_STATUS")
                 .andExpect(status().isBadRequest());
     }

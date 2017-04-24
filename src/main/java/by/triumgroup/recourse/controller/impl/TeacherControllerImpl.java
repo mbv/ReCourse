@@ -29,20 +29,11 @@ public class TeacherControllerImpl implements TeacherController {
     }
 
     @Override
-    public List<Course> getCourses(
-            @PathVariable("teacherId") Integer teacherId,
-            @RequestParam(value = "status", required = false) Course.Status status,
+    public List<Course> getCoursesByStatus(
+            @RequestParam(value = "status") Course.Status status,
             Pageable pageable
     ) {
-        return wrapServiceCall(logger, () -> {
-            Optional<List<Course>> courses;
-            if (status == null) {
-                courses = courseService.findByTeacherId(teacherId, pageable);
-            } else {
-                courses = courseService.findByTeacherIdAndStatus(teacherId, status, pageable);
-            }
-            return courses.orElseThrow(NotFoundException::new);
-        });
+        return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable));
     }
 
     @Override

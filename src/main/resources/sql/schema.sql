@@ -32,14 +32,9 @@ CREATE TABLE `course` (
   `id`           INT                                          NOT NULL AUTO_INCREMENT,
   `title`        VARCHAR(50)                                  NOT NULL,
   `description`  TEXT                                         NOT NULL,
-  `teacher_id`   INT                                          NOT NULL,
   `status`       ENUM ('ONGOING', 'REGISTRATION', 'FINISHED') NOT NULL,
   `max_students` INT                                          NOT NULL,
-  CONSTRAINT `PK_Course` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `FK_course_user`
-  FOREIGN KEY (`teacher_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
+  CONSTRAINT `PK_Course` PRIMARY KEY (`id` ASC)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -191,40 +186,10 @@ CREATE FUNCTION `can_update_lesson`(`teacher_id` INT, `new_lesson_start_time` DA
   END ;;
 DELIMITER ;
 
-DROP FUNCTION IF EXISTS `can_update_teacher`;
-DELIMITER ;;
-CREATE FUNCTION `can_update_teacher`(`course_id` INT, `new_teacher_id` INT) RETURNS BOOL
-  BEGIN
-    DECLARE result BOOL;
-    SELECT NOT EXISTS(
-      SELECT
-        `id`
-      FROM
-        `lesson`
-      WHERE
-        NOT can_update_lesson(`new_teacher_id`, `start_time`, `duration`, `id`)
-        AND lesson.`course_id` = `course_id`
-    ) INTO result;
-    RETURN result;
-  END ;;
-DELIMITER ;
-
--- -----------------------------------------------------------
--- Stored functions
--- -----------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS `update_teacher`;
-DELIMITER ;;
-CREATE PROCEDURE `update_teacher`(`course_id` INT, `new_teacher_id` INT)
-  BEGIN
-    UPDATE `lesson` SET `teacher_id` = `new_teacher_id` WHERE `lesson`.`course_id` = `course_id` AND `start_time` >= now();
-  END ;;
-DELIMITER ;
-
-
 -- -----------------------------------------------------------
 -- Spring OAuth2 required tables
 -- -----------------------------------------------------------
+
 DROP TABLE IF EXISTS `oauth_access_token`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -309,9 +274,8 @@ INSERT INTO `user` (email, password_hash, name, surname, gender, birthday, role)
 -- -----------------------------------------------------------
 -- Course data
 -- -----------------------------------------------------------
-INSERT INTO `recourse`.`course` (title, description, teacher_id, status, max_students) VALUES
+INSERT INTO `recourse`.`course` (title, description, status, max_students) VALUES
   ('Awesome Java Course',
    'Get out of your fucking mind with our java course',
-   (SELECT `id` FROM `user` WHERE `user`.`role` = 'TEACHER' LIMIT 1),
    'ONGOING',
    20);

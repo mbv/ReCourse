@@ -12,9 +12,8 @@ import java.util.List;
 public interface TeacherController {
 
     @GetMapping("{teacherId}/courses")
-    List<Course> getCourses(
-            @PathVariable("teacherId") Integer teacherId,
-            @RequestParam(value = "status", required = false) Course.Status status,
+    List<Course> getCoursesByStatus(
+            @RequestParam(value = "status") Course.Status status,
             Pageable pageable
     );
 

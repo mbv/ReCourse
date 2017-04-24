@@ -16,10 +16,6 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, Int
 
     List<Course> findByTitleContainingIgnoreCaseOrderByIdDesc(String title, Pageable pageable);
 
-    List<Course> findByTeacherIdOrderByIdDesc(Integer id, Pageable pageable);
-
-    List<Course> findByTeacherIdAndStatusOrderByIdDesc(Integer id, Course.Status status, Pageable pageable);
-
     List<Course> findByStatusOrderByIdDesc(Course.Status status, Pageable pageable);
 
     @Modifying

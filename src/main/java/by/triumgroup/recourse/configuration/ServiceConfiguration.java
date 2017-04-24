@@ -3,7 +3,6 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.repository.*;
 import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.service.impl.*;
-import by.triumgroup.recourse.validation.validator.CourseTeacherValidator;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
@@ -25,9 +24,8 @@ public class ServiceConfiguration {
     @Bean
     public CourseService courseService(
             CourseRepository courseRepository,
-            UserRepository userRepository,
-            CourseTeacherValidator courseTeacherValidator) {
-        return new CourseServiceImpl(courseRepository, userRepository, courseTeacherValidator);
+            UserRepository userRepository) {
+        return new CourseServiceImpl(courseRepository, userRepository);
     }
 
     @Bean

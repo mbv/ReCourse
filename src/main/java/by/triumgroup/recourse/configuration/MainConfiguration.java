@@ -2,10 +2,8 @@ package by.triumgroup.recourse.configuration;
 
 import by.triumgroup.recourse.configuration.security.SecurityConfiguration;
 import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
-import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
-import by.triumgroup.recourse.validation.validator.CourseTeacherValidator;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -57,11 +55,6 @@ public class MainConfiguration extends SpringBootServletInitializer {
     @Bean
     LessonTimeValidator lessonTimeValidator(LessonRepository lessonRepository) {
         return new LessonTimeValidator(lessonRepository);
-    }
-
-    @Bean
-    CourseTeacherValidator courseTeacherValidator(CourseRepository courseRepository) {
-        return new CourseTeacherValidator(courseRepository);
     }
 
     @Bean
