@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.UserController;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
@@ -43,6 +44,12 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
+    public Iterable<User> getAll(@Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails, this::hasAuthorityToRead);
+        return super.getAll(authDetails);
+    }
+
+    @Override
     public void logout(OAuth2Authentication principal) {
         OAuth2AccessToken accessToken = defaultTokenServices.getAccessToken(principal);
         defaultTokenServices.revokeToken(accessToken.getValue());
@@ -50,6 +57,11 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     @Override
     protected boolean hasAuthorityToEdit(User entity, UserAuthDetails authDetails) {
+        return authDetails.isAdmin();
+    }
+
+    @Override
+    protected boolean hasAuthorityToRead(User entity, UserAuthDetails authDetails) {
         return authDetails.isAdmin();
     }
 }

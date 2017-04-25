@@ -30,7 +30,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
 
     protected abstract boolean hasAuthorityToEdit(E entity, UserAuthDetails authDetails);
 
-    protected boolean hasAuthorityToRead(E entity, @Auth UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToRead(E entity, UserAuthDetails authDetails) {
         return true;
     }
 
@@ -53,7 +53,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
         });
     }
 
-    public Iterable<E> getAll() {
+    public Iterable<E> getAll(@Auth UserAuthDetails authDetails) {
         return wrapServiceCall(logger, crudService::findAll);
     }
 
