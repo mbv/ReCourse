@@ -17,10 +17,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends AbstractControllerTest {
-    private String idRequest;
+    protected String idRequest;
+    protected String generalRequest;
 
-    private String generalRequest;
-    private UserSupplier userSupplier = new UserSupplier();
+    protected UserSupplier userSupplier = new UserSupplier();
 
     @Before
     public void initUrls() {

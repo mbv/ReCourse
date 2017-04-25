@@ -52,7 +52,7 @@ public class MarkControllerTest extends CrudControllerTest<Mark, Integer> {
 
     @Override
     protected String getEntityName() {
-        return "hometask/solution/mark";
+        return "hometasks/solutions/marks";
     }
 
     @Override

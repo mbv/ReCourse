@@ -1,6 +1,6 @@
 package by.triumgroup.recourse.entity.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
@@ -35,7 +35,7 @@ public class Course extends BaseEntity<Integer> {
     private Integer maxStudents;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(
             name="course_student",
             joinColumns=@JoinColumn(name="course_id", referencedColumnName="id"),

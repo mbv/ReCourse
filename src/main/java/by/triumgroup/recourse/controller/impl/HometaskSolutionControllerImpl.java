@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.controller.exception.AccessDeniedException;
@@ -41,7 +42,7 @@ public class HometaskSolutionControllerImpl
     }
 
     @Override
-    public Iterable<HometaskSolution> getAll(UserAuthDetails authDetails) {
+    public Iterable<HometaskSolution> getAll(@Auth UserAuthDetails authDetails) {
         Iterable<HometaskSolution> result;
         if (!authDetails.isAdmin()) {
             if (authDetails.getRole() == User.Role.STUDENT) {

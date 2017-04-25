@@ -9,6 +9,7 @@ import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSolutionSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.MarkSupplier;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskSolution, Integer> {
-    private static final String MARK_REQUEST = "/hometask/solution/1/mark";
+    private static final String MARK_REQUEST = "/hometasks/solutions/1/mark";
     private HometaskSolutionController hometaskSolutionController;
     private HometaskSolutionService hometaskSolutionService;
     private HometaskSolutionSupplier hometaskSolutionSupplier;
@@ -49,6 +50,15 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @Override
+    public void getAllEntitiesTest() throws Exception {
+        when(getService().findAll()).thenReturn(Lists.emptyList());
+        User admin = userSupplier.getWithRole(User.Role.ADMIN);
+        sendGet(generalRequest, admin)
+                .andExpect(status().isOk());
+    }
+
     @Override
     protected CrudController<HometaskSolution, Integer> getController() {
         return hometaskSolutionController;
@@ -61,7 +71,7 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
 
     @Override
     protected String getEntityName() {
-        return "hometask/solution";
+        return "hometasks/solutions";
     }
 
     @Override

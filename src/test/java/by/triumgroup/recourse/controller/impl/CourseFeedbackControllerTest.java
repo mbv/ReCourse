@@ -35,7 +35,7 @@ public class CourseFeedbackControllerTest extends CrudControllerTest<CourseFeedb
 
     @Override
     protected String getEntityName() {
-        return "course/feedback";
+        return "courses/feedbacks";
     }
 
     @Override

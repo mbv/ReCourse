@@ -3,6 +3,8 @@ package by.triumgroup.recourse.supplier.entity.model.impl;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.supplier.entity.model.EntityIntegerPKSupplier;
 
+import java.util.Collections;
+
 public class UserSupplier implements EntityIntegerPKSupplier<User> {
     @Override
     public User getValidEntityWithoutId() {
@@ -12,6 +14,7 @@ public class UserSupplier implements EntityIntegerPKSupplier<User> {
         user.setRole(User.Role.TEACHER);
         user.setEmail("a@b.com");
         user.setGender(User.Gender.MALE);
+        user.setCourses(Collections.emptySet());
         return user;
     }
 

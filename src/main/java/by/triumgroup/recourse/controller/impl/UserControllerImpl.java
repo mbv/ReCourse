@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
@@ -38,17 +39,17 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
-    public <S extends User> S create(S entity, UserAuthDetails authDetails) {
+    public <S extends User> S create(S entity, @Auth UserAuthDetails authDetails) {
         throw new MethodNotAllowedException();
     }
 
     @Override
-    public void delete(Integer integer, UserAuthDetails authDetails) {
+    public void delete(Integer integer, @Auth UserAuthDetails authDetails) {
         throw new MethodNotAllowedException();
     }
 
     @Override
-    public <S extends User> S update(S entity, Integer id, UserAuthDetails authDetails) {
+    public <S extends User> S update(@Valid @RequestBody S entity, @PathVariable("id") Integer id, @Auth UserAuthDetails authDetails) {
         checkAuthority(entity, authDetails, this::hasAuthorityToRead);
         return wrapServiceCall(logger, () -> {
             Optional<S> callResult = userService.update(entity, id, authDetails);

@@ -118,18 +118,20 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
 
     @Test
     public void updateEntityWithoutIdTest() throws Exception {
-        E expectedEntity = getEntitySupplier().getValidEntityWithoutId();
+        E newEntity = getEntitySupplier().getValidEntityWithoutId();
+        E databaseEntity = getEntitySupplier().getValidEntityWithoutId();
         ID parameterId = getEntitySupplier().getAnyId();
-        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        databaseEntity.setId(parameterId);
+        when(getCrudRepository().save(newEntity)).thenReturn(newEntity);
         when(getCrudRepository().exists(parameterId)).thenReturn(true);
-        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
-        setupAllowedRoles(expectedEntity);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(databaseEntity);
+        setupAllowedRoles(newEntity);
 
-        Optional<E> actualResult = getCrudService().update(expectedEntity, parameterId);
+        Optional<E> actualResult = getCrudService().update(newEntity, parameterId);
 
         verify(getCrudRepository()).save(captor.capture());
         verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
-        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
+        Assert.assertEquals(newEntity, actualResult.orElse(null));
         Assert.assertEquals(parameterId, captor.getValue().getId());
     }
 
@@ -138,18 +140,20 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Pair<ID, ID> ids = getEntitySupplier().getDifferentIds();
         ID entityId = ids.getFirst();
         ID parameterId = ids.getSecond();
-        E expectedEntity = getEntitySupplier().getValidEntityWithoutId();
-        expectedEntity.setId(entityId);
-        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        E newEntity = getEntitySupplier().getValidEntityWithoutId();
+        E databaseEntity = getEntitySupplier().getValidEntityWithoutId();
+        databaseEntity.setId(parameterId);
+        newEntity.setId(entityId);
+        when(getCrudRepository().save(newEntity)).thenReturn(newEntity);
         when(getCrudRepository().exists(parameterId)).thenReturn(true);
-        when(getCrudRepository().findOne(parameterId)).thenReturn(expectedEntity);
-        setupAllowedRoles(expectedEntity);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(databaseEntity);
+        setupAllowedRoles(newEntity);
 
-        Optional<E> actualResult = getCrudService().update(expectedEntity, parameterId);
+        Optional<E> actualResult = getCrudService().update(newEntity, parameterId);
 
         verify(getCrudRepository()).save(captor.capture());
         verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
-        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
+        Assert.assertEquals(newEntity, actualResult.orElse(null));
         Assert.assertEquals(parameterId, captor.getValue().getId());
     }
 
