@@ -1,18 +1,13 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.LessonController;
-import by.triumgroup.recourse.controller.exception.NotFoundException;
-import by.triumgroup.recourse.entity.model.Hometask;
 import by.triumgroup.recourse.entity.model.Lesson;
-import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.LessonService;
 import org.slf4j.Logger;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.Optional;
+import java.util.Objects;
 
-import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class LessonControllerImpl
@@ -20,18 +15,13 @@ public class LessonControllerImpl
         implements LessonController {
 
     private static final Logger logger = getLogger(LessonControllerImpl.class);
-    private final HometaskService hometaskService;
 
-    public LessonControllerImpl(LessonService lessonService, HometaskService hometaskService) {
+    public LessonControllerImpl(LessonService lessonService) {
         super(lessonService, logger);
-        this.hometaskService = hometaskService;
     }
 
     @Override
-    public Hometask getHometask(@PathVariable("lessonId") Integer lessonId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> {
-            Optional<Hometask> callResult = hometaskService.findByLessonId(lessonId);
-            return callResult.orElseThrow(NotFoundException::new);
-        });
+    protected boolean hasAuthorityToEdit(Lesson entity, UserAuthDetails authDetails) {
+        return Objects.equals(entity.getTeacher().getId(), authDetails.getId());
     }
 }

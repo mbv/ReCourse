@@ -10,7 +10,7 @@ public class HometaskSolutionSupplier implements EntityIntegerPKSupplier<Hometas
     @Override
     public HometaskSolution getValidEntityWithoutId() {
         HometaskSolution hometaskSolution = new HometaskSolution();
-        hometaskSolution.setHometaskId(getAnyId());
+        hometaskSolution.setLessonId(getAnyId());
         User student = userSupplier.getValidEntityWithId();
         hometaskSolution.setStudent(student);
         hometaskSolution.setSolution("solution");

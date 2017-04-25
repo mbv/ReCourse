@@ -2,12 +2,16 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.User;
-import by.triumgroup.recourse.repository.HometaskRepository;
 import by.triumgroup.recourse.repository.HometaskSolutionRepository;
+import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.HometaskSolutionService;
+import by.triumgroup.recourse.validation.support.UserFieldInfo;
+import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.Validator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,20 +23,20 @@ public class HometaskSolutionServiceImpl
         implements HometaskSolutionService {
 
     private final HometaskSolutionRepository repository;
-    private final HometaskRepository hometaskRepository;
     private final UserRepository userRepository;
+    private LessonRepository lessonRepository;
 
-    public HometaskSolutionServiceImpl(HometaskSolutionRepository repository, HometaskRepository hometaskRepository, UserRepository userRepository) {
+    public HometaskSolutionServiceImpl(HometaskSolutionRepository repository, UserRepository userRepository, LessonRepository lessonRepository) {
         super(repository);
         this.repository = repository;
-        this.hometaskRepository = hometaskRepository;
         this.userRepository = userRepository;
+        this.lessonRepository = lessonRepository;
     }
 
     @Override
-    public Optional<List<HometaskSolution>> findByHometaskId(Integer id, Pageable pageable) {
-        return wrapJPACallToOptional(() -> (hometaskRepository.exists(id))
-                ? repository.findByHometaskId(id, pageable)
+    public Optional<List<HometaskSolution>> findByLessonId(Integer id, Pageable pageable) {
+        return wrapJPACallToOptional(() -> (lessonRepository.exists(id))
+                ? repository.findByLessonId(id, pageable)
                 : null
         );
     }
@@ -46,10 +50,25 @@ public class HometaskSolutionServiceImpl
     }
 
     @Override
-    public Optional<HometaskSolution> findByStudentIdAndHometaskId(Integer studentId, Integer hometaskId) {
-        return wrapJPACallToOptional(() -> (ifExistsWithRole(userRepository, studentId, User.Role.STUDENT) && hometaskRepository.exists(hometaskId))
-                ? repository.findByStudentIdAndHometaskId(studentId, hometaskId)
+    public Optional<HometaskSolution> findByStudentIdAndLessonId(Integer studentId, Integer lessonId) {
+        return wrapJPACallToOptional(() -> (ifExistsWithRole(userRepository, studentId, User.Role.STUDENT) && lessonRepository.exists(lessonId))
+                ? repository.findByStudentIdAndLessonId(studentId, lessonId)
                 : null
         );
+    }
+
+    @Override
+    protected String getEntityName() {
+        return "hometask solution";
+    }
+
+    @Override
+    protected List<Validator> getValidators() {
+        UserFieldInfo<HometaskSolution, Integer> studentFieldInfo = new UserFieldInfo<>(
+                HometaskSolution::getStudent,
+                "student",
+                User.Role.STUDENT
+        );
+        return Collections.singletonList(new UserRoleValidator<>(studentFieldInfo, userRepository));
     }
 }

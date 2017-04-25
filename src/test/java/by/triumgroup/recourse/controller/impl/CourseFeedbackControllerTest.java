@@ -4,6 +4,7 @@ import by.triumgroup.recourse.controller.CourseFeedbackController;
 import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
@@ -40,5 +41,11 @@ public class CourseFeedbackControllerTest extends CrudControllerTest<CourseFeedb
     @Override
     protected EntitySupplier<CourseFeedback, Integer> getEntitySupplier() {
         return courseFeedbackSupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(CourseFeedback entity, User validUserWithId) {
+        validUserWithId.setId(entity.getStudent().getId());
+        return validUserWithId;
     }
 }

@@ -1,4 +1,4 @@
-package by.triumgroup.recourse.validation;
+package by.triumgroup.recourse.entity.dto;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ public class ValidationErrorInfo {
 
     private int status;
 
-    private List<FieldErrorInfo> errors;
+    private List<ErrorMessage> errors;
 
-    public ValidationErrorInfo(String error, int status, List<FieldErrorInfo> errors) {
+    public ValidationErrorInfo(String error, int status, List<ErrorMessage> errors) {
         this.error = error;
         this.status = status;
         this.errors = errors;
@@ -23,11 +23,11 @@ public class ValidationErrorInfo {
         this.status = status;
     }
 
-    public List<FieldErrorInfo> getErrors() {
+    public List<ErrorMessage> getErrors() {
         return errors;
     }
 
-    public void setErrors(List<FieldErrorInfo> errors) {
+    public void setErrors(List<ErrorMessage> errors) {
         this.errors = errors;
     }
 

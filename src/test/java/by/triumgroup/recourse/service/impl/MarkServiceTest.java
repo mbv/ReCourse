@@ -65,4 +65,10 @@ public class MarkServiceTest extends CrudServiceTest<Mark, Integer> {
     protected EntitySupplier<Mark, Integer> getEntitySupplier() {
         return markSupplier;
     }
+
+    @Override
+    protected void setupAllowedRoles(Mark entity) { }
+
+    @Override
+    protected void setupForbiddenRoles(Mark entity) { }
 }

@@ -6,22 +6,23 @@ import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
 import by.triumgroup.recourse.service.UserService;
-import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
+import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.Errors;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class UserServiceTest extends CrudServiceTest<User, Integer> {
@@ -36,11 +37,15 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
 
     private UserSupplier userSupplier;
 
+    private RegistrationDetailsValidator registrationDetailsValidator;
+
     public UserServiceTest() {
         registrationDetailsSupplier = new RegistrationDetailsSupplier();
         userRepository = Mockito.mock(UserRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
-        userService = new UserServiceImpl(userRepository, passwordEncoder);
+        registrationDetailsValidator = Mockito.mock(RegistrationDetailsValidator.class);
+        when(registrationDetailsValidator.supports(any())).thenCallRealMethod();
+        userService = new UserServiceImpl(userRepository, passwordEncoder, registrationDetailsValidator);
         userSupplier = new UserSupplier();
     }
 
@@ -57,11 +62,16 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
     }
 
     @Test
-    public void registrationExceptionTest() throws Exception {
+    public void registrationFailedTest() throws Exception {
         RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
-        when(userRepository.save(Matchers.<User>any())).thenThrow(new DataIntegrityViolationException(""));
+        doAnswer(invocationOnMock -> {
+            Errors errors = (Errors)invocationOnMock.getArguments()[1];
+            errors.rejectValue("", "");
+            return null;
+        }).when(registrationDetailsValidator).validate(any(), any());
+        when(userRepository.save(Matchers.<User>any())).thenReturn(userSupplier.getValidEntityWithId());
 
-        thrown.expect(ServiceException.class);
+        thrown.expect(ServiceBadRequestException.class);
 
         userService.register(registrationDetails);
     }
@@ -103,5 +113,11 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
     protected EntitySupplier<User, Integer> getEntitySupplier() {
         return userSupplier;
     }
+
+    @Override
+    protected void setupAllowedRoles(User entity) { }
+
+    @Override
+    protected void setupForbiddenRoles(User entity) { }
 }
 

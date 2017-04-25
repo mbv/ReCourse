@@ -32,14 +32,9 @@ CREATE TABLE `course` (
   `id`           INT                                          NOT NULL AUTO_INCREMENT,
   `title`        VARCHAR(50)                                  NOT NULL,
   `description`  TEXT                                         NOT NULL,
-  `teacher_id`   INT                                          NOT NULL,
   `status`       ENUM ('ONGOING', 'REGISTRATION', 'FINISHED') NOT NULL,
   `max_students` INT                                          NOT NULL,
-  CONSTRAINT `PK_Course` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `FK_course_user`
-  FOREIGN KEY (`teacher_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
+  CONSTRAINT `PK_Course` PRIMARY KEY (`id` ASC)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -57,29 +52,6 @@ CREATE TABLE `course_student` (
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
-
-
-DROP TABLE IF EXISTS `teacher_feedback` CASCADE;
-CREATE TABLE `teacher_feedback` (
-  `id`         INT         NOT NULL AUTO_INCREMENT,
-  `teacher_id` INT         NOT NULL,
-  `student_id` INT         NOT NULL,
-  `heading`    VARCHAR(50) NULL,
-  `report`     TEXT        NULL,
-  CONSTRAINT `PK_Teacher feedback` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `unique_feedback` UNIQUE (`teacher_id` ASC, `student_id` ASC),
-  CONSTRAINT `FK_teacher_feedback_user`
-  FOREIGN KEY (`teacher_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT `FK_teacher_feedback_user_02`
-  FOREIGN KEY (`student_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
 
 DROP TABLE IF EXISTS `course_feedback` CASCADE;
 CREATE TABLE `course_feedback` (
@@ -104,34 +76,6 @@ CREATE TABLE `course_feedback` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-
-DROP TABLE IF EXISTS `student_report` CASCADE;
-CREATE TABLE `student_report` (
-  `id`         INT         NOT NULL AUTO_INCREMENT,
-  `student_id` INT         NOT NULL,
-  `teacher_id` INT         NOT NULL,
-  `course_id`  INT         NOT NULL,
-  `heading`    VARCHAR(50) NULL,
-  `report`     TEXT        NULL,
-  CONSTRAINT `PK_Student report` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `unique_report` UNIQUE (`student_id` ASC, `teacher_id` ASC, `course_id` ASC),
-  CONSTRAINT `FK_student_report_course`
-  FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT `FK_student_report_user`
-  FOREIGN KEY (`student_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT,
-  CONSTRAINT `FK_student_report_user_02`
-  FOREIGN KEY (`teacher_id`) REFERENCES `user` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-
 DROP TABLE IF EXISTS `lesson` CASCADE;
 CREATE TABLE `lesson` (
   `id`         INT         NOT NULL AUTO_INCREMENT,
@@ -140,6 +84,7 @@ CREATE TABLE `lesson` (
   `course_id`  INT         NOT NULL,
   `topic`      VARCHAR(50) NULL,
   `teacher_id` INT         NOT NULL,
+  `task`       TEXT        NULL,
   CONSTRAINT `PK_Class` PRIMARY KEY (`id` ASC),
   CONSTRAINT `FK_class_course`
   FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
@@ -153,32 +98,16 @@ CREATE TABLE `lesson` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-
-DROP TABLE IF EXISTS `hometask` CASCADE;
-CREATE TABLE `hometask` (
-  `id`        INT  NOT NULL AUTO_INCREMENT,
-  `lesson_id` INT  NOT NULL,
-  `task`      TEXT NULL,
-  CONSTRAINT `PK_hometask` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `lesson_id` UNIQUE (`lesson_id` ASC),
-  CONSTRAINT `FK_hometask_class`
-  FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
 DROP TABLE IF EXISTS `hometask_solution` CASCADE;
 CREATE TABLE `hometask_solution` (
   `id`          INT  NOT NULL AUTO_INCREMENT,
-  `hometask_id` INT  NOT NULL,
+  `lesson_id`   INT  NOT NULL,
   `student_id`  INT  NOT NULL,
   `solution`    TEXT NULL,
   CONSTRAINT `PK_hometask_solution` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `unique_solution` UNIQUE (`hometask_id` ASC, `student_id` ASC),
+  CONSTRAINT `unique_solution` UNIQUE (`lesson_id` ASC, `student_id` ASC),
   CONSTRAINT `FK_hometask_solution_hometask`
-  FOREIGN KEY (`hometask_id`) REFERENCES `hometask` (`id`)
+  FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `FK_hometask_solution_user`
@@ -210,8 +139,42 @@ CREATE TABLE `mark`
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- -----------------------------------------------------------
+-- Stored functions
+-- -----------------------------------------------------------
+
+DROP FUNCTION IF EXISTS `can_add_lesson`;
+DELIMITER ;;
+CREATE FUNCTION `can_add_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME) RETURNS BOOL
+  BEGIN
+    RETURN can_update_lesson(`teacher_id`, `new_lesson_start_time`, `new_lesson_duration`, -1);
+  END ;;
+DELIMITER ;
+
+
+DROP FUNCTION IF EXISTS `can_update_lesson`;
+DELIMITER ;;
+CREATE FUNCTION `can_update_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME, `lesson_id` INT) RETURNS BOOL
+  BEGIN
+    DECLARE result BOOL;
+    SELECT NOT EXISTS(
+        SELECT
+            `id`
+        FROM
+            `lesson`
+        WHERE
+            `lesson`.`teacher_id` = `teacher_id`
+            AND `new_lesson_start_time` <= ADDTIME(`start_time`, `duration`)
+            AND ADDTIME(`new_lesson_start_time`, `new_lesson_duration`) >= `start_time`
+            AND `lesson_id` != `id`)
+    INTO result;
+    RETURN result;
+  END ;;
+DELIMITER ;
+
+-- -----------------------------------------------------------
 -- Spring OAuth2 required tables
 -- -----------------------------------------------------------
+
 DROP TABLE IF EXISTS `oauth_access_token`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -296,9 +259,8 @@ INSERT INTO `user` (email, password_hash, name, surname, gender, birthday, role)
 -- -----------------------------------------------------------
 -- Course data
 -- -----------------------------------------------------------
-INSERT INTO `recourse`.`course` (title, description, teacher_id, status, max_students) VALUES
+INSERT INTO `recourse`.`course` (title, description, status, max_students) VALUES
   ('Awesome Java Course',
    'Get out of your fucking mind with our java course',
-   (SELECT `id` FROM `user` WHERE `user`.`role` = 'TEACHER' LIMIT 1),
    'ONGOING',
    20);

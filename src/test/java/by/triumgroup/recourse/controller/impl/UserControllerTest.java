@@ -10,10 +10,11 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 
 import java.util.Optional;
 
@@ -28,17 +29,13 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
 
     private UserService userService;
 
-    private RegistrationDetailsValidator registrationDetailsValidator;
-
     private UserController userController;
 
     private EntitySupplier<User, Integer> entitySupplier;
 
     public UserControllerTest() {
         userService = Mockito.mock(UserService.class);
-        registrationDetailsValidator = Mockito.mock(RegistrationDetailsValidator.class);
-        when(registrationDetailsValidator.supports(RegistrationDetails.class)).thenReturn(true);
-        userController = new UserControllerImpl(userService, registrationDetailsValidator);
+        userController = new UserControllerImpl(userService, null);
         entitySupplier = new UserSupplier();
         registrationDetailsSupplier = new RegistrationDetailsSupplier();
     }
@@ -51,24 +48,20 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         sendPost("/users/register", registrationDetails)
                 .andExpect(status().isOk());
 
-        verify(registrationDetailsValidator, times(1)).validate(any(), any());
+        verify(userService, times(1)).register(any());
     }
 
 
     @Test
     public void registrationWithFailedValidationTest() throws Exception {
         RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
-        doAnswer(invocationOnMock -> {
-            Errors errors = (Errors)invocationOnMock.getArguments()[1];
-            errors.rejectValue("", "");
-            return null;
-        }).when(registrationDetailsValidator).validate(any(), any());
-        when(userService.register(any())).thenReturn(Optional.of(true));
+        BindingResult bindingResult = new BeanPropertyBindingResult(registrationDetails, "registration details");
+        when(userService.register(any())).thenThrow(new ServiceBadRequestException(bindingResult));
 
         sendPost("/users/register", registrationDetails)
                 .andExpect(status().isBadRequest());
 
-        verify(registrationDetailsValidator, times(1)).validate(any(), any());
+        verify(userService, times(1)).register(any());
     }
 
     @Override
@@ -89,5 +82,11 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
     @Override
     protected EntitySupplier<User, Integer> getEntitySupplier() {
         return entitySupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(User entity, User validUserWithId) {
+        validUserWithId.setRole(User.Role.ADMIN);
+        return validUserWithId;
     }
 }

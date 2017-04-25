@@ -1,15 +1,16 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.entity.model.Lesson;
-import by.triumgroup.recourse.entity.model.StudentReport;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
-import by.triumgroup.recourse.service.StudentReportService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,18 +30,15 @@ public class CourseControllerImpl
     private final CourseService courseService;
     private final LessonService lessonService;
     private final CourseFeedbackService courseFeedbackService;
-    private final StudentReportService studentReportService;
 
     public CourseControllerImpl(CourseService courseService,
                                 LessonService lessonService,
-                                CourseFeedbackService courseFeedbackService,
-                                StudentReportService studentReportService
+                                CourseFeedbackService courseFeedbackService
     ) {
         super(courseService, logger);
         this.courseService = courseService;
         this.lessonService = lessonService;
         this.courseFeedbackService = courseFeedbackService;
-        this.studentReportService = studentReportService;
     }
 
     @Override
@@ -60,14 +58,6 @@ public class CourseControllerImpl
     }
 
     @Override
-    public List<StudentReport> getReports(@PathVariable("courseId") Integer courseId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> {
-            Optional<List<StudentReport>> reports = studentReportService.findByCourseId(courseId, pageable);
-            return reports.orElseThrow(NotFoundException::new);
-        });
-    }
-
-    @Override
     public List<Course> searchByTitle(@RequestParam("title") String title, Pageable pageable) {
         return wrapServiceCall(logger, () -> courseService.searchByTitle(title, pageable));
     }
@@ -75,5 +65,31 @@ public class CourseControllerImpl
     @Override
     public List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable) {
         return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable));
+    }
+
+    @Override
+    protected boolean hasAuthorityToEdit(Course entity, UserAuthDetails authDetails) {
+        return authDetails.getRole() == User.Role.ADMIN;
+    }
+
+    public void registerToCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, authDetails.getId(), false));
+    }
+
+    @Override
+    public void unregisterFromCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, authDetails.getId(), false));
+    }
+
+    @Override
+    public void registerStudentToCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails, this::hasAuthorityToEdit);
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, studentId, true));
+    }
+
+    @Override
+    public void unregisterStudentFromCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails, this::hasAuthorityToEdit);
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, studentId, true));
     }
 }

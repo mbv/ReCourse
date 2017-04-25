@@ -3,6 +3,8 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.repository.*;
 import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.service.impl.*;
+import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
+import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,8 +16,9 @@ public class ServiceConfiguration {
     @Bean
     public UserService userService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder) {
-        return new UserServiceImpl(userRepository, passwordEncoder);
+            PasswordEncoder passwordEncoder,
+            RegistrationDetailsValidator registrationDetailsValidator) {
+        return new UserServiceImpl(userRepository, passwordEncoder, registrationDetailsValidator);
     }
 
     @Bean
@@ -28,30 +31,26 @@ public class ServiceConfiguration {
     @Bean
     public CourseFeedbackService courseFeedbackService(
             CourseFeedbackRepository courseFeedbackRepository,
-            CourseRepository courseRepository) {
-        return new CourseFeedbackServiceImpl(courseFeedbackRepository, courseRepository);
-    }
-
-    @Bean
-    public HometaskService hometaskService(
-            HometaskRepository hometaskRepository) {
-        return new HometaskServiceImpl(hometaskRepository);
+            CourseRepository courseRepository,
+            UserRepository userRepository) {
+        return new CourseFeedbackServiceImpl(courseFeedbackRepository, courseRepository, userRepository);
     }
 
     @Bean
     public HometaskSolutionService hometaskSolutionService(
             HometaskSolutionRepository hometaskSolutionRepository,
-            HometaskRepository hometaskRepository,
-            UserRepository userRepository) {
-        return new HometaskSolutionServiceImpl(hometaskSolutionRepository, hometaskRepository, userRepository);
+            UserRepository userRepository,
+            LessonRepository lessonRepository) {
+        return new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository);
     }
 
     @Bean
     public LessonService lessonService(
             LessonRepository lessonRepository,
             CourseRepository courseRepository,
-            UserRepository userRepository) {
-        return new LessonServiceImpl(lessonRepository, courseRepository, userRepository);
+            UserRepository userRepository,
+            LessonTimeValidator lessonTimeValidator) {
+        return new LessonServiceImpl(lessonRepository, courseRepository, userRepository, lessonTimeValidator);
     }
 
     @Bean
@@ -59,19 +58,5 @@ public class ServiceConfiguration {
         return new MarkServiceImpl(markRepository);
     }
 
-    @Bean
-    public StudentReportService studentReportService(
-            StudentReportRepository studentReportRepository,
-            CourseRepository courseRepository,
-            UserRepository userRepository) {
-        return new StudentReportServiceImpl(studentReportRepository, courseRepository, userRepository);
-    }
-
-    @Bean
-    public TeacherFeedbackService teacherFeedbackService(
-            TeacherFeedbackRepository teacherFeedbackRepository,
-            UserRepository userRepository) {
-        return new TeacherFeedbackServiceImpl(teacherFeedbackRepository, userRepository);
-    }
 
 }
