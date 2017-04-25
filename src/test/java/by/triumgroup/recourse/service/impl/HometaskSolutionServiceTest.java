@@ -2,8 +2,8 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.User;
-import by.triumgroup.recourse.repository.HometaskRepository;
 import by.triumgroup.recourse.repository.HometaskSolutionRepository;
+import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
@@ -26,18 +26,18 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolution, Integer> {
+    private LessonRepository lessonRepository;
     private HometaskSolutionService hometaskSolutionService;
     private HometaskSolutionRepository hometaskSolutionRepository;
     private HometaskSolutionSupplier hometaskSolutionSupplier;
-    private HometaskRepository hometaskRepository;
     private UserRepository userRepository;
     private UserSupplier userSupplier;
 
     public HometaskSolutionServiceTest() {
         hometaskSolutionRepository = Mockito.mock(HometaskSolutionRepository.class);
-        hometaskRepository = Mockito.mock(HometaskRepository.class);
         userRepository = Mockito.mock(UserRepository.class);
-        hometaskSolutionService = new HometaskSolutionServiceImpl(hometaskSolutionRepository, hometaskRepository, userRepository);
+        lessonRepository = Mockito.mock(LessonRepository.class);
+        hometaskSolutionService = new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository);
         hometaskSolutionSupplier = new HometaskSolutionSupplier();
         userSupplier = new UserSupplier();
     }
@@ -64,15 +64,15 @@ public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolutio
         user.setRole(User.Role.STUDENT);
         HometaskSolution solution = hometaskSolutionSupplier.getValidEntityWithId();
         when(userRepository.findOne(anyInt())).thenReturn(user);
-        when(hometaskRepository.exists(anyInt())).thenReturn(true);
-        when(hometaskSolutionRepository.findByStudentIdAndHometaskId(anyInt(), any()))
+        when(lessonRepository.exists(anyInt())).thenReturn(true);
+        when(hometaskSolutionRepository.findByStudentIdAndLessonId(anyInt(), any()))
                 .thenReturn(solution);
 
-        Optional<HometaskSolution> courses = hometaskSolutionService.findByStudentIdAndHometaskId(user.getId(), solution.getId());
+        Optional<HometaskSolution> courses = hometaskSolutionService.findByStudentIdAndLessonId(user.getId(), solution.getId());
 
         verify(userRepository, times(1)).findOne(anyInt());
-        verify(hometaskRepository, times(1)).exists(anyInt());
-        verify(hometaskSolutionRepository, times(1)).findByStudentIdAndHometaskId(anyInt(), any());
+        verify(lessonRepository, times(1)).exists(anyInt());
+        verify(hometaskSolutionRepository, times(1)).findByStudentIdAndLessonId(anyInt(), any());
         assertTrue(courses.isPresent());
     }
 
@@ -82,7 +82,7 @@ public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolutio
         user.setRole(User.Role.TEACHER);
         when(userRepository.findOne(anyInt())).thenReturn(user);
 
-        Optional<HometaskSolution> courses = hometaskSolutionService.findByStudentIdAndHometaskId(user.getId(), 1);
+        Optional<HometaskSolution> courses = hometaskSolutionService.findByStudentIdAndLessonId(user.getId(), 1);
 
         verify(userRepository, times(1)).findOne(anyInt());
         assertFalse(courses.isPresent());
@@ -115,24 +115,24 @@ public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolutio
 
     @Test
     public void findByExistingHometaskIdTest() throws Exception {
-        when(hometaskRepository.exists(anyInt())).thenReturn(true);
-        when(hometaskSolutionRepository.findByHometaskId(anyInt(), any()))
+        when(lessonRepository.exists(anyInt())).thenReturn(true);
+        when(hometaskSolutionRepository.findByLessonId(anyInt(), any()))
                 .thenReturn(Collections.singletonList(hometaskSolutionSupplier.getValidEntityWithId()));
 
-        Optional<List<HometaskSolution>> courses = hometaskSolutionService.findByHometaskId(1, null);
+        Optional<List<HometaskSolution>> courses = hometaskSolutionService.findByLessonId(1, null);
 
-        verify(hometaskRepository, times(1)).exists(anyInt());
-        verify(hometaskSolutionRepository, times(1)).findByHometaskId(anyInt(), any());
+        verify(lessonRepository, times(1)).exists(anyInt());
+        verify(hometaskSolutionRepository, times(1)).findByLessonId(anyInt(), any());
         assertTrue(courses.isPresent());
     }
 
     @Test
     public void findByNotExistingHometaskIdTest() throws Exception {
-        when(hometaskRepository.exists(anyInt())).thenReturn(false);
+        when(lessonRepository.exists(anyInt())).thenReturn(false);
 
-        Optional<List<HometaskSolution>> courses = hometaskSolutionService.findByHometaskId(1, null);
+        Optional<List<HometaskSolution>> courses = hometaskSolutionService.findByLessonId(1, null);
 
-        verify(hometaskRepository, times(1)).exists(anyInt());
+        verify(lessonRepository, times(1)).exists(anyInt());
         assertFalse(courses.isPresent());
     }
 

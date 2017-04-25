@@ -84,6 +84,7 @@ CREATE TABLE `lesson` (
   `course_id`  INT         NOT NULL,
   `topic`      VARCHAR(50) NULL,
   `teacher_id` INT         NOT NULL,
+  `task`       TEXT        NULL,
   CONSTRAINT `PK_Class` PRIMARY KEY (`id` ASC),
   CONSTRAINT `FK_class_course`
   FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
@@ -97,32 +98,16 @@ CREATE TABLE `lesson` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-
-DROP TABLE IF EXISTS `hometask` CASCADE;
-CREATE TABLE `hometask` (
-  `id`        INT  NOT NULL AUTO_INCREMENT,
-  `lesson_id` INT  NOT NULL,
-  `task`      TEXT NULL,
-  CONSTRAINT `PK_hometask` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `lesson_id` UNIQUE (`lesson_id` ASC),
-  CONSTRAINT `FK_hometask_class`
-  FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
 DROP TABLE IF EXISTS `hometask_solution` CASCADE;
 CREATE TABLE `hometask_solution` (
   `id`          INT  NOT NULL AUTO_INCREMENT,
-  `hometask_id` INT  NOT NULL,
+  `lesson_id`   INT  NOT NULL,
   `student_id`  INT  NOT NULL,
   `solution`    TEXT NULL,
   CONSTRAINT `PK_hometask_solution` PRIMARY KEY (`id` ASC),
-  CONSTRAINT `unique_solution` UNIQUE (`hometask_id` ASC, `student_id` ASC),
+  CONSTRAINT `unique_solution` UNIQUE (`lesson_id` ASC, `student_id` ASC),
   CONSTRAINT `FK_hometask_solution_hometask`
-  FOREIGN KEY (`hometask_id`) REFERENCES `hometask` (`id`)
+  FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT,
   CONSTRAINT `FK_hometask_solution_user`

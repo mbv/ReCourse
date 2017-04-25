@@ -1,18 +1,9 @@
 package by.triumgroup.recourse.controller;
 
-import by.triumgroup.recourse.entity.model.Hometask;
 import by.triumgroup.recourse.entity.model.Lesson;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/lesson")
-public interface LessonController extends CrudController<Lesson, Integer> {
-
-    @GetMapping("{lessonId}/hometask")
-    Hometask getHometask(@PathVariable("lessonId") Integer lessonId, Pageable pageable);
-
-}
+public interface LessonController extends CrudController<Lesson, Integer> { }

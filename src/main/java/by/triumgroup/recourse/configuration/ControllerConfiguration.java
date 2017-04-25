@@ -32,37 +32,25 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public HometaskController hometaskController(
-            HometaskService hometaskService,
-            HometaskSolutionService hometaskSolutionService,
-            LessonService lessonService) {
-        return new HometaskControllerImpl(hometaskService, hometaskSolutionService, lessonService);
-    }
-
-    @Bean
     public HometaskSolutionController hometaskSolutionController(
             HometaskSolutionService hometaskSolutionSevice,
             MarkService markService,
-            HometaskService hometaskService,
             LessonService lessonService) {
-        return new HometaskSolutionControllerImpl(hometaskSolutionSevice, markService, hometaskService, lessonService);
+        return new HometaskSolutionControllerImpl(hometaskSolutionSevice, markService, lessonService);
     }
 
     @Bean
-    public LessonController lessonController(
-            LessonService lessonService,
-            HometaskService hometaskService) {
-        return new LessonControllerImpl(lessonService, hometaskService);
+    public LessonController lessonController(LessonService lessonService) {
+        return new LessonControllerImpl(lessonService);
     }
 
     @Bean
     public MarkController markController(
             MarkService markService,
             HometaskSolutionService hometaskSolutionService,
-            HometaskService hometaskService,
             LessonService lessonService
     ) {
-        return new MarkControllerImpl(markService, hometaskSolutionService, hometaskService, lessonService);
+        return new MarkControllerImpl(markService, hometaskSolutionService, lessonService);
     }
 
     @Bean

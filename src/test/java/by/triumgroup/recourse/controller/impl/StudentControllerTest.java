@@ -43,14 +43,14 @@ public class StudentControllerTest extends AbstractControllerTest {
 
     @Test
     public void getSolutionForLessonTest() throws Exception {
-        when(hometaskSolutionService.findByStudentIdAndHometaskId(any(), any())).thenReturn(Optional.of(hometaskSolutionSupplier.getValidEntityWithId()));
+        when(hometaskSolutionService.findByStudentIdAndLessonId(any(), any())).thenReturn(Optional.of(hometaskSolutionSupplier.getValidEntityWithId()));
         sendGet(STUDENT_ID_REQUEST_PARAMS, "solution", "hometaskId", 1)
                 .andExpect(status().isOk());
     }
 
     @Test
     public void getSolutionForLessonNotExistingTest() throws Exception {
-        when(hometaskSolutionService.findByStudentIdAndHometaskId(any(), any())).thenReturn(Optional.empty());
+        when(hometaskSolutionService.findByStudentIdAndLessonId(any(), any())).thenReturn(Optional.empty());
         sendGet(STUDENT_ID_REQUEST_PARAMS, "solution", "hometaskId", 1)
                 .andExpect(status().isNotFound());
     }

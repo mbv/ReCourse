@@ -30,8 +30,7 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
         markService = Mockito.mock(MarkService.class);
         hometaskSolutionService = Mockito.mock(HometaskSolutionService.class);
         LessonService lessonService = Mockito.mock(LessonService.class);
-        HometaskService hometaskService = Mockito.mock(HometaskService.class);
-        hometaskSolutionController = new HometaskSolutionControllerImpl(hometaskSolutionService, markService, hometaskService, lessonService);
+        hometaskSolutionController = new HometaskSolutionControllerImpl(hometaskSolutionService, markService, lessonService);
         hometaskSolutionSupplier = new HometaskSolutionSupplier();
         markSupplier = new MarkSupplier();
     }

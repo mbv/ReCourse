@@ -39,7 +39,7 @@ public class StudentControllerImpl implements StudentController {
             Pageable pageable) {
         return wrapServiceCall(logger, () -> {
             Optional<HometaskSolution> callResult =
-                    hometaskSolutionService.findByStudentIdAndHometaskId(studentId, hometaskId);
+                    hometaskSolutionService.findByStudentIdAndLessonId(studentId, hometaskId);
             return callResult.orElseThrow(NotFoundException::new);
         });
     }

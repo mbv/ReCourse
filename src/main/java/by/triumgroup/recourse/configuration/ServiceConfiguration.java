@@ -36,17 +36,11 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public HometaskService hometaskService(
-            HometaskRepository hometaskRepository) {
-        return new HometaskServiceImpl(hometaskRepository);
-    }
-
-    @Bean
     public HometaskSolutionService hometaskSolutionService(
             HometaskSolutionRepository hometaskSolutionRepository,
-            HometaskRepository hometaskRepository,
-            UserRepository userRepository) {
-        return new HometaskSolutionServiceImpl(hometaskSolutionRepository, hometaskRepository, userRepository);
+            UserRepository userRepository,
+            LessonRepository lessonRepository) {
+        return new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository);
     }
 
     @Bean
