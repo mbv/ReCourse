@@ -69,24 +69,24 @@ public class CourseControllerImpl
 
     @Override
     public void registerToCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
-        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, authDetails.getId()));
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, authDetails.getId(), false));
     }
 
     @Override
     public void unregisterFromCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
-        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, authDetails.getId()));
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, authDetails.getId(), false));
     }
 
     @Override
     public void registerStudentToCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
         checkAuthority(null, authDetails);
-        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, studentId));
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, studentId, true));
     }
 
     @Override
     public void unregisterStudentFromCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
         checkAuthority(null, authDetails);
-        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, studentId));
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, studentId, true));
     }
 
     @Override

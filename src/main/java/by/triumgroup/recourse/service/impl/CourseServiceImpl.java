@@ -11,12 +11,13 @@ import by.triumgroup.recourse.validation.exception.ServiceNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
-import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class CourseServiceImpl
         extends AbstractCrudService<Course, Integer>
         implements CourseService {
@@ -41,55 +42,59 @@ public class CourseServiceImpl
     }
 
     @Override
-    public void registerStudentToCourse(Integer studentId, Integer courseId) {
-        Optional<Course> courseOptional = wrapJPACallToOptional(() -> courseRepository.findOne(courseId));
-        Optional<User> user = wrapJPACallToOptional(() -> userRepository.findOne(studentId));
+    public void registerStudentToCourse(Integer studentId, Integer courseId, boolean force) {
+        Course course = wrapJPACall(() -> courseRepository.findOne(courseId));
+        User user = wrapJPACall(() -> userRepository.findOne(studentId));
+        validateUserAndCourseToRegisterForCourse(user, course, force);
+        Set<User> registeredStudents = course.getStudents();
+        registeredStudents.add(user);
+        wrapJPACall(() -> courseRepository.save(course));
+    }
+
+    @Override
+    public void removeStudentFromCourse(Integer studentId, Integer courseId, boolean force) {
+        Course course = wrapJPACall(() -> courseRepository.findOne(courseId));
+        User user = wrapJPACall(() -> userRepository.findOne(studentId));
+        validateUserAndCourseToRemoveFromCourse(user, course, force);
+        Set<User> registeredStudents = course.getStudents();
+        registeredStudents.remove(user);
+        wrapJPACall(() -> courseRepository.save(course));
+    }
+
+    private void checkUserAndCourseExistence(User user, Course course) {
         List<ErrorMessage> errorMessages = new ArrayList<>();
-        if (!courseOptional.isPresent()) {
+        if (course == null) {
             errorMessages.add(new ErrorMessage("course", "Not found"));
         }
-        if (!user.isPresent()) {
+        if (user == null) {
             errorMessages.add(new ErrorMessage("user", "Not found"));
         }
         if (!errorMessages.isEmpty()) {
             throw new ServiceNotFoundException(errorMessages);
         }
-        if (user.get().getRole() != User.Role.STUDENT) {
+    }
+
+    private void validateUserAndCourseToRegisterForCourse(User user, Course course, boolean force) {
+        checkUserAndCourseExistence(user, course);
+        List<ErrorMessage> errorMessages = new ArrayList<>();
+        if (user.getRole() != User.Role.STUDENT) {
             errorMessages.add(new ErrorMessage("user", "User must be a student"));
         }
-        Course course = courseOptional.get();
-        if (course.getStatus() != Course.Status.REGISTRATION) {
+        if (course.getStatus() != Course.Status.REGISTRATION && !force) {
             errorMessages.add(new ErrorMessage("course", "Course must has registration status"));
         }
         if (!errorMessages.isEmpty()) {
             throw new ServiceBadRequestException(errorMessages);
         }
-        Set<User> registeredStudents = course.getStudents();
-        registeredStudents.add(user.get());
-        wrapJPACall(() -> courseRepository.save(course));
     }
 
-    @Override
-    public void removeStudentFromCourse(Integer studentId, Integer courseId) {
-        Optional<Course> courseOptional = wrapJPACallToOptional(() -> courseRepository.findOne(courseId));
-        Optional<User> user = wrapJPACallToOptional(() -> userRepository.findOne(studentId));
-        List<ErrorMessage> errorMessages = new ArrayList<>();
-        if (!courseOptional.isPresent()) {
-            errorMessages.add(new ErrorMessage("course", "Not found"));
+    private void validateUserAndCourseToRemoveFromCourse(User user, Course course, boolean force) {
+        checkUserAndCourseExistence(user, course);
+        if (course.getStatus() == Course.Status.FINISHED && !force) {
+            throw new ServiceBadRequestException(
+                    new ErrorMessage("course", "Cannot unregister from finished course")
+            );
         }
-        if (!user.isPresent()) {
-            errorMessages.add(new ErrorMessage("user", "Not found"));
-        }
-        if (!errorMessages.isEmpty()) {
-            throw new ServiceNotFoundException(errorMessages);
-        }
-        Course course = courseOptional.get();
-        if (course.getStatus() == Course.Status.FINISHED) {
-            errorMessages.add(new ErrorMessage("course", "Cannot unregister from finished course"));
-        }
-        Set<User> registeredStudents = course.getStudents();
-        registeredStudents.remove(user.get());
-        wrapJPACall(() -> courseRepository.save(course));
     }
 
     @Override

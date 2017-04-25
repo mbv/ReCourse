@@ -29,19 +29,19 @@ public interface CourseController extends CrudController<Course, Integer> {
     @GetMapping(value = "search", params = "status")
     List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable);
 
-    @PostMapping("{courseId}/registration")
+    @PostMapping("{courseId}/register")
     @ResponseStatus(HttpStatus.OK)
     void registerToCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails);
 
-    @DeleteMapping("{courseId}/registration")
+    @PostMapping("{courseId}/unregister")
     @ResponseStatus(HttpStatus.OK)
     void unregisterFromCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails);
 
-    @PostMapping(value = "{courseId}/registration", params = "studentId")
+    @PostMapping(value = "{courseId}/register", params = "studentId")
     @ResponseStatus(HttpStatus.OK)
     void registerStudentToCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails);
 
-    @DeleteMapping(value = "{courseId}/registration", params = "studentId")
+    @PostMapping(value = "{courseId}/unregister", params = "studentId")
     @ResponseStatus(HttpStatus.OK)
     void unregisterStudentFromCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails);
 
