@@ -9,6 +9,8 @@ import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSolutionSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.MarkSupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -20,11 +22,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskSolution, Integer> {
     private static final String MARK_REQUEST = "/hometask/solution/1/mark";
+    private static final String STUDENT_ID_REQUEST = "/hometask/solution/student/{id}";
+    private static final String STUDENT_ID_REQUEST_PARAMS = "/hometask/solution/student/{id}?{name}={value}";
     private HometaskSolutionController hometaskSolutionController;
     private HometaskSolutionService hometaskSolutionService;
     private HometaskSolutionSupplier hometaskSolutionSupplier;
     private MarkService markService;
     private MarkSupplier markSupplier;
+    private UserSupplier userSupplier;
 
     public HometaskSolutionControllerTest() {
         markService = Mockito.mock(MarkService.class);
@@ -33,6 +38,7 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
         hometaskSolutionController = new HometaskSolutionControllerImpl(hometaskSolutionService, markService, lessonService);
         hometaskSolutionSupplier = new HometaskSolutionSupplier();
         markSupplier = new MarkSupplier();
+        userSupplier = new UserSupplier();
     }
 
     @Test
@@ -46,6 +52,39 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
     public void getMarkNotExistingSolutionTest() throws Exception {
         when(markService.findBySolutionId(any())).thenReturn(Optional.empty());
         sendGet(MARK_REQUEST)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getSolutionsExistingStudentTest() throws Exception {
+        when(hometaskSolutionService.findByStudentId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
+        User student = userSupplier.getWithRole(User.Role.STUDENT);
+        sendGet(STUDENT_ID_REQUEST, student, student.getId())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getSolutionsNotExistingStudentTest() throws Exception {
+        when(hometaskSolutionService.findByStudentId(any(), any())).thenReturn(Optional.empty());
+        User teacher = userSupplier.getWithRole(User.Role.TEACHER);
+        sendGet(STUDENT_ID_REQUEST, teacher, teacher.getId())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getSolutionForLessonTest() throws Exception {
+        HometaskSolution hometaskSolution = hometaskSolutionSupplier.getValidEntityWithId();
+        when(hometaskSolutionService.findByStudentIdAndLessonId(any(), any())).thenReturn(Optional.of(hometaskSolution));
+        User student = prepareAuthorizedUser(hometaskSolution, userSupplier.getValidEntityWithId());
+        sendGet(STUDENT_ID_REQUEST_PARAMS, student, student.getId(), "lessonId", 1)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getSolutionForLessonNotExistingTest() throws Exception {
+        when(hometaskSolutionService.findByStudentIdAndLessonId(any(), any())).thenReturn(Optional.empty());
+        User student = userSupplier.getWithRole(User.Role.STUDENT);
+        sendGet(STUDENT_ID_REQUEST_PARAMS, student, student.getId(), "lessonId", 1)
                 .andExpect(status().isNotFound());
     }
 

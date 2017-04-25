@@ -54,11 +54,6 @@ public class ControllerConfiguration {
     }
 
     @Bean
-    public StudentController studentController(HometaskSolutionService hometaskSolutionService) {
-        return new StudentControllerImpl(hometaskSolutionService);
-    }
-
-    @Bean
     public TeacherController teacherController(
             LessonService lessonService) {
         return new TeacherControllerImpl(lessonService);
