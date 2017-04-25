@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('CourseModalController', CourseModalController);
 
-function CourseModalController($mdDialog, UserFactory, CourseFactory, course) {
+function CourseModalController($mdDialog, CourseFactory, course) {
     var self = this;
 
     self.course = course;
@@ -11,11 +11,6 @@ function CourseModalController($mdDialog, UserFactory, CourseFactory, course) {
     self.updateMode = !!self.course;
 
     self.statuses = ['ONGOING', 'REGISTRATION', 'FINISHED'];
-    self.teachers = [];
-
-    UserFactory.query().$promise.then(function (result) {
-        self.teachers = result.filter(function (user) { return user.role === 'TEACHER' });
-    });
 
     function saveCourse() {
         if (self.updateMode){

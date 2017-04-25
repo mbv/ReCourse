@@ -27,29 +27,6 @@
                     <input ng-model="self.course.maxStudents">
                 </md-input-container>
             </div>
-            <div layout="row" layout-align="space-between center">
-                <label style="color: rgba(0, 0, 0, 0.38); margin-right: 20px;">Teacher</label>
-                <md-block flex>
-                    <md-autocomplete
-                            md-search-text="self.searchText"
-                            md-selected-item="self.course.teacher"
-                            md-item-text="teacher.name + ' ' + teacher.surname + ' ('+ teacher.email +')'"
-                            placeholder="Select course a teacher"
-                            md-min-length="0"
-                            md-no-cache="true"
-                            md-select-on-match="true"
-                            md-items="teacher in self.teachers | propertyFilter: { searchText: self.searchText, properties: ['name', 'surname', 'email'] }">
-                        <md-item-template>
-                            <span md-highlight-text="self.searchText">{{teacher.name}} </span>
-                            <span md-highlight-text="self.searchText">{{teacher.surname}} </span>
-                            <span md-highlight-text="self.searchText">({{teacher.email}})</span>
-                        </md-item-template>
-                        <md-not-found>
-                            No teachers matching "{{self.searchText}}" were found.
-                        </md-not-found>
-                    </md-autocomplete>
-                </md-block>
-            </div>
             <div layout="row">
                 <md-input-container flex>
                     <label>Description</label>
