@@ -2,14 +2,15 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.validation.exception.ServiceValidationException;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.*;
 
@@ -53,6 +54,7 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
 
     @Override
     public Iterable<E> findAll() {
+        //noinspection Convert2MethodRef
         return wrapJPACall(() -> repository.findAll());
     }
 
@@ -68,7 +70,7 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
             }
         }
         if (result.hasErrors()){
-            throw new ServiceValidationException(result);
+            throw new ServiceBadRequestException(result);
         }
     }
 

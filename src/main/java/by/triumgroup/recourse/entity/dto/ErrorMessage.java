@@ -11,6 +11,14 @@ public class ErrorMessage {
         this.message = message;
     }
 
+    public static ErrorMessage fromFieldError(FieldError fieldError) {
+        return new ErrorMessage(fieldError.getField(), fieldError.getDefaultMessage());
+    }
+
+    public static ErrorMessage of(String title, String message) {
+        return new ErrorMessage(title, message);
+    }
+
     public String getTitle() {
         return title;
     }
@@ -25,9 +33,5 @@ public class ErrorMessage {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public static ErrorMessage fromFieldError(FieldError fieldError){
-        return new ErrorMessage(fieldError.getField(), fieldError.getDefaultMessage());
     }
 }

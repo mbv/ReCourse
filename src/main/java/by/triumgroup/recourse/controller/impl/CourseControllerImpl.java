@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
@@ -69,5 +70,26 @@ public class CourseControllerImpl
     @Override
     protected boolean hasAuthorityToEdit(Course entity, UserAuthDetails authDetails) {
         return authDetails.getRole() == User.Role.ADMIN;
+    }
+
+    public void registerToCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, authDetails.getId(), false));
+    }
+
+    @Override
+    public void unregisterFromCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, authDetails.getId(), false));
+    }
+
+    @Override
+    public void registerStudentToCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails, this::hasAuthorityToEdit);
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, studentId, true));
+    }
+
+    @Override
+    public void unregisterStudentFromCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails, this::hasAuthorityToEdit);
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, studentId, true));
     }
 }

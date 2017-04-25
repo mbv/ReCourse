@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
+
 @Component
 public class RegistrationDetailsValidator implements Validator {
 
@@ -25,7 +27,7 @@ public class RegistrationDetailsValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         RegistrationDetails registrationDetails = (RegistrationDetails) o;
-        if (userRepository.findByEmail(registrationDetails.getEmail()) != null){
+        if (wrapJPACall(() -> userRepository.findByEmail(registrationDetails.getEmail())) != null) {
             errors.rejectValue("email", "user", "User is already exists");
         }
         if (!registrationDetails.getPassword().equals(registrationDetails.getPasswordConfirmation())){
