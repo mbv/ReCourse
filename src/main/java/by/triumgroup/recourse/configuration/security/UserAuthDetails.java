@@ -52,6 +52,6 @@ public class UserAuthDetails extends User implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return getRole() == Role.DISABLED;
     }
 }

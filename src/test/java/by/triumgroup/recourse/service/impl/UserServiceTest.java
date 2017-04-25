@@ -2,6 +2,7 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
@@ -17,6 +18,8 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.validation.Errors;
 
 import java.util.Optional;
@@ -33,6 +36,12 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
 
     private UserRepository userRepository;
 
+    private LessonRepository lessonRepository;
+
+    private TokenStore tokenStore;
+
+    private ConsumerTokenServices consumerTokenServices;
+
     private PasswordEncoder passwordEncoder;
 
     private UserSupplier userSupplier;
@@ -42,10 +51,15 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
     public UserServiceTest() {
         registrationDetailsSupplier = new RegistrationDetailsSupplier();
         userRepository = Mockito.mock(UserRepository.class);
+        lessonRepository = Mockito.mock(LessonRepository.class);
+        passwordEncoder = Mockito.mock(PasswordEncoder.class);
+        tokenStore = Mockito.mock(TokenStore.class);
+        consumerTokenServices = Mockito.mock(ConsumerTokenServices.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         registrationDetailsValidator = Mockito.mock(RegistrationDetailsValidator.class);
+
         when(registrationDetailsValidator.supports(any())).thenCallRealMethod();
-        userService = new UserServiceImpl(userRepository, passwordEncoder, registrationDetailsValidator);
+        userService = new UserServiceImpl(userRepository, lessonRepository, passwordEncoder, registrationDetailsValidator, tokenStore, consumerTokenServices);
         userSupplier = new UserSupplier();
     }
 

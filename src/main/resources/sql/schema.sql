@@ -17,7 +17,7 @@ CREATE TABLE `user` (
   `name`          VARCHAR(50)             NOT NULL,
   `gender`        ENUM ('MALE', 'FEMALE') NOT NULL,
   `birthday`      DATE                                              DEFAULT NULL,
-  `role`          ENUM ('STUDENT', 'TEACHER', 'ADMIN')              DEFAULT NULL,
+  `role`          ENUM ('STUDENT', 'TEACHER', 'ADMIN', 'DISABLED')  DEFAULT NULL,
   `is_deleted`    BOOL                    NOT NULL                  DEFAULT FALSE,
   PRIMARY KEY (`id`),
   KEY `IDX_name` (`name`, `surname`),
@@ -100,10 +100,10 @@ CREATE TABLE `lesson` (
 
 DROP TABLE IF EXISTS `hometask_solution` CASCADE;
 CREATE TABLE `hometask_solution` (
-  `id`          INT  NOT NULL AUTO_INCREMENT,
-  `lesson_id`   INT  NOT NULL,
-  `student_id`  INT  NOT NULL,
-  `solution`    TEXT NULL,
+  `id`         INT  NOT NULL AUTO_INCREMENT,
+  `lesson_id`  INT  NOT NULL,
+  `student_id` INT  NOT NULL,
+  `solution`   TEXT NULL,
   CONSTRAINT `PK_hometask_solution` PRIMARY KEY (`id` ASC),
   CONSTRAINT `unique_solution` UNIQUE (`lesson_id` ASC, `student_id` ASC),
   CONSTRAINT `FK_hometask_solution_hometask`
@@ -144,7 +144,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 DROP FUNCTION IF EXISTS `can_add_lesson`;
 DELIMITER ;;
-CREATE FUNCTION `can_add_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME) RETURNS BOOL
+CREATE FUNCTION `can_add_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME)
+  RETURNS BOOL
   BEGIN
     RETURN can_update_lesson(`teacher_id`, `new_lesson_start_time`, `new_lesson_duration`, -1);
   END ;;
@@ -153,19 +154,20 @@ DELIMITER ;
 
 DROP FUNCTION IF EXISTS `can_update_lesson`;
 DELIMITER ;;
-CREATE FUNCTION `can_update_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME, `lesson_id` INT) RETURNS BOOL
+CREATE FUNCTION `can_update_lesson`(`teacher_id` INT, `new_lesson_start_time` DATETIME, `new_lesson_duration` TIME,
+                                    `lesson_id`  INT)
+  RETURNS BOOL
   BEGIN
     DECLARE result BOOL;
     SELECT NOT EXISTS(
-        SELECT
-            `id`
+        SELECT `id`
         FROM
-            `lesson`
+          `lesson`
         WHERE
-            `lesson`.`teacher_id` = `teacher_id`
-            AND `new_lesson_start_time` <= ADDTIME(`start_time`, `duration`)
-            AND ADDTIME(`new_lesson_start_time`, `new_lesson_duration`) >= `start_time`
-            AND `lesson_id` != `id`)
+          `lesson`.`teacher_id` = `teacher_id`
+          AND `new_lesson_start_time` <= ADDTIME(`start_time`, `duration`)
+          AND ADDTIME(`new_lesson_start_time`, `new_lesson_duration`) >= `start_time`
+          AND `lesson_id` != `id`)
     INTO result;
     RETURN result;
   END ;;

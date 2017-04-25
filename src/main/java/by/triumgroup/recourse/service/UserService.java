@@ -10,5 +10,7 @@ public interface UserService extends CrudService<User, Integer> {
 
     Optional<User> findByEmail(String email) throws ServiceException;
 
+    <S extends User> Optional<S> update(S entity, Integer userId, User performer) throws ServiceException;
+
     Optional<Boolean> register(RegistrationDetails registrationDetails) throws ServiceException;
 }

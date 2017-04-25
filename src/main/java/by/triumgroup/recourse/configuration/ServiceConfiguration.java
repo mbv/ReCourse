@@ -8,6 +8,8 @@ import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Configuration
@@ -17,8 +19,17 @@ public class ServiceConfiguration {
     public UserService userService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            RegistrationDetailsValidator registrationDetailsValidator) {
-        return new UserServiceImpl(userRepository, passwordEncoder, registrationDetailsValidator);
+            RegistrationDetailsValidator registrationDetailsValidator,
+            LessonRepository lessonRepository,
+            TokenStore tokenStore,
+            ConsumerTokenServices consumerTokenServices) {
+        return new UserServiceImpl(
+                userRepository,
+                lessonRepository,
+                passwordEncoder,
+                registrationDetailsValidator,
+                tokenStore,
+                consumerTokenServices);
     }
 
     @Bean

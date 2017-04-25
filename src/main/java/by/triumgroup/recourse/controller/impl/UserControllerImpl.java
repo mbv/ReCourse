@@ -5,7 +5,8 @@ import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.UserController;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.ControllerException;
-import by.triumgroup.recourse.controller.exception.UserDeletionNotAllowedException;
+import by.triumgroup.recourse.controller.exception.MethodNotAllowedException;
+import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.UserService;
@@ -18,7 +19,9 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
+import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserControllerImpl extends AbstractCrudController<User, Integer> implements UserController {
@@ -35,8 +38,22 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
+    public <S extends User> S create(S entity, UserAuthDetails authDetails) {
+        throw new MethodNotAllowedException();
+    }
+
+    @Override
     public void delete(Integer integer, UserAuthDetails authDetails) {
-        throw new UserDeletionNotAllowedException();
+        throw new MethodNotAllowedException();
+    }
+
+    @Override
+    public <S extends User> S update(S entity, Integer id, UserAuthDetails authDetails) {
+        checkAuthority(entity, authDetails, this::hasAuthorityToRead);
+        return wrapServiceCall(logger, () -> {
+            Optional<S> callResult = userService.update(entity, id, authDetails);
+            return callResult.orElseThrow(NotFoundException::new);
+        });
     }
 
     @Override
@@ -68,6 +85,6 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     @Override
     protected boolean hasAuthorityToRead(User entity, UserAuthDetails authDetails) {
-        return authDetails.isAdmin();
+        return authDetails.isAdmin() || (entity != null && authDetails.getId().equals(entity.getId()));
     }
 }
