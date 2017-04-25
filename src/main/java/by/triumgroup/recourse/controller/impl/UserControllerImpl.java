@@ -49,7 +49,7 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
-    protected boolean hasAuthorityToPerform(User entity, UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToEdit(User entity, UserAuthDetails authDetails) {
         return authDetails.isAdmin();
     }
 }

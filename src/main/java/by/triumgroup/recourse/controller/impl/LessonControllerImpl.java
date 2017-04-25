@@ -38,7 +38,7 @@ public class LessonControllerImpl
     }
 
     @Override
-    protected boolean hasAuthorityToPerform(Lesson entity, UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToEdit(Lesson entity, UserAuthDetails authDetails) {
         return Objects.equals(entity.getTeacher().getId(), authDetails.getId());
     }
 }

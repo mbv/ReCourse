@@ -54,7 +54,7 @@ public class MarkControllerImpl
     }
 
     @Override
-    protected boolean hasAuthorityToPerform(Mark entity, UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToEdit(Mark entity, UserAuthDetails authDetails) {
         Optional<HometaskSolution> hometaskSolution = hometaskSolutionService.findById(entity.getSolutionId());
         if (hometaskSolution.isPresent()) {
             Optional<Hometask> hometask = hometaskService.findById(hometaskSolution.get().getHometaskId());
@@ -65,6 +65,6 @@ public class MarkControllerImpl
                 }
             }
         }
-        return true;
+        return true; //TODO: why true here?
     }
 }

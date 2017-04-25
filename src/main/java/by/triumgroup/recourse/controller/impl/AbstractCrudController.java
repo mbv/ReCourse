@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
 
@@ -27,18 +28,28 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
         this.crudService = crudService;
     }
 
-    protected abstract boolean hasAuthorityToPerform(E entity, UserAuthDetails authDetails);
+    protected abstract boolean hasAuthorityToEdit(E entity, UserAuthDetails authDetails);
 
-    protected void checkAuthority(E entity, UserAuthDetails authDetails) {
-        if (!authDetails.isAdmin() && !hasAuthorityToPerform(entity, authDetails)) {
+    protected boolean hasAuthorityToRead(E entity, @Auth UserAuthDetails authDetails) {
+        return true;
+    }
+
+    protected void checkAuthority(E entity, UserAuthDetails authDetails, BiFunction<E, UserAuthDetails, Boolean> authorityChecker) {
+        if (!authDetails.isAdmin() && !authorityChecker.apply(entity, authDetails)) {
             throw new AccessDeniedException();
         }
     }
 
-    public E getById(@PathVariable("id") ID id) {
+    @Override
+    public E getById(@PathVariable("id") ID id, @Auth UserAuthDetails userAuthDetails) {
         return wrapServiceCall(logger, () -> {
             Optional<E> callResult = crudService.findById(id);
-            return callResult.orElseThrow(NotFoundException::new);
+            if (callResult.isPresent()){
+                checkAuthority(callResult.get(), userAuthDetails, this::hasAuthorityToRead);
+                return callResult.get();
+            } else {
+                throw new NotFoundException();
+            }
         });
     }
 
@@ -48,7 +59,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
 
     @Override
     public <S extends E> S create(@Valid @RequestBody S entity, @Auth UserAuthDetails authDetails) {
-        checkAuthority(entity, authDetails);
+        checkAuthority(entity, authDetails, this::hasAuthorityToEdit);
         return wrapServiceCall(logger, () -> {
             Optional<S> callResult = crudService.add(entity);
             return callResult.orElseThrow(BadRequestException::new);
@@ -57,7 +68,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
 
     @Override
     public <S extends E> S update(@Valid @RequestBody S entity, @PathVariable("id") ID id, @Auth UserAuthDetails authDetails) {
-        checkAuthority(entity, authDetails);
+        checkAuthority(entity, authDetails, this::hasAuthorityToEdit);
         return wrapServiceCall(logger, () -> {
             Optional<S> callResult = crudService.update(entity, id);
             return callResult.orElseThrow(NotFoundException::new);
@@ -66,7 +77,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
 
     @Override
     public void delete(@PathVariable("id") ID id, @Auth UserAuthDetails authDetails) {
-        checkAuthority(getById(id), authDetails);
+        checkAuthority(getById(id, authDetails), authDetails, this::hasAuthorityToEdit);
         wrapServiceCall(logger, () -> crudService.delete(id).orElseThrow(NotFoundException::new));
     }
 }

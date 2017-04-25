@@ -22,7 +22,7 @@ public class CourseFeedbackControllerImpl
 
 
     @Override
-    protected boolean hasAuthorityToPerform(CourseFeedback entity, UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToEdit(CourseFeedback entity, UserAuthDetails authDetails) {
         return Objects.equals(entity.getStudent().getId(), authDetails.getId());
     }
 }

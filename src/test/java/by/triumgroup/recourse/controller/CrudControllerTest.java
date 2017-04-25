@@ -39,7 +39,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
         E entity = getEntitySupplier().getValidEntityWithId();
         when(getService().findById(any())).thenReturn(Optional.of(entity));
 
-        getEntityById(entity.getId())
+        getEntityByIdAuthorized(entity.getId(), entity)
             .andExpect(status().isOk());
     }
 
@@ -138,8 +138,9 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
         return sendPost(generalRequest, entity, user);
     }
 
-    protected ResultActions getEntityByIdAuthorized(ID id) throws Exception {
-        return sendGet(idRequest, id);
+    protected ResultActions getEntityByIdAuthorized(ID id, E entity) throws Exception {
+        User user = prepareAuthorizedUser(entity);
+        return sendGet(idRequest, user, id);
     }
 
     protected ResultActions putEntityByIdAuthorized(ID id, E entity) throws Exception {

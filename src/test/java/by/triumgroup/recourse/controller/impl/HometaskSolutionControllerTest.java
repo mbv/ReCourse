@@ -5,9 +5,7 @@ import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.User;
-import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.service.HometaskSolutionService;
-import by.triumgroup.recourse.service.MarkService;
+import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSolutionSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.MarkSupplier;
@@ -31,7 +29,9 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
     public HometaskSolutionControllerTest() {
         markService = Mockito.mock(MarkService.class);
         hometaskSolutionService = Mockito.mock(HometaskSolutionService.class);
-        hometaskSolutionController = new HometaskSolutionControllerImpl(hometaskSolutionService, markService);
+        LessonService lessonService = Mockito.mock(LessonService.class);
+        HometaskService hometaskService = Mockito.mock(HometaskService.class);
+        hometaskSolutionController = new HometaskSolutionControllerImpl(hometaskSolutionService, markService, hometaskService, lessonService);
         hometaskSolutionSupplier = new HometaskSolutionSupplier();
         markSupplier = new MarkSupplier();
     }

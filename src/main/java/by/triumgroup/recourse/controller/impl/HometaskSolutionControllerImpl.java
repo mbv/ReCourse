@@ -3,9 +3,13 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
+import by.triumgroup.recourse.entity.model.Hometask;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.entity.model.Mark;
+import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.HometaskSolutionService;
+import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.MarkService;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +26,17 @@ public class HometaskSolutionControllerImpl
 
     private static final Logger logger = getLogger(HometaskSolutionControllerImpl.class);
     private final MarkService markService;
+    private final HometaskService hometaskService;
+    private final LessonService lessonService;
 
-    public HometaskSolutionControllerImpl(HometaskSolutionService hometaskSolutionService, MarkService markService) {
+    public HometaskSolutionControllerImpl(HometaskSolutionService hometaskSolutionService,
+                                          MarkService markService,
+                                          HometaskService hometaskService,
+                                          LessonService lessonService) {
         super(hometaskSolutionService, logger);
         this.markService = markService;
+        this.hometaskService = hometaskService;
+        this.lessonService = lessonService;
     }
 
     @Override
@@ -37,7 +48,23 @@ public class HometaskSolutionControllerImpl
     }
 
     @Override
-    protected boolean hasAuthorityToPerform(HometaskSolution entity, UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToEdit(HometaskSolution entity, UserAuthDetails authDetails) {
         return Objects.equals(entity.getStudent().getId(), authDetails.getId());
+    }
+
+    @Override
+    protected boolean hasAuthorityToRead(HometaskSolution entity, UserAuthDetails authDetails) {
+        boolean result = hasAuthorityToEdit(entity, authDetails);
+        if (!result){
+            Optional<Hometask> hometask = wrapServiceCall(logger, () -> hometaskService.findById(entity.getHometaskId()));
+            if (hometask.isPresent()) {
+                Optional<Lesson> lesson = lessonService.findById(hometask.get().getLessonId());
+                if (lesson.isPresent()){
+                    Integer teacherId = lesson.get().getTeacher().getId();
+                    result = teacherId.equals(authDetails.getId());
+                }
+            }
+        }
+        return result;
     }
 }

@@ -67,7 +67,7 @@ public class CourseControllerImpl
     }
 
     @Override
-    protected boolean hasAuthorityToPerform(Course entity, UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToEdit(Course entity, UserAuthDetails authDetails) {
         return authDetails.getRole() == User.Role.ADMIN;
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public interface CrudController<E extends BaseEntity<ID>, ID> {
 
     @GetMapping("{id}")
-    E getById(@PathVariable("id") ID id) throws ControllerException;
+    E getById(@PathVariable("id") ID id, @Auth UserAuthDetails authDetails) throws ControllerException;
 
     @GetMapping
     Iterable<E> getAll() throws ControllerException;

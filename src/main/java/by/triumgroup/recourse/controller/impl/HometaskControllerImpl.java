@@ -43,7 +43,7 @@ public class HometaskControllerImpl
     }
 
     @Override
-    protected boolean hasAuthorityToPerform(Hometask entity, UserAuthDetails authDetails) {
+    protected boolean hasAuthorityToEdit(Hometask entity, UserAuthDetails authDetails) {
         Optional<Lesson> lesson = lessonService.findById(entity.getLessonId());
         return lesson.isPresent() && Objects.equals(lesson.get().getTeacher().getId(), authDetails.getId());
     }
