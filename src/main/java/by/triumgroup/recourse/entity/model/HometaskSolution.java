@@ -28,7 +28,7 @@ public class HometaskSolution extends BaseEntity<Integer> {
     private String solution;
 
     @Null
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id", referencedColumnName = "solution_id")
     private Mark mark;
 
