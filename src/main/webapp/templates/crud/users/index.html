@@ -9,6 +9,7 @@
                     <th md-column>Surname</th>
                     <th md-column>Gender</th>
                     <th md-column>Role</th>
+                    <th md-column>Birthday</th>
                 </tr>
             </thead>
             <tbody md-body>
@@ -19,6 +20,7 @@
                     <td md-cell>{{user.surname}}</td>
                     <td md-cell>{{user.gender}}</td>
                     <td md-cell>{{user.role}}</td>
+                    <td md-cell>{{user.birthday | date : 'MM/dd/yyyy' }}</td>
                     <td md-cell style="width: 120px;">
                         <md-button class="md-icon-button" ng-click="self.editUser(user)">
                             <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>

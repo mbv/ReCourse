@@ -5,9 +5,9 @@ angular
 function AuthService($http, $state, $cookies) {
 
     var self = {
-        needToRemember: true,
         isAuthorized: false,
-        checkAuthorization: checkAuthorization,
+        tryAuthorize: tryAuthorize,
+        unauthorize: unauthorize,
         signIn: signIn,
         signUp: signUp,
         signOut: signOut
@@ -15,26 +15,18 @@ function AuthService($http, $state, $cookies) {
 
     return self;
 
-    function checkAuthorization() {
+    function tryAuthorize() {
         var accessToken = $cookies.get('recourse-access-token');
         if (!!accessToken) {
-            checkAccessToken(accessToken);
-        } else {
-            $state.go('signIn');
+            self.isAuthorized = true;
+            injectAccessTokenToOutgoingHttpRequests(accessToken);
         }
     }
-    
-    function checkAccessToken(accessToken) {
-        $http(oauthRequestConfig('/ReCourse/oauth/check_token', { token: accessToken })).then(function(response) {
-            if (!!response.data.user_name) {
-                self.isAuthorized = true;
-                injectAccessTokenToOutgoingHttpRequests(accessToken);
-                $state.go('home');
-            } else {
-                $cookies.remove('recourse-access-token');
-                $state.go('signIn');
-            }
-        });
+    function unauthorize() {
+        $cookies.remove('recourse-access-token');
+        rejectAccessTokenToOutgoingHttpRequests();
+        self.isAuthorized = false;
+        $state.go('root');
     }
 
     function signIn(email, password, needToRemember) {
@@ -59,29 +51,30 @@ function AuthService($http, $state, $cookies) {
     }
 
     function signOut() {
-        makeLogoutRequest(function () {
-            $cookies.remove('recourse-access-token');
-            self.isAuthorized = false;
-            $state.go('signIn');
-        });
+        makeLogoutRequest(self.unauthorize);
     }
 
     function handleAccessTokenRequest(response, needToRemember) {
         var accessToken = response.data.access_token;
+        var tokenExpiresIn = response.data.expires_in;
 
         if (!!accessToken) {
             injectAccessTokenToOutgoingHttpRequests(accessToken);
             self.isAuthorized = true;
             if (needToRemember) {
-                $cookies.put('recourse-access-token', accessToken);
+                $cookies.put('recourse-access-token', accessToken, { expires: new Date() + tokenExpiresIn } );
             }
         }
 
-        $state.go('home');
+        $state.go('root');
     }
 
     function injectAccessTokenToOutgoingHttpRequests(token) {
         $http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    }
+
+    function rejectAccessTokenToOutgoingHttpRequests() {
+        $http.defaults.headers.common['Authorization'] = undefined;
     }
 
     function makeLogoutRequest(callback) {
