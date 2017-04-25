@@ -9,6 +9,7 @@ function AuthService($http, $state, $cookies) {
         isAuthorized: false,
         checkAuthorization: checkAuthorization,
         signIn: signIn,
+        signUp: signUp,
         signOut: signOut
     };
 
@@ -36,9 +37,9 @@ function AuthService($http, $state, $cookies) {
         });
     }
 
-    function signIn(username, password, needToRemember) {
+    function signIn(email, password, needToRemember) {
         var requestParams = {
-            username: username,
+            username: email,
             password: password,
             grant_type: 'password'
         };
@@ -47,6 +48,14 @@ function AuthService($http, $state, $cookies) {
             .then(function (response) {
                 handleAccessTokenRequest(response, needToRemember);
             });
+    }
+
+    function signUp(newUser) {
+        $http.post('/ReCourse/api/users/register', newUser).then(function (response) {
+            if (response.status === 200) {
+                signIn(newUser.email, newUser.password, true);
+            }
+        });
     }
 
     function signOut() {
