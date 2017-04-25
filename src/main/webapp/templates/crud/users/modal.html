@@ -1,52 +1,60 @@
-<div>
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" ng-click="self.cancel()"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" ng-if="self.updateMode">Update Person</h4>
-            <h4 class="modal-title" ng-if="!self.updateMode">Create Person</h4>
-        </div>
-        <div class="modal-body">
-            <div class="input-group" style="margin-bottom: 20px;">
-                <span class="input-group-addon">Email</span>
-                <input type="text" class="form-control" ng-model="self.entity.email">
+<md-dialog>
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 ng-if="self.updateMode">Update Person</h2>
+                <h2 ng-if="!self.updateMode">Create Person</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="self.cancel()">
+                    <i class="material-icons">close</i>
+                </md-button>
             </div>
-            <div class="input-group" style="margin-bottom: 20px;">
-                <span class="input-group-addon">Name</span>
-                <input type="text" class="form-control" ng-model="self.entity.name">
+        </md-toolbar>
+        <md-dialog-content layout="column" layout-padding style="margin-top: 20px;">
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Email</label>
+                    <input ng-model="self.user.email" type="email">
+                </md-input-container>
             </div>
-            <div class="input-group" style="margin-bottom: 20px;">
-                <span class="input-group-addon">Surname</span>
-                <input type="text" class="form-control" ng-model="self.entity.surname">
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Name</label>
+                    <input ng-model="self.user.name">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Surname</label>
+                    <input ng-model="self.user.surname">
+                </md-input-container>
             </div>
-            <div class="input-group" style="margin-bottom: 20px;">
-                <span class="input-group-addon">Gender</span>
-                <ui-select tagging ng-model="self.entity.gender">
-                    <ui-select-match placeholder="Select gender">
-                        <span ng-bind="$select.selected"></span>
-                    </ui-select-match>
-                    <ui-select-choices repeat="gender in self.parentController.genders | filter: $select.search">
-                        <span ng-bind-html="gender | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Gender</label>
+                    <md-select ng-model="self.user.gender">
+                        <md-option ng-repeat="gender in self.genders" value="{{gender}}">{{gender}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Role</label>
+                    <md-select ng-model="self.user.role">
+                        <md-option ng-repeat="role in self.roles" value="{{role}}">{{role}}</md-option>
+                    </md-select>
+                </md-input-container>
             </div>
-            <div class="input-group" style="margin-bottom: 20px;">
-                <span class="input-group-addon">Role</span>
-                <ui-select tagging ng-model="self.entity.role">
-                    <ui-select-match placeholder="Select role">
-                        <span ng-bind="$select.selected"></span>
-                    </ui-select-match>
-                    <ui-select-choices repeat="role in self.parentController.roles | filter: $select.search">
-                        <span ng-bind-html="role | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
+            <div layout="row">
+                <md-input-container ng-if="!self.updateMode">
+                    <label>Password Hash</label>
+                    <input ng-model="self.user.passwordHash">
+                </md-input-container>
+                <md-input-container>
+                    <label>Birthday</label>
+                    <md-datepicker md-hide-icons="calendar" md-date-filter="" ng-model="self.user.birthday"></md-datepicker>
+                </md-input-container>
             </div>
-            <div class="input-group" style="margin-bottom: 20px;" ng-if="!self.updateMode">
-                <span class="input-group-addon">Pass Hash</span>
-                <input type="text" class="form-control" ng-model="self.entity.passwordHash">
-            </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" type="button" ng-click="self.saveEntity()">Save</button>
-            <button class="btn btn-default" type="button" ng-click="self.cancel()">Cancel</button>
-        </div>
-    </div>
-</div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="self.saveUser()">Save</md-button>
+            <md-button ng-click="self.cancel()">Cancel</md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

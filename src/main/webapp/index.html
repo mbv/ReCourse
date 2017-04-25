@@ -5,16 +5,17 @@
     <title>ReCourse</title>
     <link type="text/css" rel="stylesheet" href="node_modules/angular-material/angular-material.css">
     <link type="text/css" rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.css">
+    <link type="text/css" rel="stylesheet" href="node_modules/angular-material-data-table/dist/md-data-table.css">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <link type="text/css" rel="stylesheet" href="css/application.css">
-    <link type="text/css" rel="stylesheet" href="css/select.min.css">
 </head>
 
 <body ng-app="app" ng-cloak layout="column">
 
-    <md-toolbar layout="row" layout-align="space-around center" ng-controller="NavigationController as self">
+    <md-toolbar layout="row" md-whiteframe="2" layout-align="space-around center" ng-controller="NavigationController as self">
         <p>ReCourse CRUD</p>
         <md-tabs class="md-primary" md-no-pagination="true" style="width: 400px;">
             <div ng-if="self.isAuthorized()">
@@ -43,20 +44,25 @@
     <script type="text/javascript" src="node_modules/angular-ui-date/dist/date.js"></script>
     <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="node_modules/angular-loading-bar/build/loading-bar.js"></script>
-
-    <script type="text/javascript" src="vendor/ui-bootstrap-tpls-2.5.0.min.js"></script>
-    <script type="text/javascript" src="vendor/select.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-material-data-table/dist/md-data-table.js"></script>
 
     <script type="text/javascript" src="app/application.js"></script>
-    <script type="text/javascript" src="app/auth.service.js"></script>
     <script type="text/javascript" src="app/applicationStates.js"></script>
-    <script type="text/javascript" src="app/propertyFilter.js"></script>
-    <script type="text/javascript" src="app/signIn.controller.js"></script>
-    <script type="text/javascript" src="app/signUp.controller.js"></script>
-    <script type="text/javascript" src="app/entityModal.controller.js"></script>
-    <script type="text/javascript" src="app/usersList.controller.js"></script>
-    <script type="text/javascript" src="app/coursesList.controller.js"></script>
-    <script type="text/javascript" src="app/entityList.controller.js"></script>
-    <script type="text/javascript" src="app/navigation.controller.js"></script>
+
+    <script type="text/javascript" src="app/services/auth.service.js"></script>
+
+    <script type="text/javascript" src="app/factories/user.factory.js"></script>
+    <script type="text/javascript" src="app/factories/course.factory.js"></script>
+
+    <script type="text/javascript" src="app/controllers/signIn.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/signUp.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/users/userList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/users/userModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/courseList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/courseModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/navigation.controller.js"></script>
+
+    <script type="text/javascript" src="app/filters/propertyFilter.js"></script>
+    <script type="text/javascript" src="app/filters/strLengthLimit.js"></script>
 </body>
 </html>

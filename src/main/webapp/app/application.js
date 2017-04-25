@@ -2,13 +2,12 @@ angular
     .module('app', [
         'ui.router',
         'ngResource',
-        'ui.bootstrap',
-        'ui.select',
         'ngSanitize',
         'ngCookies',
         'ngAnimate',
         'ngMaterial',
-        'angular-loading-bar'
+        'angular-loading-bar',
+        'md.data.table'
     ])
     .config(UnauthorizedRequestHandler)
     .run(InitAuthenticationService);
@@ -21,7 +20,7 @@ function UnauthorizedRequestHandler($httpProvider) {
         return {
         responseError: function(response) {
             if (response.status === 401) {
-                $injector.get('AuthService').checkAuthorization();
+                // $injector.get('AuthService').checkAuthorization();
             }
         }
     };

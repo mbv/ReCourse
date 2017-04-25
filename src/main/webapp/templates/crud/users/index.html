@@ -1,39 +1,37 @@
-<div class="container" ng-controller="UsersListController as self">
-    <div class="col-xs-12">
-        <div class="panel panel-default" style="margin-top: 30px;">
-            <div class="panel-heading">
-                <span style="line-height: 34px;">Users</span>
-                <button type="button" class="btn btn-default" data-toggle="modal" ng-click="self.addEntity()" style="float: right;">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </button>
-            </div>
-            <div class="panel-body">
-                <table class="table table-striped">
-                    <thead>
-                    <th>#</th>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Gender</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="user in self.entities">
-                        <td class="col-xs-1">{{user.id}}</td>
-                        <td class="col-xs-3">{{user.email}}</td>
-                        <td class="col-xs-2">{{user.name}}</td>
-                        <td class="col-xs-2">{{user.surname}}</td>
-                        <td class="col-xs-1">{{user.gender}}</td>
-                        <td class="col-xs-1">{{user.role}}</td>
-                        <td class="col-xs-2">
-                            <button class="btn btn-xs btn-info" ng-click="self.editEntity(user)">Edit</button>
-                            <button class="btn btn-xs btn-danger" ng-click="self.deleteEntity(user)">Delete</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<md-card flex ng-controller="UserListController as self">
+    <md-table-container>
+        <table md-table>
+            <thead md-head>
+                <tr md-row>
+                    <th md-column>#</th>
+                    <th md-column>Email</th>
+                    <th md-column>Name</th>
+                    <th md-column>Surname</th>
+                    <th md-column>Gender</th>
+                    <th md-column>Role</th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row ng-repeat="user in self.users">
+                    <td md-cell>{{user.id}}</td>
+                    <td md-cell>{{user.email}}</td>
+                    <td md-cell>{{user.name}}</td>
+                    <td md-cell>{{user.surname}}</td>
+                    <td md-cell>{{user.gender}}</td>
+                    <td md-cell>{{user.role}}</td>
+                    <td md-cell style="width: 120px;">
+                        <md-button class="md-icon-button" ng-click="self.editUser(user)">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
+                        </md-button>
+                        <md-button class="md-icon-button" ng-click="self.deleteUser (user)">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
+                        </md-button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+    <md-button style="position: fixed; bottom: 20px; right: 20px;" class="md-fab" ng-click="self.addUser()">
+        <i style="position: absolute; top: 17px; left: 16.5px;" class="material-icons">add</i>
+    </md-button>
+</md-card>
