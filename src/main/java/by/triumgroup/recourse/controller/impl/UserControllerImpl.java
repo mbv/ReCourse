@@ -5,6 +5,7 @@ import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.UserController;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.ControllerException;
+import by.triumgroup.recourse.controller.exception.UserDeletionNotAllowedException;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.UserService;
@@ -34,11 +35,16 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
+    public void delete(Integer integer, UserAuthDetails authDetails) {
+        throw new UserDeletionNotAllowedException();
+    }
+
+    @Override
     public void register(@Valid @RequestBody RegistrationDetails registrationDetails) throws ControllerException {
         try {
             userService.register(registrationDetails).orElseThrow(BadRequestException::new);
         } catch (ServiceException e){
-            logger.warn("Error while user registration");
+            logger.warn("Error while user registration", e);
             throw new ControllerException(e);
         }
     }
