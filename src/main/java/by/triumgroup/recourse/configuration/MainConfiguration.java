@@ -5,6 +5,7 @@ import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
+import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
@@ -50,6 +51,11 @@ public class MainConfiguration extends SpringBootServletInitializer {
     @Bean
     RegistrationDetailsValidator registrationDetailsValidator(UserRepository userRepository) {
         return new RegistrationDetailsValidator(userRepository);
+    }
+
+    @Bean
+    PasswordChangingValidator passwordChangingValidator() {
+        return new PasswordChangingValidator();
     }
 
     @Bean

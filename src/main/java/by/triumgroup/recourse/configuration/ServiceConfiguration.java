@@ -4,6 +4,7 @@ import by.triumgroup.recourse.repository.*;
 import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.service.impl.*;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
+import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,14 +23,16 @@ public class ServiceConfiguration {
             RegistrationDetailsValidator registrationDetailsValidator,
             LessonRepository lessonRepository,
             TokenStore tokenStore,
-            ConsumerTokenServices consumerTokenServices) {
+            ConsumerTokenServices consumerTokenServices,
+            PasswordChangingValidator passwordChangingValidator) {
         return new UserServiceImpl(
                 userRepository,
                 lessonRepository,
                 passwordEncoder,
                 registrationDetailsValidator,
                 tokenStore,
-                consumerTokenServices);
+                consumerTokenServices,
+                passwordChangingValidator);
     }
 
     @Bean

@@ -12,6 +12,7 @@ import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
+import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,7 +63,14 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
         registrationDetailsValidator = Mockito.mock(RegistrationDetailsValidator.class);
 
         when(registrationDetailsValidator.supports(any())).thenCallRealMethod();
-        userService = new UserServiceImpl(userRepository, lessonRepository, passwordEncoder, registrationDetailsValidator, tokenStore, consumerTokenServices);
+        PasswordChangingValidator passwordChangingValidator = Mockito.mock(PasswordChangingValidator.class);
+        userService = new UserServiceImpl(userRepository,
+                lessonRepository,
+                passwordEncoder,
+                registrationDetailsValidator,
+                tokenStore,
+                consumerTokenServices,
+                passwordChangingValidator);
         userSupplier = new UserSupplier();
     }
 
