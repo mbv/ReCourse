@@ -53,6 +53,6 @@ public class CourseFeedbackServiceImpl
                 "student",
                 User.Role.STUDENT
         );
-        return Collections.singletonList(new UserRoleValidator<>(studentFieldInfo, userRepository));
+        return Collections.singletonList(new UserRoleValidator<>(studentFieldInfo, userRepository, repository));
     }
 }

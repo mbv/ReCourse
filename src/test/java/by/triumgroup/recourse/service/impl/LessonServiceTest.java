@@ -162,28 +162,6 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     }
 
     @Test
-    @Override
-    public void addEntityWithForbiddenUserRolesTest() throws Exception {
-        when(lessonRepository.canAddLesson(any(), any(), any())).thenReturn(true);
-        super.addEntityWithForbiddenUserRolesTest();
-    }
-
-    @Test
-    @Override
-    public void updateEntityWithForbiddenUserRolesTest() throws Exception {
-        when(lessonRepository.canUpdateLesson(any(), any(), any(), any())).thenReturn(true);
-        Lesson entity = getEntitySupplier().getValidEntityWithId();
-        when(getCrudRepository().exists(any())).thenReturn(true);
-        when(getCrudRepository().findOne(any())).thenReturn(entity);
-        setupForbiddenRoles(entity);
-
-        thrown.expect(ServiceBadRequestException.class);
-
-        lessonService.update(entity, entity.getId(), User.Role.ADMIN);
-        verify(getCrudRepository(), times(0)).save(entity);
-    }
-
-    @Test
     public void updateLessonWithInvalidTimeTest() throws Exception {
         Lesson lesson = lessonSupplier.getValidEntityWithoutId();
         Integer parameterId = lessonSupplier.getAnyId();
@@ -309,11 +287,5 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     protected void setupAllowedRoles(Lesson entity) {
         Integer teacherId = entity.getTeacher().getId();
         when(userRepository.findOne(teacherId)).thenReturn(userSupplier.getWithRole(User.Role.TEACHER));
-    }
-
-    @Override
-    protected void setupForbiddenRoles(Lesson entity) {
-        Integer teacherId = entity.getTeacher().getId();
-        when(userRepository.findOne(teacherId)).thenReturn(userSupplier.getWithRole(User.Role.STUDENT));
     }
 }

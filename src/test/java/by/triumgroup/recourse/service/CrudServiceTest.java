@@ -4,7 +4,6 @@ import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
-import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
@@ -203,30 +202,5 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Assert.assertFalse(actual.isPresent());
     }
 
-    public void addEntityWithForbiddenUserRolesTest() throws Exception {
-        E entity = getEntitySupplier().getValidEntityWithoutId();
-        setupForbiddenRoles(entity);
-
-        thrown.expect(ServiceBadRequestException.class);
-
-        getCrudService().add(entity);
-        verify(getCrudRepository(), times(0)).save(entity);
-    }
-
-    public void updateEntityWithForbiddenUserRolesTest() throws Exception {
-        E entity = getEntitySupplier().getValidEntityWithId();
-        when(getCrudRepository().exists(any())).thenReturn(true);
-        when(getCrudRepository().findOne(any())).thenReturn(entity);
-        setupForbiddenRoles(entity);
-
-        thrown.expect(ServiceBadRequestException.class);
-
-        getCrudService().update(entity, entity.getId());
-        verify(getCrudRepository(), times(0)).save(entity);
-    }
-
     protected abstract void setupAllowedRoles(E entity);
-
-    protected abstract void setupForbiddenRoles(E entity);
-
 }

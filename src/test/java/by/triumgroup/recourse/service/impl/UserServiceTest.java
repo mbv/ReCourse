@@ -214,8 +214,5 @@ public class UserServiceTest extends CrudServiceTest<User, Integer> {
 
     @Override
     protected void setupAllowedRoles(User entity) { }
-
-    @Override
-    protected void setupForbiddenRoles(User entity) { }
 }
 
