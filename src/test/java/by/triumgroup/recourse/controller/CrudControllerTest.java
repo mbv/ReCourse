@@ -24,8 +24,8 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
 
     @Before
     public void initUrls() {
-        this.idRequest = String.format("/%s/{id}", getEntityName());
-        this.generalRequest = String.format("/%s/", getEntityName());
+        this.idRequest = String.format("/api/%s/{id}", getEntityName());
+        this.generalRequest = String.format("/api/%s/", getEntityName());
     }
 
     protected abstract CrudService<E,ID> getService();

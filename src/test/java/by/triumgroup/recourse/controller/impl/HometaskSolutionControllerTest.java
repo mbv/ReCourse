@@ -21,9 +21,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskSolution, Integer> {
-    private static final String MARK_REQUEST = "/hometasks/solutions/1/mark";
-    private static final String STUDENT_ID_REQUEST = "/hometasks/solutions/student/{id}";
-    private static final String STUDENT_ID_REQUEST_PARAMS = "/hometasks/solutions/student/{id}?{name}={value}";
+    private static final String MARK_REQUEST = "/api/hometasks/solutions/1/mark";
+    private static final String STUDENT_ID_REQUEST = "/api/hometasks/solutions/student/{id}";
+    private static final String STUDENT_ID_REQUEST_PARAMS = "/api/hometasks/solutions/student/{id}?{name}={value}";
     private HometaskSolutionController hometaskSolutionController;
     private HometaskSolutionService hometaskSolutionService;
     private HometaskSolutionSupplier hometaskSolutionSupplier;

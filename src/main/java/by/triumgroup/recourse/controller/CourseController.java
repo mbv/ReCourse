@@ -23,10 +23,10 @@ public interface CourseController extends CrudController<Course, Integer> {
     List<CourseFeedback> getFeedbacks(
             @PathVariable("courseId") Integer courseId, Pageable pageable);
 
-    @GetMapping(value = "search", params = "title")
+    @GetMapping(value = "/search", params = "title")
     List<Course> searchByTitle(@RequestParam("title") String title, Pageable pageable);
 
-    @GetMapping(value = "search", params = "status")
+    @GetMapping(value = "/search", params = "status")
     List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable);
 
     @PostMapping("{courseId}/register")

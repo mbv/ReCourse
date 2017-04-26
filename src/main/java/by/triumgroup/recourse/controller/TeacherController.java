@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/teacher")
+@RequestMapping("api/teachers")
 public interface TeacherController {
 
     @GetMapping("{teacherId}/lessons")

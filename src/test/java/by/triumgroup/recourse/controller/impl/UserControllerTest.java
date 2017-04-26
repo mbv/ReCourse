@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserControllerTest extends CrudControllerTest<User, Integer> {
 
+    private static final String USER_REGISTER_REQUEST = "/api/users/register";
     private RegistrationDetailsSupplier registrationDetailsSupplier;
 
     private UserService userService;
@@ -46,7 +47,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
         when(userService.register(any())).thenReturn(Optional.of(true));
 
-        sendPost("/users/register", registrationDetails)
+        sendPost(USER_REGISTER_REQUEST, registrationDetails)
                 .andExpect(status().isOk());
 
         verify(userService, times(1)).register(any());
@@ -59,7 +60,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         BindingResult bindingResult = new BeanPropertyBindingResult(registrationDetails, "registration details");
         when(userService.register(any())).thenThrow(new ServiceBadRequestException(bindingResult));
 
-        sendPost("/users/register", registrationDetails)
+        sendPost(USER_REGISTER_REQUEST, registrationDetails)
                 .andExpect(status().isBadRequest());
 
         verify(userService, times(1)).register(any());

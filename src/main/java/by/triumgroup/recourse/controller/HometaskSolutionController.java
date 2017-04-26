@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/hometask/solution")
+@RequestMapping("/api/hometasks/solutions")
 public interface HometaskSolutionController extends CrudController<HometaskSolution, Integer> {
 
     @GetMapping("{solutionId}/mark")

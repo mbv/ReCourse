@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CourseControllerTest extends CrudControllerTest<Course, Integer> {
-    private static final String COURSE_ID_REQUEST = "/courses/1/{param}";
-    private static final String COURSE_SEARCH_REQUEST = "/courses/search?{name}={value}";
+    private static final String COURSE_ID_REQUEST = "/api/courses/1/{param}";
+    private static final String COURSE_SEARCH_REQUEST = "/api/courses/search?{name}={value}";
     private final CourseService courseService;
     private final LessonService lessonService;
     private final CourseFeedbackService courseFeedbackService;
