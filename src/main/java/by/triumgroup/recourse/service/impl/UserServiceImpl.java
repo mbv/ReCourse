@@ -1,6 +1,7 @@
 package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
+import by.triumgroup.recourse.entity.dto.PasswordChanging;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.Lesson;
@@ -11,6 +12,7 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
+import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.*;
 
+
 @Component
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
 
@@ -36,6 +39,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     private final ConsumerTokenServices consumerTokenServices;
     private UserRepository userRepository;
     private RegistrationDetailsValidator registrationDetailsValidator;
+    private PasswordChangingValidator passwordChangingValidator;
     private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
@@ -43,7 +47,8 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                            PasswordEncoder passwordEncoder,
                            RegistrationDetailsValidator registrationDetailsValidator,
                            TokenStore tokenStore,
-                           ConsumerTokenServices consumerTokenServices) {
+                           ConsumerTokenServices consumerTokenServices,
+                           PasswordChangingValidator passwordChangingValidator) {
         super(userRepository);
         this.userRepository = userRepository;
         this.lessonRepository = lessonRepository;
@@ -51,6 +56,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         this.registrationDetailsValidator = registrationDetailsValidator;
         this.tokenStore = tokenStore;
         this.consumerTokenServices = consumerTokenServices;
+        this.passwordChangingValidator = passwordChangingValidator;
     }
 
     @Override
@@ -177,8 +183,25 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
+    public Optional<Boolean> changePassword(Integer userId, PasswordChanging passwordChanging) throws ServiceException {
+        Optional<Boolean> result;
+        validate(passwordChanging, "password changing");
+        Optional<User> databaseUserOptional = wrapJPACallToOptional(() -> userRepository.findOne(userId));
+        if (databaseUserOptional.isPresent()) {
+            User databaseUser = databaseUserOptional.get();
+            String newPasswordHash = passwordEncoder.encode(passwordChanging.getPassword());
+            databaseUser.setPasswordHash(newPasswordHash);
+            wrapJPACall(() -> userRepository.save(databaseUser));
+            result = Optional.of(true);
+        } else {
+            result = Optional.empty();
+        }
+        return result;
+    }
+
+    @Override
     protected List<Validator> getValidators() {
-        return Collections.singletonList(registrationDetailsValidator);
+        return Arrays.asList(registrationDetailsValidator, passwordChangingValidator);
     }
 
     @Override

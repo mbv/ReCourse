@@ -7,6 +7,7 @@ import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.ControllerException;
 import by.triumgroup.recourse.controller.exception.MethodNotAllowedException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
+import by.triumgroup.recourse.entity.dto.PasswordChanging;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.UserService;
@@ -58,7 +59,7 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
-    public void register(@Valid @RequestBody RegistrationDetails registrationDetails) throws ControllerException {
+    public void register(@RequestBody RegistrationDetails registrationDetails) throws ControllerException {
         try {
             userService.register(registrationDetails).orElseThrow(BadRequestException::new);
         } catch (ServiceException e){
@@ -77,6 +78,11 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     public void logout(OAuth2Authentication principal) {
         OAuth2AccessToken accessToken = defaultTokenServices.getAccessToken(principal);
         defaultTokenServices.revokeToken(accessToken.getValue());
+    }
+
+    @Override
+    public void changePassword(@RequestBody PasswordChanging passwordChanging, @Auth UserAuthDetails userAuthDetails) throws ControllerException {
+        wrapServiceCall(logger, () -> userService.changePassword(userAuthDetails.getId(), passwordChanging));
     }
 
     @Override
