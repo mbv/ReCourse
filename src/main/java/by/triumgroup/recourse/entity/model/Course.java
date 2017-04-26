@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -84,8 +85,9 @@ public class Course extends BaseEntity<Integer> {
         this.maxStudents = maxStudents;
     }
 
+    //FIXME Should return real students
     public Set<User> getStudents() {
-        return students;
+        return Collections.emptySet();
     }
 
     @Override
