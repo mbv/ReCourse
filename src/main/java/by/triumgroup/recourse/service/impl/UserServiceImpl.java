@@ -94,31 +94,34 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     private void handleRoleUpdating(User databaseUser, User newUser) {
-        switch (newUser.getRole()) {
-            case DISABLED:
-                handleRoleDisabling(databaseUser, newUser);
-                break;
-            case TEACHER:
-                break;
-            case STUDENT:
-                break;
-            case ADMIN:
-                break;
+        if (newUser.getRole() == User.Role.DISABLED) {
+            disableUser(databaseUser, newUser);
+        } else {
+            switch (databaseUser.getRole()) {
+                case TEACHER:
+                    checkTeacherRoleUpdate(newUser);
+                    break;
+                case STUDENT:
+                    checkStudentRoleUpdate(newUser);
+                    break;
+                default:
+                    rejectRoleChanging("Unknown role");
+            }
         }
     }
 
-    private void handleRoleDisabling(User databaseUser, User updatedUser) {
+    private void disableUser(User databaseUser, User newUser) {
         switch (databaseUser.getRole()) {
             case STUDENT:
                 Set<Course> courses = databaseUser.getCourses();
                 courses = courses.stream()
                         .filter(course -> course.getStatus() == Course.Status.FINISHED)
                         .collect(Collectors.toSet());
-                updatedUser.setCourses(courses);
+                newUser.setCourses(courses);
                 break;
             case TEACHER:
                 List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
-                        updatedUser.getId(), new PageRequest(0, Integer.MAX_VALUE)));
+                        newUser.getId(), new PageRequest(0, Integer.MAX_VALUE)));
                 if (lessons.stream().anyMatch(
                         lesson -> lesson.getStartTime().after(Timestamp.from(Instant.now())))) {
                     rejectRoleChanging("Teacher has lessons in the future.");
@@ -126,6 +129,20 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 break;
         }
         forceLogoutUser(databaseUser);
+    }
+
+    private void checkTeacherRoleUpdate(User teacher) {
+        List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
+                teacher.getId(), new PageRequest(0, Integer.MAX_VALUE)));
+        if (!lessons.isEmpty()){
+            rejectRoleChanging("Teacher has lessons.");
+        }
+    }
+
+    private void checkStudentRoleUpdate(User student) {
+        if (!student.getCourses().isEmpty()){
+            rejectRoleChanging("Student is registered to courses.");
+        }
     }
 
     private void rejectRoleChanging(String message) {
