@@ -105,10 +105,10 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         } else {
             switch (databaseUser.getRole()) {
                 case TEACHER:
-                    checkTeacherRoleUpdate(newUser);
+                    checkTeacherRoleUpdate(databaseUser);
                     break;
                 case STUDENT:
-                    checkStudentRoleUpdate(newUser);
+                    checkStudentRoleUpdate(databaseUser);
                     break;
                 default:
                     rejectRoleChanging("Unknown role");
