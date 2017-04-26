@@ -3,6 +3,7 @@ package by.triumgroup.recourse.validation;
 import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.repository.CourseFeedbackRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.supplier.entity.model.impl.CourseFeedbackSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
@@ -12,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -28,12 +30,14 @@ public class UserRoleValidatorTest {
 
     private CourseFeedbackSupplier courseFeedbackSupplier;
     private UserSupplier userSupplier;
+    private CourseFeedbackRepository courseFeedbackRepository;
 
     @Before
     public void initTests() {
         MockitoAnnotations.initMocks(this);
         courseFeedbackSupplier = new CourseFeedbackSupplier();
         userSupplier = new UserSupplier();
+        courseFeedbackRepository = Mockito.mock(CourseFeedbackRepository.class);
     }
 
     @Test
@@ -57,7 +61,7 @@ public class UserRoleValidatorTest {
                 CourseFeedback::getStudent,
                 "student",
                 allowedRole);
-        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository);
+        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository, courseFeedbackRepository);
 
         CourseFeedback entity = courseFeedbackSupplier.getValidEntityWithId();
         User student = userSupplier.getWithRole(allowedRole);
@@ -78,7 +82,7 @@ public class UserRoleValidatorTest {
                 CourseFeedback::getStudent,
                 "student",
                 User.Role.STUDENT);
-        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository);
+        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository, courseFeedbackRepository);
 
         CourseFeedback entity = courseFeedbackSupplier.getValidEntityWithId();
         User teacher = userSupplier.getWithRole(User.Role.TEACHER);
@@ -102,7 +106,7 @@ public class UserRoleValidatorTest {
                 CourseFeedback::getStudent,
                 "student",
                 Arrays.asList(User.Role.ADMIN, User.Role.TEACHER));
-        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository);
+        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository, courseFeedbackRepository);
         CourseFeedback entity = courseFeedbackSupplier.getValidEntityWithId();
         Errors errors = createValidationErrors(entity, "course feedback");
 
@@ -130,7 +134,7 @@ public class UserRoleValidatorTest {
                 CourseFeedback::getStudent,
                 "student",
                 Arrays.asList(User.Role.ADMIN, User.Role.TEACHER));
-        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository);
+        UserRoleValidator<CourseFeedback, Integer> validator = new UserRoleValidator<>(studentFieldInfo, userRepository, courseFeedbackRepository);
         CourseFeedback entity = courseFeedbackSupplier.getValidEntityWithId();
         Errors errors = createValidationErrors(entity, "course feedback");
 
@@ -147,7 +151,7 @@ public class UserRoleValidatorTest {
         verify(userRepository, times(1)).findOne(student.getId());
     }
 
-    private <E extends BaseEntity<ID>, ID> UserRoleValidator<E, ID> getEmptyValidator() {
-        return new UserRoleValidator<>(Collections.emptyList(), userRepository);
+    private UserRoleValidator<CourseFeedback, Integer> getEmptyValidator() {
+        return new UserRoleValidator<>(Collections.emptyList(), userRepository, courseFeedbackRepository);
     }
 }

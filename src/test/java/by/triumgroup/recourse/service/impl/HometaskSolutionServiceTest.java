@@ -136,27 +136,10 @@ public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolutio
         assertFalse(courses.isPresent());
     }
 
-    @Test
-    @Override
-    public void addEntityWithForbiddenUserRolesTest() throws Exception {
-        super.addEntityWithForbiddenUserRolesTest();
-    }
-
-    @Test
-    @Override
-    public void updateEntityWithForbiddenUserRolesTest() throws Exception {
-        super.updateEntityWithForbiddenUserRolesTest();
-    }
-
     @Override
     protected void setupAllowedRoles(HometaskSolution entity) {
         Integer studentId = entity.getStudent().getId();
         when(userRepository.findOne(studentId)).thenReturn(userSupplier.getWithRole(User.Role.STUDENT));
     }
 
-    @Override
-    protected void setupForbiddenRoles(HometaskSolution entity) {
-        Integer studentId = entity.getStudent().getId();
-        when(userRepository.findOne(studentId)).thenReturn(userSupplier.getWithRole(User.Role.TEACHER));
-    }
 }

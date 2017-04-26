@@ -69,6 +69,4 @@ public class MarkServiceTest extends CrudServiceTest<Mark, Integer> {
     @Override
     protected void setupAllowedRoles(Mark entity) { }
 
-    @Override
-    protected void setupForbiddenRoles(Mark entity) { }
 }

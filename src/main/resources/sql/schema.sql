@@ -271,7 +271,7 @@ INSERT INTO `recourse`.`course` (title, description, status, max_students) VALUE
    20);
 
 INSERT INTO `recourse`.`lesson` (start_time, duration, course_id, topic, teacher_id, task) VALUES
-  (date('2018-01-01'),
+  (date('2016-01-01'),
    time('5:00:00'),
    (select `id` from `recourse`.`course` limit 1),
    'Java Spring',

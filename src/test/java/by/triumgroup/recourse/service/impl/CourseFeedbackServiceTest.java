@@ -63,18 +63,6 @@ public class CourseFeedbackServiceTest extends CrudServiceTest<CourseFeedback, I
         assertFalse(feedbacks.isPresent());
     }
 
-    @Test
-    @Override
-    public void addEntityWithForbiddenUserRolesTest() throws Exception {
-        super.addEntityWithForbiddenUserRolesTest();
-    }
-
-    @Test
-    @Override
-    public void updateEntityWithForbiddenUserRolesTest() throws Exception {
-        super.updateEntityWithForbiddenUserRolesTest();
-    }
-
     @Override
     protected CrudService<CourseFeedback, Integer> getCrudService() {
         return courseFeedbackService;
@@ -96,9 +84,4 @@ public class CourseFeedbackServiceTest extends CrudServiceTest<CourseFeedback, I
         when(userRepository.findOne(studentId)).thenReturn(userSupplier.getWithRole(User.Role.STUDENT));
     }
 
-    @Override
-    protected void setupForbiddenRoles(CourseFeedback entity) {
-        Integer studentId = entity.getStudent().getId();
-        when(userRepository.findOne(studentId)).thenReturn(userSupplier.getWithRole(User.Role.TEACHER));
-    }
 }

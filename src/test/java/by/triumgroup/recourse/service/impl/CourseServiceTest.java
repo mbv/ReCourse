@@ -75,6 +75,4 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     @Override
     protected void setupAllowedRoles(Course entity) { }
 
-    @Override
-    protected void setupForbiddenRoles(Course entity) { }
 }

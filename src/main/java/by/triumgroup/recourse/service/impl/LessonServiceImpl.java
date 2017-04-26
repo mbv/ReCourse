@@ -98,7 +98,7 @@ public class LessonServiceImpl
                 User.Role.TEACHER
         );
         return Arrays.asList(
-                new UserRoleValidator<>(studentFieldInfo, userRepository),
+                new UserRoleValidator<>(studentFieldInfo, userRepository, repository),
                 lessonTimeValidator
         );
     }
