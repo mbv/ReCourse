@@ -7,7 +7,7 @@ function CoursesListController($resource, $controller) {
     self.statuses = ['ONGOING', 'REGISTRATION', 'FINISHED'];
     self.teachers = [];
 
-    $resource('users/:id').query().$promise.then(function (result) {
+    $resource('api/users/:id').query().$promise.then(function (result) {
         self.organizers = result.filter(function (user) { return user.role === 'TEACHER' });
     });
     $controller('EntityListController', { resourceName: 'courses', self: self });

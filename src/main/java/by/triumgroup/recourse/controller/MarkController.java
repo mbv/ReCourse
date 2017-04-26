@@ -5,6 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/hometasks/solutions/marks")
+@RequestMapping("api/hometask/solution/mark")
 public interface MarkController extends CrudController<Mark, Integer> {
 }

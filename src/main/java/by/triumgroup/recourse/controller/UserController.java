@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 
-@RequestMapping("/users")
+@RequestMapping("api/users")
 public interface UserController extends CrudController<User, Integer> {
     @PostMapping("register")
     void register(@RequestBody RegistrationDetails registrationDetails) throws ControllerException;

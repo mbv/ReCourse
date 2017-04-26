@@ -4,7 +4,7 @@ angular
 
 function EntityListController($resource, $uibModal, resourceName, self) {
     self.resourceName = resourceName;
-    self.EntityService = $resource(self.resourceName +'/:id', { id: '@id' }, { update: { method: 'PUT' } });
+    self.EntityService = $resource('api/' + self.resourceName +'/:id', { id: '@id' }, { update: { method: 'PUT' } });
 
     self.entities = [];
     self.isUpdatingChosen = false;
