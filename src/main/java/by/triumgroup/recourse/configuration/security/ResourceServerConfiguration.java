@@ -47,7 +47,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .antMatchers( "/api/courses/**").hasAuthority(User.Role.ADMIN.name())
 
                 .antMatchers(HttpMethod.GET, "/api/lessons/**").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/lessons/**").hasAuthority(User.Role.TEACHER.name())
+                .antMatchers(HttpMethod.PUT, "/api/lessons/**").hasAnyAuthority(User.Role.TEACHER.name(), User.Role.ADMIN.name())
                 .antMatchers("/api/lessons/**").hasAuthority(User.Role.ADMIN.name())
 
                 .antMatchers(HttpMethod.GET,"/api/hometasks/solutions/marks/**").authenticated()
