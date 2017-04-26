@@ -256,7 +256,10 @@ INSERT INTO `user` (email, password_hash, name, surname, gender, birthday, role)
    'Andrey', 'Tatarenko', 'male', NULL, 'student'),
   ('Mikhail_Snitavets@triumgroup.com',
    '$2a$12$dhZ.l.x3RwbAYSMTOS.ERuRlRy6ikeSVIkdDPbD20uGrP08WmmZRe', /* 09876 */
-   'Mikhail', 'Snitavets', 'male', NULL, 'student');
+   'Mikhail', 'Snitavets', 'male', NULL, 'student'),
+  ('admin@triumgroup.com',
+  '$2a$12$dhZ.l.x3RwbAYSMTOS.ERuRlRy6ikeSVIkdDPbD20uGrP08WmmZRe', /* 09876 */
+  'Foo', 'Bar', 'male', NULL, 'admin');
 
 -- -----------------------------------------------------------
 -- Course data
@@ -266,3 +269,12 @@ INSERT INTO `recourse`.`course` (title, description, status, max_students) VALUE
    'Get out of your fucking mind with our java course',
    'ONGOING',
    20);
+
+INSERT INTO `recourse`.`lesson` (start_time, duration, course_id, topic, teacher_id, task) VALUES
+  (date('2018-01-01'),
+   time('5:00:00'),
+   (select `id` from `recourse`.`course` limit 1),
+   'Java Spring',
+   (select `id` from `recourse`.`user` where `role` = 'TEACHER' limit 1),
+   'Very long long long long long long long long long long long long long text.'
+  );

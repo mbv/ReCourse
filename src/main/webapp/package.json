@@ -1,0 +1,33 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "description": "ReCourse",
+  "main": "index.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/TriumGroup/ReCourse.git"
+  },
+  "devDependencies": {
+    "angular": "^1.6.4",
+    "angular-animate": "^1.6.4",
+    "angular-aria": "^1.6.4",
+    "angular-bootstrap-datetimepicker": "^1.1.4",
+    "angular-cookies": "^1.6.4",
+    "angular-loading-bar": "^0.9.0",
+    "angular-material": "^1.1.4",
+    "angular-material-data-table": "^0.10.10",
+    "angular-resource": "^1.6.4",
+    "angular-sanitize": "^1.6.4",
+    "angular-ui-bootstrap": "^2.5.0",
+    "angular-ui-date": "^1.1.1",
+    "angular-ui-router": "^0.4.2",
+    "angular-ui-router-redirect": "0.0.3",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}

@@ -59,7 +59,7 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
-    public void register(@RequestBody RegistrationDetails registrationDetails) throws ControllerException {
+    public void register(@Valid @RequestBody RegistrationDetails registrationDetails) throws ControllerException {
         try {
             userService.register(registrationDetails).orElseThrow(BadRequestException::new);
         } catch (ServiceException e){

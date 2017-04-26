@@ -1,2 +1,12 @@
 angular
-    .module('app', ['ui.router', 'ngResource', 'ui.bootstrap', 'ui.select', 'ngSanitize']);
+    .module('app', [
+        'ui.router',
+        'ui.router.redirect',
+        'ngResource',
+        'ngSanitize',
+        'ngCookies',
+        'ngAnimate',
+        'ngMaterial',
+        'angular-loading-bar',
+        'md.data.table'
+    ]);
