@@ -67,10 +67,10 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
     }
 
     @Override
-    public <S extends E> S update(@Valid @RequestBody S entity, @PathVariable("id") ID id, @Auth UserAuthDetails authDetails) {
+    public E update(@Valid @RequestBody E entity, @PathVariable("id") ID id, @Auth UserAuthDetails authDetails) {
         checkAuthority(entity, authDetails, this::hasAuthorityToEdit);
         return wrapServiceCall(logger, () -> {
-            Optional<S> callResult = crudService.update(entity, id);
+            Optional<E> callResult = crudService.update(entity, id);
             return callResult.orElseThrow(NotFoundException::new);
         });
     }

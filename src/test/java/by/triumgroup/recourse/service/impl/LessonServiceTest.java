@@ -8,6 +8,7 @@ import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
 import by.triumgroup.recourse.service.LessonService;
+import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
@@ -16,8 +17,11 @@ import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.util.Pair;
 import org.springframework.validation.Errors;
 
 import java.util.List;
@@ -26,6 +30,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     private LessonRepository lessonRepository;
@@ -167,7 +172,15 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     @Override
     public void updateEntityWithForbiddenUserRolesTest() throws Exception {
         when(lessonRepository.canUpdateLesson(any(), any(), any(), any())).thenReturn(true);
-        super.updateEntityWithForbiddenUserRolesTest();
+        Lesson entity = getEntitySupplier().getValidEntityWithId();
+        when(getCrudRepository().exists(any())).thenReturn(true);
+        when(getCrudRepository().findOne(any())).thenReturn(entity);
+        setupForbiddenRoles(entity);
+
+        thrown.expect(ServiceBadRequestException.class);
+
+        lessonService.update(entity, entity.getId(), User.Role.ADMIN);
+        verify(getCrudRepository(), times(0)).save(entity);
     }
 
     @Test
@@ -185,9 +198,79 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
 
         thrown.expect(ServiceBadRequestException.class);
 
-        lessonService.update(lesson, parameterId);
+        lessonService.update(lesson, parameterId, User.Role.ADMIN);
 
         verify(lessonRepository, times(0)).save(lesson);
+    }
+
+    @Override
+    public void updateEntityWithoutIdTest() throws Exception {
+        Lesson newEntity = getEntitySupplier().getValidEntityWithoutId();
+        Lesson databaseEntity = getEntitySupplier().getValidEntityWithoutId();
+        Integer parameterId = getEntitySupplier().getAnyId();
+        databaseEntity.setId(parameterId);
+        when(getCrudRepository().save(newEntity)).thenReturn(newEntity);
+        when(getCrudRepository().exists(parameterId)).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(databaseEntity);
+        setupAllowedRoles(newEntity);
+
+        Optional<Lesson> actualResult = lessonService.update(newEntity, parameterId, User.Role.ADMIN);
+
+        verify(getCrudRepository()).save(captor.capture());
+        verify(getCrudRepository(), times(1)).save(Matchers.<Lesson>any());
+        Assert.assertEquals(newEntity, actualResult.orElse(null));
+        Assert.assertEquals(parameterId, captor.getValue().getId());
+    }
+
+    @Override
+    public void updateEntityWithDifferentParameterIdTest() throws Exception {
+        Pair<Integer, Integer> ids = getEntitySupplier().getDifferentIds();
+        Integer entityId = ids.getFirst();
+        Integer parameterId = ids.getSecond();
+        Lesson newEntity = getEntitySupplier().getValidEntityWithoutId();
+        Lesson databaseEntity = getEntitySupplier().getValidEntityWithoutId();
+        databaseEntity.setId(parameterId);
+        newEntity.setId(entityId);
+        when(getCrudRepository().save(newEntity)).thenReturn(newEntity);
+        when(getCrudRepository().exists(parameterId)).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(databaseEntity);
+        setupAllowedRoles(newEntity);
+
+        Optional<Lesson> actualResult = lessonService.update(newEntity, parameterId, User.Role.ADMIN);
+
+        verify(getCrudRepository()).save(captor.capture());
+        verify(getCrudRepository(), times(1)).save(Matchers.<Lesson>any());
+        Assert.assertEquals(newEntity, actualResult.orElse(null));
+        Assert.assertEquals(parameterId, captor.getValue().getId());
+    }
+
+    @Override
+    public void updateNotExistingEntityTest() throws Exception {
+        Lesson entity = getEntitySupplier().getValidEntityWithoutId();
+        Integer parameterId = getEntitySupplier().getAnyId();
+        when(getCrudRepository().exists(parameterId)).thenReturn(false);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(null);
+
+        Optional<Lesson> actualResult = lessonService.update(entity, parameterId, User.Role.ADMIN);
+
+        verify(getCrudRepository(), times(0)).save(entity);
+        Assert.assertFalse(actualResult.isPresent());
+    }
+
+    @Override
+    public void updateEntityExceptionTest() throws Exception {
+        Lesson entity = getEntitySupplier().getValidEntityWithoutId();
+        Integer parameterId = getEntitySupplier().getAnyId();
+        when(getCrudRepository().save(Matchers.<Lesson>any())).thenThrow(new DataIntegrityViolationException(""));
+        when(getCrudRepository().exists(any())).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(entity);
+        setupAllowedRoles(entity);
+
+        thrown.expect(ServiceException.class);
+
+        lessonService.update(entity, parameterId, User.Role.ADMIN);
+
+        verify(getCrudRepository(), times(1)).save(Matchers.<Lesson>any());
     }
 
     @Test

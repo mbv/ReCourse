@@ -65,7 +65,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public <S extends User> Optional<S> update(S entity, Integer id) {
+    public Optional<User> update(User entity, Integer id) {
         throw new NotImplementedException();
     }
 

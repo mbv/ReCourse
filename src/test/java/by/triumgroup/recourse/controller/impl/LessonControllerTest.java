@@ -11,9 +11,14 @@ import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
 import org.mockito.Mockito;
 
+import java.util.Optional;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 public class LessonControllerTest extends CrudControllerTest<Lesson, Integer> {
 
-    private static final String HOMETASK_REQUEST = "/lesson/1/hometask";
     private LessonController lessonController;
     private LessonService lessonService;
     private LessonSupplier lessonSupplier;
@@ -22,6 +27,22 @@ public class LessonControllerTest extends CrudControllerTest<Lesson, Integer> {
         lessonService = Mockito.mock(LessonService.class);
         lessonController = new LessonControllerImpl(lessonService);
         lessonSupplier = new LessonSupplier();
+    }
+
+    @Override
+    public void updateEntityValidDataTest() throws Exception {
+        when(lessonService.update(any(), any(), any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
+
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
+                .andExpect(status().isOk());
+    }
+
+    @Override
+    public void updateNotExistingEntityTest() throws Exception {
+        when(lessonService.update(any(), any(), any())).thenReturn(Optional.empty());
+
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
+                .andExpect(status().isNotFound());
     }
 
     @Override
