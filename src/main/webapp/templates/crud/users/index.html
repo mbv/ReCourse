@@ -20,13 +20,10 @@
                     <td md-cell>{{user.surname}}</td>
                     <td md-cell>{{user.gender}}</td>
                     <td md-cell>{{user.role}}</td>
-                    <td md-cell>{{user.birthday | date : 'MM/dd/yyyy' }}</td>
-                    <td md-cell style="width: 120px;">
+                    <td md-cell>{{(user.birthday | date : 'MM/dd/yyyy') || 'N/A' }}</td>
+                    <td md-cell style="width: 80px;">
                         <md-button class="md-icon-button" ng-click="self.editUser(user)">
                             <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
-                        </md-button>
-                        <md-button class="md-icon-button" ng-click="self.deleteUser (user)">
-                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
                         </md-button>
                     </td>
                 </tr>

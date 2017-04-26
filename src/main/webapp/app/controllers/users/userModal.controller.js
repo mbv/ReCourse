@@ -15,7 +15,7 @@ function UserModalController($mdDialog, UserFactory, user) {
     self.updateMode = !!self.user;
 
     self.genders = ['MALE', 'FEMALE'];
-    self.roles = ['STUDENT', 'TEACHER', 'ADMIN'];
+    self.roles = ['STUDENT', 'TEACHER', 'ADMIN', 'DISABLED'];
 
     function saveUser() {
         if (self.updateMode){

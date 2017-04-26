@@ -9,7 +9,6 @@ function UserListController($mdDialog, UserFactory) {
     self.isUpdatingChosen = false;
 
     self.addUser = addUser;
-    self.deleteUser = deleteUser;
     self.editUser = editUser;
 
     refresh();
@@ -22,10 +21,6 @@ function UserListController($mdDialog, UserFactory) {
 
     function addUser() {
         openModal();
-    }
-
-    function deleteUser(user) {
-        UserFactory.delete(user, refresh);
     }
 
     function editUser(user) {
