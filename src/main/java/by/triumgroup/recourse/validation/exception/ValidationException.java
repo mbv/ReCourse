@@ -1,19 +1,22 @@
 package by.triumgroup.recourse.validation.exception;
 
+import by.triumgroup.recourse.entity.dto.ErrorMessage;
+
+import java.util.Collections;
+import java.util.List;
+
 public class ValidationException extends RuntimeException{
-    public ValidationException() {
-        super();
+    private final List<ErrorMessage> messages;
+
+    public ValidationException(ErrorMessage message) {
+        this(Collections.singletonList(message));
     }
 
-    public ValidationException(String message) {
-        super(message);
+    public ValidationException(List<ErrorMessage> messages) {
+        this.messages = messages;
     }
 
-    public ValidationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ValidationException(Throwable cause) {
-        super(cause);
+    public List<ErrorMessage> getErrorMessages() {
+        return messages;
     }
 }

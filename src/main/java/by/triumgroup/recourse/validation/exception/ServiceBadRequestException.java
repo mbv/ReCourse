@@ -8,25 +8,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ServiceBadRequestException extends ValidationException {
-    private List<ErrorMessage> errorMessages;
-
     public ServiceBadRequestException(BindingResult bindingResult) {
-        errorMessages = bindingResult
+        super(bindingResult
                 .getFieldErrors()
                 .stream()
                 .map(ErrorMessage::fromFieldError)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public ServiceBadRequestException(List<ErrorMessage> errorMessages) {
-        this.errorMessages = errorMessages;
+        super(errorMessages);
     }
 
     public ServiceBadRequestException(ErrorMessage... errorMessages) {
-        this.errorMessages = Arrays.asList(errorMessages);
-    }
-
-    public List<ErrorMessage> getErrorMessages() {
-        return errorMessages;
+        super(Arrays.asList(errorMessages));
     }
 }

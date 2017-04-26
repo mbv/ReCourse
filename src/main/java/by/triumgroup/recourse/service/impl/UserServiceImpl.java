@@ -9,6 +9,7 @@ import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
+import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.springframework.data.domain.PageRequest;
@@ -63,34 +64,39 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
-    public <S extends User> Optional<S> update(S entity, Integer id, User performer) throws ServiceException {
+    public <S extends User> Optional<S> update(S newUser, Integer id, User performer) throws ServiceException {
         Optional<S> result;
-        Optional<User> updatingUser = wrapJPACallToOptional(() -> userRepository.findOne(id));
-        if (updatingUser.isPresent()) {
-            User existingUser = updatingUser.get();
-            restoreUserPermanentValues(existingUser, entity);
-            if (existingUser.getRole() != entity.getRole()) {
-                handleRoleUpdating(existingUser, entity, performer);
+        Optional<User> databaseUserOptional = wrapJPACallToOptional(() -> userRepository.findOne(id));
+        if (databaseUserOptional.isPresent()) {
+            User databaseUser = databaseUserOptional.get();
+            restoreUserPermanentValues(databaseUser, newUser);
+            if (databaseUser.getRole() != newUser.getRole()) {
+                if (performer.getRole() == User.Role.ADMIN) {
+                    if (!performer.getId().equals(databaseUser.getId())){
+                        handleRoleUpdating(databaseUser, newUser);
+                    } else {
+                        rejectRoleChanging("Admin can not downgrade himself");
+                    }
+                } else {
+                    denyRoleChanging("Role changing is denied.");
+                }
             }
-            result = wrapJPACallToOptional(() -> userRepository.save(entity));
+            result = wrapJPACallToOptional(() -> userRepository.save(newUser));
         } else {
             result = Optional.empty();
         }
         return result;
     }
 
-    private void restoreUserPermanentValues(User databaseUser, User clientUser) {
-        clientUser.setId(databaseUser.getId());
-        clientUser.setPasswordHash(databaseUser.getPasswordHash());
-        if (databaseUser.getRole() != User.Role.ADMIN) {
-            clientUser.setRole(databaseUser.getRole());
-        }
+    private void restoreUserPermanentValues(User databaseUser, User newUser) {
+        newUser.setId(databaseUser.getId());
+        newUser.setPasswordHash(databaseUser.getPasswordHash());
     }
 
-    private void handleRoleUpdating(User databaseUser, User updatedUser, User performer) {
-        switch (updatedUser.getRole()) {
+    private void handleRoleUpdating(User databaseUser, User newUser) {
+        switch (newUser.getRole()) {
             case DISABLED:
-                handleRoleDisabling(databaseUser, updatedUser, performer);
+                handleRoleDisabling(databaseUser, newUser);
                 break;
             case TEACHER:
                 break;
@@ -101,10 +107,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         }
     }
 
-    private void handleRoleDisabling(User databaseUser, User updatedUser, User performer) {
-        if (performer.getId().equals(databaseUser.getId())) {
-            rejectRoleChanging("You cannot disable yourself");
-        }
+    private void handleRoleDisabling(User databaseUser, User updatedUser) {
         switch (databaseUser.getRole()) {
             case STUDENT:
                 Set<Course> courses = databaseUser.getCourses();
@@ -118,7 +121,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                         updatedUser.getId(), new PageRequest(0, Integer.MAX_VALUE)));
                 if (lessons.stream().anyMatch(
                         lesson -> lesson.getStartTime().after(Timestamp.from(Instant.now())))) {
-                    rejectRoleChanging("Teacher has future lessons");
+                    rejectRoleChanging("Teacher has lessons in the future.");
                 }
                 break;
         }
@@ -127,6 +130,10 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     private void rejectRoleChanging(String message) {
         throw new ServiceBadRequestException(new ErrorMessage("role", message));
+    }
+
+    private void denyRoleChanging(String message) {
+        throw new ServiceAccessDeniedException(new ErrorMessage("role", message));
     }
 
     private void forceLogoutUser(User user) {
