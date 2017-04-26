@@ -22,6 +22,7 @@ function AuthService($http, $state, $cookies) {
             injectAccessTokenToOutgoingHttpRequests(accessToken);
         }
     }
+
     function unauthorize() {
         $cookies.remove('recourse-access-token');
         rejectAccessTokenToOutgoingHttpRequests();

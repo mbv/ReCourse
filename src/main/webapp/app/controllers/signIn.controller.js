@@ -4,6 +4,7 @@ angular
 
 function SignInController(AuthService) {
     var self = this;
+
     self.email = "";
     self.password = "";
     self.needToRemember = true;
