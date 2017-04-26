@@ -9,6 +9,8 @@ import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSolutionSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.MarkSupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -19,12 +21,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskSolution, Integer> {
-    private static final String MARK_REQUEST = "/hometask/solution/1/mark";
+    private static final String MARK_REQUEST = "/hometasks/solutions/1/mark";
+    private static final String STUDENT_ID_REQUEST = "/hometasks/solutions/student/{id}";
+    private static final String STUDENT_ID_REQUEST_PARAMS = "/hometasks/solutions/student/{id}?{name}={value}";
     private HometaskSolutionController hometaskSolutionController;
     private HometaskSolutionService hometaskSolutionService;
     private HometaskSolutionSupplier hometaskSolutionSupplier;
     private MarkService markService;
     private MarkSupplier markSupplier;
+    private UserSupplier userSupplier;
 
     public HometaskSolutionControllerTest() {
         markService = Mockito.mock(MarkService.class);
@@ -33,6 +38,7 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
         hometaskSolutionController = new HometaskSolutionControllerImpl(hometaskSolutionService, markService, lessonService);
         hometaskSolutionSupplier = new HometaskSolutionSupplier();
         markSupplier = new MarkSupplier();
+        userSupplier = new UserSupplier();
     }
 
     @Test
@@ -49,6 +55,47 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @Override
+    public void getAllEntitiesTest() throws Exception {
+        when(getService().findAll()).thenReturn(Lists.emptyList());
+        User admin = userSupplier.getWithRole(User.Role.ADMIN);
+        sendGet(generalRequest, admin)
+                .andExpect(status().isOk());
+    }
+
+    public void getSolutionsExistingStudentTest() throws Exception {
+        when(hometaskSolutionService.findByStudentId(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
+        User student = userSupplier.getWithRole(User.Role.STUDENT);
+        sendGet(STUDENT_ID_REQUEST, student, student.getId())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getSolutionsNotExistingStudentTest() throws Exception {
+        when(hometaskSolutionService.findByStudentId(any(), any())).thenReturn(Optional.empty());
+        User teacher = userSupplier.getWithRole(User.Role.TEACHER);
+        sendGet(STUDENT_ID_REQUEST, teacher, teacher.getId())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getSolutionForLessonTest() throws Exception {
+        HometaskSolution hometaskSolution = hometaskSolutionSupplier.getValidEntityWithId();
+        when(hometaskSolutionService.findByStudentIdAndLessonId(any(), any())).thenReturn(Optional.of(hometaskSolution));
+        User student = prepareAuthorizedUser(hometaskSolution, userSupplier.getValidEntityWithId());
+        sendGet(STUDENT_ID_REQUEST_PARAMS, student, student.getId(), "lessonId", 1)
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getSolutionForLessonNotExistingTest() throws Exception {
+        when(hometaskSolutionService.findByStudentIdAndLessonId(any(), any())).thenReturn(Optional.empty());
+        User student = userSupplier.getWithRole(User.Role.STUDENT);
+        sendGet(STUDENT_ID_REQUEST_PARAMS, student, student.getId(), "lessonId", 1)
+                .andExpect(status().isNotFound());
+    }
+
     @Override
     protected CrudController<HometaskSolution, Integer> getController() {
         return hometaskSolutionController;
@@ -61,7 +108,7 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
 
     @Override
     protected String getEntityName() {
-        return "hometask/solution";
+        return "hometasks/solutions";
     }
 
     @Override

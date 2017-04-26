@@ -131,6 +131,10 @@ public class User extends BaseEntity<Integer> {
         return courses;
     }
 
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -156,6 +160,6 @@ public class User extends BaseEntity<Integer> {
     }
 
     public enum Role {
-        STUDENT, TEACHER, ADMIN
+        STUDENT, TEACHER, ADMIN, DISABLED
     }
 }

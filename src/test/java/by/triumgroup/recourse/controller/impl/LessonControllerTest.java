@@ -36,7 +36,7 @@ public class LessonControllerTest extends CrudControllerTest<Lesson, Integer> {
 
     @Override
     protected String getEntityName() {
-        return "lesson";
+        return "lessons";
     }
 
     @Override

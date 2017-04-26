@@ -1,17 +1,24 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
+import by.triumgroup.recourse.controller.exception.AccessDeniedException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.entity.model.Mark;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.MarkService;
 import org.slf4j.Logger;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,6 +30,7 @@ public class HometaskSolutionControllerImpl
         implements HometaskSolutionController {
 
     private static final Logger logger = getLogger(HometaskSolutionControllerImpl.class);
+    private HometaskSolutionService hometaskSolutionService;
     private final MarkService markService;
     private final LessonService lessonService;
 
@@ -30,8 +38,28 @@ public class HometaskSolutionControllerImpl
                                           MarkService markService,
                                           LessonService lessonService) {
         super(hometaskSolutionService, logger);
+        this.hometaskSolutionService = hometaskSolutionService;
         this.markService = markService;
         this.lessonService = lessonService;
+    }
+
+    @Override
+    public Iterable<HometaskSolution> getAll(@Auth UserAuthDetails authDetails) {
+        Iterable<HometaskSolution> result;
+        if (!authDetails.isAdmin()) {
+            if (authDetails.getRole() == User.Role.STUDENT) {
+                result = wrapServiceCall(logger, () -> {
+                    Optional<List<HometaskSolution>> hometaskSolutions = hometaskSolutionService
+                            .findByStudentId(authDetails.getId(), new PageRequest(0, Integer.MAX_VALUE));
+                    return hometaskSolutions.orElseThrow(NotFoundException::new);
+                });
+            } else {
+                throw new AccessDeniedException();
+            }
+        } else {
+            result = super.getAll(authDetails);
+        }
+        return result;
     }
 
     @Override
@@ -39,6 +67,41 @@ public class HometaskSolutionControllerImpl
         return wrapServiceCall(logger, () -> {
             Optional<Mark> callResult = markService.findBySolutionId(solutionId);
             return callResult.orElseThrow(NotFoundException::new);
+        });
+    }
+
+    @Override
+    public List<HometaskSolution> getSolutions(
+            @PathVariable("studentId") Integer studentId,
+            @Auth UserAuthDetails authDetails,
+            Pageable pageable) {
+        return wrapServiceCall(logger, () -> {
+            if (authDetails.isAdmin() || studentId.equals(authDetails.getId())){
+                Optional<List<HometaskSolution>> solutions = hometaskSolutionService.findByStudentId(studentId, pageable);
+                return solutions.orElseThrow(NotFoundException::new);
+            } else {
+                throw new AccessDeniedException();
+            }
+
+        });
+    }
+
+    @Override
+    public HometaskSolution getSolutionForLesson(
+            @PathVariable("studentId") Integer studentId,
+            @RequestParam("lessonId") Integer lessonId,
+            @Auth UserAuthDetails authDetails,
+            Pageable pageable) {
+        return wrapServiceCall(logger, () -> {
+            Optional<HometaskSolution> callResult =
+                    hometaskSolutionService.findByStudentIdAndLessonId(studentId, lessonId);
+            if (callResult.isPresent()){
+                HometaskSolution hometaskSolution = callResult.get();
+                checkAuthority(hometaskSolution, authDetails, this::hasAuthorityToRead);
+                return hometaskSolution;
+            } else {
+                throw new NotFoundException();
+            }
         });
     }
 

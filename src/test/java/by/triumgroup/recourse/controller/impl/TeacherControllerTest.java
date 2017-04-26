@@ -2,7 +2,6 @@ package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.controller.AbstractControllerTest;
 import by.triumgroup.recourse.controller.TeacherController;
-import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
@@ -15,8 +14,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TeacherControllerTest extends AbstractControllerTest {
-    private static final String TEACHER_ID_REQUEST = "/teacher/1/{param}";
-    private static final String TEACHER_ID_REQUEST_PARAMS = "/teacher/1/{param}?{name}={value}";
+    private static final String TEACHER_ID_REQUEST = "/teachers/1/{param}";
+    private static final String TEACHER_ID_REQUEST_PARAMS = "/teachers/1/{param}?{name}={value}";
     private LessonService lessonService;
     private TeacherController teacherController;
 
