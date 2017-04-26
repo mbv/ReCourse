@@ -50,10 +50,10 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
-    public <S extends User> S update(@Valid @RequestBody S entity, @PathVariable("id") Integer id, @Auth UserAuthDetails authDetails) {
+    public User update(@Valid @RequestBody User entity, @PathVariable("id") Integer id, @Auth UserAuthDetails authDetails) {
         checkAuthority(entity, authDetails, this::hasAuthorityToRead);
         return wrapServiceCall(logger, () -> {
-            Optional<S> callResult = userService.update(entity, id, authDetails);
+            Optional<User> callResult = userService.update(entity, id, authDetails);
             return callResult.orElseThrow(NotFoundException::new);
         });
     }

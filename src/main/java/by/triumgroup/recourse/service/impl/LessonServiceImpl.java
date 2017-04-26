@@ -11,6 +11,7 @@ import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,30 @@ public class LessonServiceImpl
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.lessonTimeValidator = lessonTimeValidator;
+    }
+
+    @Override
+    public Optional<Lesson> update(Lesson entity, Integer integer) {
+        throw new NotImplementedException();
+    }
+
+    public Optional<Lesson> update(Lesson entity, Integer id, User.Role performerRole) {
+        Optional<Lesson> result;
+        Optional<Lesson> databaseLessonOptional = wrapJPACallToOptional(() -> repository.findOne(id));
+        if (databaseLessonOptional.isPresent()) {
+            entity.setId(id);
+            validateEntity(entity);
+            if (performerRole == User.Role.TEACHER){
+                String hometask = entity.getTask();
+                entity = databaseLessonOptional.get();
+                entity.setTask(hometask);
+            }
+            Lesson finalEntity = entity;
+            result = wrapJPACallToOptional(() -> repository.save(finalEntity));
+        } else {
+            result = Optional.empty();
+        }
+        return result;
     }
 
     @Override

@@ -40,8 +40,8 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
     }
 
     @Override
-    public <S extends E> Optional<S> update(S entity, ID id) {
-        Optional<S> result;
+    public Optional<E> update(E entity, ID id) {
+        Optional<E> result;
         if (wrapJPACall(() -> repository.exists(id))) {
             entity.setId(id);
             validateEntity(entity);

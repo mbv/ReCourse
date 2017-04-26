@@ -19,7 +19,7 @@ public interface CrudController<E extends BaseEntity<ID>, ID> {
     <S extends E> S create(@RequestBody S entity, @Auth UserAuthDetails authDetails) throws ControllerException;
 
     @PutMapping("{id}")
-    <S extends E> S update(@RequestBody S entity, @PathVariable("id") ID id, @Auth UserAuthDetails authDetails) throws ControllerException;
+    E update(@RequestBody E entity, @PathVariable("id") ID id, @Auth UserAuthDetails authDetails) throws ControllerException;
 
     @DeleteMapping("{id}")
     void delete(@PathVariable("id") ID id, @Auth UserAuthDetails authDetails) throws ControllerException;
