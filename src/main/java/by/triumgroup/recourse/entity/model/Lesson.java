@@ -15,7 +15,6 @@ import java.util.Objects;
 public class Lesson extends BaseEntity<Integer> {
 
     @NotNull
-    @Future
     @Column(columnDefinition = "DATETIME", nullable = false)
     private Timestamp startTime;
 
