@@ -4,7 +4,6 @@ import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.controller.exception.AccessDeniedException;
-import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.Lesson;
@@ -44,17 +43,6 @@ public class HometaskSolutionControllerImpl
         this.lessonService = lessonService;
     }
 
-    @Override
-    public <S extends HometaskSolution> S create(S entity, UserAuthDetails authDetails) {
-        checkAuthority(entity, authDetails, this::hasAuthorityToEdit);
-        return wrapServiceCall(logger, () -> {
-            if (authDetails.getRole() == User.Role.STUDENT) {
-                entity.setMark(null);
-            }
-            Optional<S> callResult = hometaskSolutionService.add(entity);
-            return callResult.orElseThrow(BadRequestException::new);
-        });
-    }
 
     @Override
     public Iterable<HometaskSolution> getAll(@Auth UserAuthDetails authDetails) {
