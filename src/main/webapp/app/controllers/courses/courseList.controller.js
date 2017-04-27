@@ -36,7 +36,7 @@ function CourseListController($mdDialog, CourseFactory, $state) {
     }
 
     function showLessons(course) {
-        $state.go('crud.courses.lessons', { id: course.id });
+        $state.go('crud.lessons', { course: course.id });
     }
 
     function showStudents(course) {
