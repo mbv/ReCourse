@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('CourseListController', CourseListController);
 
-function CourseListController($mdDialog, CourseFactory) {
+function CourseListController($mdDialog, CourseFactory, $state) {
     var self = this;
 
     self.courses = [];
@@ -11,6 +11,9 @@ function CourseListController($mdDialog, CourseFactory) {
     self.addCourse = addCourse;
     self.deleteCourse = deleteCourse;
     self.editCourse = editCourse;
+    self.showLessons = showLessons;
+    self.showStudents = showStudents;
+
 
     refresh();
 
@@ -28,8 +31,16 @@ function CourseListController($mdDialog, CourseFactory) {
         CourseFactory.delete(course, refresh);
     }
 
-    function editCourse (course) {
+    function editCourse(course) {
         openModal(course);
+    }
+
+    function showLessons(course) {
+        $state.go('crud.courses.lessons', { id: course.id });
+    }
+
+    function showStudents(course) {
+        $state.go('crud.courses.students', { id: course.id });
     }
 
     function openModal(course) {
