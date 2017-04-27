@@ -42,7 +42,7 @@ public class CourseServiceImpl
     }
 
     @Override
-    public void registerStudentToCourse(Integer studentId, Integer courseId, boolean force) {
+    public void registerStudentToCourse(Integer courseId, Integer studentId, boolean force) {
         Course course = wrapJPACall(() -> courseRepository.findOne(courseId));
         User user = wrapJPACall(() -> userRepository.findOne(studentId));
         validateUserAndCourseToRegisterForCourse(user, course, force);
@@ -52,7 +52,7 @@ public class CourseServiceImpl
     }
 
     @Override
-    public void removeStudentFromCourse(Integer studentId, Integer courseId, boolean force) {
+    public void removeStudentFromCourse(Integer courseId, Integer studentId, boolean force) {
         Course course = wrapJPACall(() -> courseRepository.findOne(courseId));
         User user = wrapJPACall(() -> userRepository.findOne(studentId));
         validateUserAndCourseToRemoveFromCourse(user, course, force);
