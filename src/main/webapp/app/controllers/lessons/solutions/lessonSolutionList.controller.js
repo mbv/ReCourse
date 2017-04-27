@@ -5,6 +5,7 @@ angular
 function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, $stateParams) {
     var self = this;
 
+    self.title = 'Lesson Solutions';
     self.lessonId = $stateParams.id;
     self.solutions = [];
     self.isUpdatingChosen = false;

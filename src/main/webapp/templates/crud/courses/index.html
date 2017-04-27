@@ -1,5 +1,10 @@
 <ui-view flex>
     <md-card flex>
+        <md-toolbar class="md-table-toolbar md-default">
+            <div class="md-toolbar-tools">
+                <span>{{self.title}}</span>
+            </div>
+        </md-toolbar>
         <md-table-container>
             <table md-table>
                 <thead md-head>
@@ -40,6 +45,14 @@
                                             <i class="material-icons">event_note</i>
                                         </md-icon>
                                         Show Lessons
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="self.showFeedbacks(course)">
+                                        <md-icon md-menu-origin>
+                                            <i class="material-icons">message</i>
+                                        </md-icon>
+                                        Show Feedbacks
                                     </md-button>
                                 </md-menu-item>
                             </md-menu-content>
