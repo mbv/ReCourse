@@ -50,6 +50,12 @@ function AppStates($stateProvider, $urlRouterProvider) {
             templateUrl: 'templates/crud/courses/lessons/index.html'
         },
         {
+            name: 'crud.lessons.solutions',
+            url: '/:id/solutions',
+            controller: 'LessonSolutionListController as self',
+            templateUrl: 'templates/crud/lessons/solutions/index.html'
+        },
+        {
             name: 'crud.lessons',
             url: '/lessons',
             controller: 'LessonListController as self',

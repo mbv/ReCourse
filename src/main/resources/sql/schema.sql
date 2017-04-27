@@ -278,3 +278,15 @@ INSERT INTO `recourse`.`lesson` (start_time, duration, course_id, topic, teacher
    (select `id` from `recourse`.`user` where `role` = 'TEACHER' limit 1),
    'Very long long long long long long long long long long long long long text.'
   );
+
+INSERT INTO `recourse`.`hometask_solution` (lesson_id, student_id, solution) VALUES
+  ( 1,
+    2,
+    'Solution');
+
+INSERT INTO `recourse`.`mark` (score, solution_id, comment) VALUES
+  (
+      10,
+    1,
+    "comment"
+  )

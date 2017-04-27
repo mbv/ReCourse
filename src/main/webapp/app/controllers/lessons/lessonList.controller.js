@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonListController', LessonListController);
 
-function LessonListController($mdDialog, LessonFactory) {
+function LessonListController($mdDialog, LessonFactory, $state) {
     var self = this;
 
     self.lessons = [];
@@ -11,6 +11,7 @@ function LessonListController($mdDialog, LessonFactory) {
     self.addLesson = addLesson;
     self.deleteLesson = deleteLesson;
     self.editLesson = editLesson;
+    self.showSolutions = showSolutions;
 
     refresh();
 
@@ -30,6 +31,10 @@ function LessonListController($mdDialog, LessonFactory) {
 
     function editLesson (lesson) {
         openModal(lesson);
+    }
+
+    function showSolutions(lesson) {
+        $state.go('crud.lessons.solutions', { id: lesson.id });
     }
 
     function openModal(lesson) {
