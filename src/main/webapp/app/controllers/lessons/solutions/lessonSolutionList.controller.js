@@ -18,6 +18,12 @@ function LessonSolutionListController($mdDialog, SolutionFactory, $stateParams) 
     function refresh() {
         SolutionFactory.getForLesson({ id: self.lessonId }).$promise.then(function (result) {
             self.solutions = result;
+            for (var i = 0; i < self.solutions.length; i++) {
+                const index = i;
+                SolutionFactory.getMark({id: self.solutions[index].id}).$promise.then(function (result) {
+                    self.solutions[index].mark = result;
+                })
+            }
         });
     }
 

@@ -10,6 +10,10 @@ function SolutionFactory($resource) {
             method: 'GET',
             url: 'api/hometasks/solutions/lesson/:id',
             isArray: true
+        },
+        getMark: {
+            method: 'GET',
+            url: 'api/hometasks/solutions/:id/mark'
         }
     });
 }
