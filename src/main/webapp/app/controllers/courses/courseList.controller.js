@@ -40,7 +40,7 @@ function CourseListController($mdDialog, CourseFactory, $state) {
     }
 
     function showStudents(course) {
-        $state.go('crud.courses.students', { id: course.id });
+        $state.go('crud.users', { course: course.id });
     }
 
     function openModal(course) {

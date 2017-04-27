@@ -27,7 +27,7 @@ function AppStates($stateProvider, $urlRouterProvider) {
         },
         {
             name: 'crud.users',
-            url: '/users',
+            url: '/users?course',
             controller: 'UserListController as self',
             templateUrl: 'templates/crud/users/index.html'
         },
@@ -36,18 +36,6 @@ function AppStates($stateProvider, $urlRouterProvider) {
             url: '/courses',
             controller: 'CourseListController as self',
             templateUrl: 'templates/crud/courses/index.html'
-        },
-        {
-            name: 'crud.courses.students',
-            url: '/:id/students',
-            controller: 'CourseStudentListController as self',
-            templateUrl: 'templates/crud/courses/students/index.html'
-        },
-        {
-            name: 'crud.courses.lessons',
-            url: '/:id/lessons',
-            controller: 'CourseLessonListController as self',
-            templateUrl: 'templates/crud/courses/lessons/index.html'
         },
         {
             name: 'crud.lessons.solutions',

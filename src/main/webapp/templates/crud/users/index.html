@@ -22,8 +22,11 @@
                     <td md-cell>{{user.role}}</td>
                     <td md-cell>{{(user.birthday | date : 'MM/dd/yyyy') || 'N/A' }}</td>
                     <td md-cell style="width: 80px;">
-                        <md-button class="md-icon-button" ng-click="self.editUser(user)">
+                        <md-button class="md-icon-button" ng-click="self.editUser(user)" ng-if="!self.course">
                             <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
+                        </md-button>
+                        <md-button class="md-icon-button" ng-click="self.unregisterStudent(user)" ng-if="self.course">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">clear</i>
                         </md-button>
                     </td>
                 </tr>
@@ -31,6 +34,9 @@
         </table>
     </md-table-container>
 </md-card>
-<md-button class="md-fab" ng-click="self.addUser()">
+<md-button class="md-fab" ng-click="self.addUser()" ng-if="!self.course">
+    <i class="material-icons">add</i>
+</md-button>
+<md-button class="md-fab" ng-click="self.registerStudent()" ng-if="self.course">
     <i class="material-icons">add</i>
 </md-button>
