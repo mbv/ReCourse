@@ -45,7 +45,7 @@
                             <span md-highlight-text="self.teacherSearchText">({{teacher.email}})</span>
                         </md-item-template>
                         <md-not-found>
-                            No teachers matching "{{self.searchText}}" were found.
+                            No teachers matching "{{self.teacherSearchText}}" were found.
                         </md-not-found>
                     </md-autocomplete>
                 </md-block>
@@ -64,11 +64,11 @@
                             md-select-on-match="true"
                             md-items="course in self.courses | propertyFilter: { searchText: self.courseSearchText, properties: ['title', 'status'] }">
                         <md-item-template>
-                            <span md-highlight-text="self.searchText">{{course.title}} </span>
-                            <span md-highlight-text="self.searchText">({{course.status}})</span>
+                            <span md-highlight-text="self.courseSearchText">{{course.title}} </span>
+                            <span md-highlight-text="self.courseSearchText">({{course.status}})</span>
                         </md-item-template>
                         <md-not-found>
-                            No course matching "{{self.searchText}}" were found.
+                            No course matching "{{self.courseSearchText}}" were found.
                         </md-not-found>
                     </md-autocomplete>
                 </md-block>

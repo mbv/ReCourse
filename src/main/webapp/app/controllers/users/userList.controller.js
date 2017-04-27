@@ -5,6 +5,7 @@ angular
 function UserListController($mdDialog, UserFactory, CourseFactory, $stateParams) {
     var self = this;
 
+    self.title = '';
     self.course = null;
     self.users = [];
     self.isUpdatingChosen = false;
@@ -17,11 +18,13 @@ function UserListController($mdDialog, UserFactory, CourseFactory, $stateParams)
 
     function refresh() {
         if ($stateParams.course) {
+            self.title = 'Course Students';
             CourseFactory.get({ id: $stateParams.course }).$promise.then(function (result) {
                 self.course = result;
                 self.users = self.course.students;
             });
         } else {
+            self.title = 'Users';
             UserFactory.query().$promise.then(function (result) {
                 self.users = result;
             });

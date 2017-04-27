@@ -8,12 +8,13 @@ function CourseListController($mdDialog, CourseFactory, $state) {
     self.courses = [];
     self.isUpdatingChosen = false;
 
+    self.title = 'Courses';
     self.addCourse = addCourse;
     self.deleteCourse = deleteCourse;
     self.editCourse = editCourse;
     self.showLessons = showLessons;
     self.showStudents = showStudents;
-
+    self.showFeedbacks = showFeedbacks;
 
     refresh();
 
@@ -41,6 +42,10 @@ function CourseListController($mdDialog, CourseFactory, $state) {
 
     function showStudents(course) {
         $state.go('crud.users', { course: course.id });
+    }
+
+    function showFeedbacks(course) {
+        $state.go('crud.feedbacks', { course: course.id });
     }
 
     function openModal(course) {

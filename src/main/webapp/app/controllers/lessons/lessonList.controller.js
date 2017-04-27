@@ -5,6 +5,7 @@ angular
 function LessonListController($mdDialog, LessonFactory, CourseFactory, $state, $stateParams) {
     var self = this;
 
+    self.title = '';
     self.lessons = [];
     self.isUpdatingChosen = false;
 
@@ -18,10 +19,12 @@ function LessonListController($mdDialog, LessonFactory, CourseFactory, $state, $
 
     function refresh() {
         if (self.courseId){
+            self.title = 'Course Lessons';
             CourseFactory.getLessons({ id: self.courseId }).$promise.then(function (result) {
                 self.lessons = result;
             });
         } else {
+            self.title = 'Lessons';
             LessonFactory.query().$promise.then(function (result) {
                 self.lessons = result;
             });
