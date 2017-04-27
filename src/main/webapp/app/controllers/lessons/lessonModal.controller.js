@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonModalController', LessonModalController);
 
-function LessonModalController($mdDialog, UserFactory, CourseFactory, LessonFactory, lesson) {
+function LessonModalController($mdDialog, UserFactory, CourseFactory, LessonFactory, lesson, courseId) {
     var self = this;
 
     if (lesson && lesson.startTime) {
@@ -14,6 +14,7 @@ function LessonModalController($mdDialog, UserFactory, CourseFactory, LessonFact
     self.cancel = cancel;
     self.courseSelected = courseSelected;
     self.updateMode = !!self.lesson;
+    self.courseId = courseId;
 
     self.teachers = [];
     self.courses = [];
@@ -37,6 +38,9 @@ function LessonModalController($mdDialog, UserFactory, CourseFactory, LessonFact
     }
 
     function saveLesson() {
+        if (self.courseId) {
+            self.lesson.courseId = courseId;
+        }
         if (self.updateMode){
             LessonFactory.update(self.lesson, $mdDialog.hide);
         } else {

@@ -16,17 +16,22 @@ public interface HometaskSolutionController extends CrudController<HometaskSolut
     @GetMapping("{solutionId}/mark")
     Mark getMark(@PathVariable("solutionId") Integer solutionId);
 
-    @GetMapping("/student/{studentId}")
-    List<HometaskSolution> getSolutions(
-            @PathVariable("studentId") Integer studentId,
-            @Auth UserAuthDetails authDetails,
-            Pageable pageable
-    );
 
     @GetMapping(value = "/student/{studentId}", params = "lessonId")
-    HometaskSolution getSolutionForLesson(
+    HometaskSolution getStudentSolution(
             @PathVariable("studentId") Integer studentId,
-            @RequestParam("lessonId") Integer lessonId,
+            @RequestParam(value = "lessonId", required = false) Integer lessonId,
+            @Auth UserAuthDetails authDetails);
+
+    @GetMapping("/student/{studentId}")
+    List<HometaskSolution> getStudentSolutions(
+            @PathVariable("studentId") Integer studentId,
+            @Auth UserAuthDetails authDetails,
+            Pageable pageable);
+
+    @GetMapping("/lesson/{lessonId}")
+    List<HometaskSolution> getLessonSolutions(
+            @PathVariable("lessonId") Integer lessonId,
             @Auth UserAuthDetails authDetails,
             Pageable pageable);
 

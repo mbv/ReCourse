@@ -71,7 +71,7 @@ public class HometaskSolutionControllerImpl
     }
 
     @Override
-    public List<HometaskSolution> getSolutions(
+    public List<HometaskSolution> getStudentSolutions(
             @PathVariable("studentId") Integer studentId,
             @Auth UserAuthDetails authDetails,
             Pageable pageable) {
@@ -87,14 +87,12 @@ public class HometaskSolutionControllerImpl
     }
 
     @Override
-    public HometaskSolution getSolutionForLesson(
+    public HometaskSolution getStudentSolution(
             @PathVariable("studentId") Integer studentId,
-            @RequestParam("lessonId") Integer lessonId,
-            @Auth UserAuthDetails authDetails,
-            Pageable pageable) {
+            @RequestParam(value = "lessonId") Integer lessonId,
+            @Auth UserAuthDetails authDetails) {
         return wrapServiceCall(logger, () -> {
-            Optional<HometaskSolution> callResult =
-                    hometaskSolutionService.findByStudentIdAndLessonId(studentId, lessonId);
+            Optional<HometaskSolution> callResult = hometaskSolutionService.findByStudentIdAndLessonId(studentId, lessonId);
             if (callResult.isPresent()){
                 HometaskSolution hometaskSolution = callResult.get();
                 checkAuthority(hometaskSolution, authDetails, this::hasAuthorityToRead);
@@ -102,6 +100,27 @@ public class HometaskSolutionControllerImpl
             } else {
                 throw new NotFoundException();
             }
+        });
+    }
+
+    @Override
+    public List<HometaskSolution> getLessonSolutions(
+            @PathVariable("lessonId") Integer lessonId,
+            @Auth UserAuthDetails authDetails,
+            Pageable pageable) {
+        return wrapServiceCall(logger, () -> {
+            Optional<Lesson> lesson = lessonService.findById(lessonId);
+            Optional<List<HometaskSolution>> solutions;
+            if (lesson.isPresent()){
+                if (authDetails.isAdmin() || lesson.get().getTeacher().getId().equals(authDetails.getId())){
+                    solutions = hometaskSolutionService.findByLessonId(lessonId, pageable);
+                } else {
+                    throw new AccessDeniedException();
+                }
+            } else {
+                solutions = Optional.empty();
+            }
+            return solutions.orElseThrow(NotFoundException::new);
         });
     }
 

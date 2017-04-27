@@ -40,9 +40,9 @@
                             md-select-on-match="true"
                             md-items="teacher in self.teachers | propertyFilter: { searchText: self.teacherSearchText, properties: ['name', 'surname', 'email'] }">
                         <md-item-template>
-                            <span md-highlight-text="self.searchText">{{teacher.name}} </span>
-                            <span md-highlight-text="self.searchText">{{teacher.surname}} </span>
-                            <span md-highlight-text="self.searchText">({{teacher.email}})</span>
+                            <span md-highlight-text="self.teacherSearchText">{{teacher.name}} </span>
+                            <span md-highlight-text="self.teacherSearchText">{{teacher.surname}} </span>
+                            <span md-highlight-text="self.teacherSearchText">({{teacher.email}})</span>
                         </md-item-template>
                         <md-not-found>
                             No teachers matching "{{self.searchText}}" were found.
@@ -50,7 +50,7 @@
                     </md-autocomplete>
                 </md-block>
             </div>
-            <div layout="row" layout-align="space-between center">
+            <div ng-if="!self.courseId" layout="row" layout-align="space-between center">
                 <label style="color: rgba(0, 0, 0, 0.38); margin-right: 20px;">Course</label>
                 <md-block flex>
                     <md-autocomplete
@@ -80,10 +80,3 @@
         </md-dialog-actions>
     </form>
 </md-dialog>
-
-<!--private Timestamp startTime;-->
-<!--private Time duration;-->
-<!--private Integer courseId;-->
-<!--private String topic;-->
-<!--private Lesson teacher;-->
-<!--private String task;-->

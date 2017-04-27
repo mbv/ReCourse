@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonListController', LessonListController);
 
-function LessonListController($mdDialog, LessonFactory) {
+function LessonListController($mdDialog, LessonFactory, CourseFactory, $state, $stateParams) {
     var self = this;
 
     self.lessons = [];
@@ -11,13 +11,21 @@ function LessonListController($mdDialog, LessonFactory) {
     self.addLesson = addLesson;
     self.deleteLesson = deleteLesson;
     self.editLesson = editLesson;
+    self.showSolutions = showSolutions;
+    self.courseId = $stateParams.course;
 
     refresh();
 
     function refresh() {
-        LessonFactory.query().$promise.then(function (result) {
-            self.lessons = result;
-        });
+        if (self.courseId){
+            CourseFactory.getLessons({ id: self.courseId }).$promise.then(function (result) {
+                self.lessons = result;
+            });
+        } else {
+            LessonFactory.query().$promise.then(function (result) {
+                self.lessons = result;
+            });
+        }
     }
 
     function addLesson() {
@@ -32,6 +40,10 @@ function LessonListController($mdDialog, LessonFactory) {
         openModal(lesson);
     }
 
+    function showSolutions(lesson) {
+        $state.go('crud.lessons.solutions', { id: lesson.id });
+    }
+
     function openModal(lesson) {
         $mdDialog.show({
             controller: 'LessonModalController as self',
@@ -39,7 +51,8 @@ function LessonListController($mdDialog, LessonFactory) {
             parent: angular.element(document.body),
             clickOutsideToClose: true,
             locals: {
-                lesson: angular.copy(lesson)
+                lesson: angular.copy(lesson),
+                courseId: self.courseId
             }
         }).then(refresh, refresh);
     }
