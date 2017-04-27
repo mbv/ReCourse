@@ -2,12 +2,17 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
 import by.triumgroup.recourse.entity.model.Course;
+import by.triumgroup.recourse.entity.model.HometaskSolution;
+import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.CourseRepository;
+import by.triumgroup.recourse.repository.HometaskSolutionRepository;
+import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.exception.ServiceNotFoundException;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
 
@@ -15,20 +20,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
+import static by.triumgroup.recourse.util.Util.allItemsPage;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class CourseServiceImpl
         extends AbstractCrudService<Course, Integer>
         implements CourseService {
 
+    private static final Logger logger = getLogger(CourseServiceImpl.class);
+
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final LessonRepository lessonRepository;
+    private final HometaskSolutionRepository hometaskSolutionRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository, UserRepository userRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository,
+                             UserRepository userRepository,
+                             LessonRepository lessonRepository,
+                             HometaskSolutionRepository hometaskSolutionRepository) {
         super(courseRepository);
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.lessonRepository = lessonRepository;
+        this.hometaskSolutionRepository = hometaskSolutionRepository;
     }
 
     @Override
@@ -49,6 +66,7 @@ public class CourseServiceImpl
         Set<User> registeredStudents = course.getStudents();
         registeredStudents.add(user);
         wrapJPACall(() -> courseRepository.save(course));
+        logger.debug("{} registered on curse {}", user, course);
     }
 
     @Override
@@ -57,7 +75,17 @@ public class CourseServiceImpl
         User user = wrapJPACall(() -> userRepository.findOne(studentId));
         validateUserAndCourseToRemoveFromCourse(user, course, force);
         Set<User> registeredStudents = course.getStudents();
-        registeredStudents.remove(user);
+        if (registeredStudents.remove(user)) {
+            List<Lesson> lessons = lessonRepository.findByCourseIdOrderByStartTimeDesc(courseId, allItemsPage());
+            List<Integer> lessonIds = lessons.stream().map(Lesson::getId).collect(Collectors.toList());
+            List<HometaskSolution> solutions = hometaskSolutionRepository.findByStudentId(studentId, allItemsPage());
+            List<HometaskSolution> collected = solutions.stream()
+                    .filter(solution -> lessonIds.contains(solution.getLessonId()))
+                    .collect(Collectors.toList());
+            wrapJPACall(() -> collected.forEach(hometaskSolutionRepository::delete));
+            logger.debug("All {} solutions of unregistered user has been deleted", collected.size());
+        }
+        logger.debug("{} unregistered from curse {}", user, course);
         wrapJPACall(() -> courseRepository.save(course));
     }
 

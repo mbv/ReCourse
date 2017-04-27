@@ -14,7 +14,6 @@ import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
@@ -29,6 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.*;
+import static by.triumgroup.recourse.util.Util.allItemsPage;
 
 
 @Component
@@ -127,7 +127,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 break;
             case TEACHER:
                 List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
-                        newUser.getId(), new PageRequest(0, Integer.MAX_VALUE)));
+                        newUser.getId(), allItemsPage()));
                 if (lessons.stream().anyMatch(
                         lesson -> lesson.getStartTime().after(Timestamp.from(Instant.now())))) {
                     rejectRoleChanging("Teacher has lessons in the future.");
@@ -139,7 +139,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     private void checkTeacherRoleUpdate(User teacher) {
         List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
-                teacher.getId(), new PageRequest(0, Integer.MAX_VALUE)));
+                teacher.getId(), allItemsPage()));
         if (!lessons.isEmpty()){
             rejectRoleChanging("Teacher has lessons.");
         }

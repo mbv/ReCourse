@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
-import static by.triumgroup.recourse.util.RoleUtil.ifExistsWithRole;
+import static by.triumgroup.recourse.util.Util.ifExistsWithRole;
 
 public class LessonServiceImpl
         extends AbstractCrudService<Lesson, Integer>
