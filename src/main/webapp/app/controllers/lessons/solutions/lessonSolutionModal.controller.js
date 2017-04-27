@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonSolutionModalController', LessonSolutionModalController);
 
-function LessonSolutionModalController($mdDialog, SolutionFactory, MarkFactory, solution, lessonId) {
+function LessonSolutionModalController($mdDialog, SolutionFactory, MarkFactory, UserFactory, solution, lessonId) {
     var self = this;
 
     self.solution = solution;
@@ -11,6 +11,10 @@ function LessonSolutionModalController($mdDialog, SolutionFactory, MarkFactory, 
     self.updateMode = !!self.solution;
     self.removeMark = removeMark;
     self.addMark = addMark;
+
+    UserFactory.query().$promise.then(function (result) {
+        self.students = result.filter(function (user) { return user.role === 'STUDENT' });
+    });
 
     function saveSolution() {
         self.solution.lessonId = lessonId;
@@ -30,8 +34,9 @@ function LessonSolutionModalController($mdDialog, SolutionFactory, MarkFactory, 
                 }
             });
         } else {
-            SolutionFactory.save(self.solution, function() {
+            SolutionFactory.save(self.solution, function(result) {
                 if (self.solution.mark) {
+                    self.solution.mark.solutionId = result.id;
                     MarkFactory.save(self.solution.mark, $mdDialog.hide);
                 }
             });
@@ -39,9 +44,16 @@ function LessonSolutionModalController($mdDialog, SolutionFactory, MarkFactory, 
     }
 
     function removeMark() {
-        MarkFactory.delete({id: self.solution.mark.id}, function() {
-            self.solution.mark = null;
-        })
+        if (self.solution.mark){
+            if (self.solution.mark.id){
+                MarkFactory.delete({id: self.solution.mark.id}, function() {
+                    self.solution.mark = null;
+                })
+            } else {
+                self.solution.mark = null;
+            }
+        }
+
 
     }
 

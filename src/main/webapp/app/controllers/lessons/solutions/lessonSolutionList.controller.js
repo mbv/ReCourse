@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonSolutionListController', LessonSolutionListController);
 
-function LessonSolutionListController($mdDialog, SolutionFactory, $stateParams) {
+function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, $stateParams) {
     var self = this;
 
     self.lessonId = $stateParams.id;
@@ -32,7 +32,14 @@ function LessonSolutionListController($mdDialog, SolutionFactory, $stateParams) 
     }
 
     function deleteSolution(solution) {
-        SolutionFactory.delete({id: solution.id}, refresh);
+        if (solution.mark.id){
+            MarkFactory.delete({id: solution.mark.id}, function() {
+                SolutionFactory.delete({id: solution.id}, refresh);
+            })
+        } else {
+            SolutionFactory.delete({id: solution.id}, refresh);
+        }
+
     }
 
     function editSolution (solution) {
