@@ -63,7 +63,9 @@ function AuthService($http, $state, $cookies) {
             injectAccessTokenToOutgoingHttpRequests(accessToken);
             self.isAuthorized = true;
             if (needToRemember) {
-                $cookies.put('recourse-access-token', accessToken, { expires: new Date() + tokenExpiresIn } );
+                var expirationDate = new Date();
+                expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiresIn);
+                $cookies.put('recourse-access-token', accessToken, { expires: expirationDate } );
             }
         }
 
