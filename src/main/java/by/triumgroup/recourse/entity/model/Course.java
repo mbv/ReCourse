@@ -85,9 +85,11 @@ public class Course extends BaseEntity<Integer> {
         this.maxStudents = maxStudents;
     }
 
-    //FIXME Should return real students
     public Set<User> getStudents() {
-        return Collections.emptySet();
+        if (students == null) {
+            return Collections.emptySet();
+        }
+        return students;
     }
 
     @Override

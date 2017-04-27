@@ -178,8 +178,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         newUser.setBirthday(registrationDetails.getBirthday());
         newUser.setGender(registrationDetails.getGender());
         newUser.setPasswordHash(passwordEncoder.encode(registrationDetails.getPassword()));
-        // TODO Replace with something proper
-        newUser.setRole(User.Role.ADMIN);
+        newUser.setRole(User.Role.STUDENT);
 
         return wrapJPACallToBoolean(() -> userRepository.save(newUser));
     }

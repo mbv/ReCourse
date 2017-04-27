@@ -1,6 +1,7 @@
 package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
+import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.CourseRepository;
@@ -15,8 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class CourseServiceImpl
@@ -52,8 +55,13 @@ public class CourseServiceImpl
     }
 
     @Override
-    public List<Course> findOngoingForUser(Integer userId, Pageable pageable) {
-        return wrapJPACall(() -> courseRepository.findOngoingForUser(userId, pageable).getContent());
+    public List<Course> findAvailableForUser(Integer userId, Pageable pageable) {
+        return wrapJPACall(() -> courseRepository.findAvailableForUser(userId, pageable));
+    }
+
+    @Override
+    public List<Course> findRegisteredForUser(Integer userId, Pageable pageable) {
+        return wrapJPACall(() -> courseRepository.findRegisteredForUser(userId, pageable));
     }
 
     @Override
@@ -93,6 +101,14 @@ public class CourseServiceImpl
         }
         logger.debug("{} unregistered from curse {}", user, course);
         wrapJPACall(() -> courseRepository.save(course));
+    }
+
+    @Override
+    public List<User> findStudentsForCourse(Integer courseId) {
+        Optional<Course> course = wrapJPACallToOptional(() -> courseRepository.findOne(courseId));
+        return course.map(Course::getStudents).orElseGet(Collections::emptySet)
+                .stream().sorted(Comparator.comparingInt(BaseEntity::getId))
+                .collect(Collectors.toList());
     }
 
     private void checkUserAndCourseExistence(User user, Course course) {

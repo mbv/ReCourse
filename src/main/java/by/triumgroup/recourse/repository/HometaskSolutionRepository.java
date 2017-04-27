@@ -15,15 +15,13 @@ public interface HometaskSolutionRepository extends PagingAndSortingRepository<H
 
     HometaskSolution findByStudentIdAndLessonId(Integer studentId, Integer lessonId);
 
-    Long deleteByLessonId(Integer lessonId);
-
     @Query(value = "DELETE FROM hometask_solution AS h WHERE (h.student_id = ?1) " +
             "AND (h.lesson_id IN (SELECT l.id FROM lesson AS l WHERE (l.course_id = ?2)))",
             nativeQuery = true)
     Long deleteByStudentIdCourseId(Integer studentId, Integer courseId);
 
     @Query(value = "DELETE FROM hometask_solution AS h WHERE " +
-            "(h.lesson_id IN (SELECT l.id FROM lesson AS l WHERE (l.course_id = ?2)))",
+            "(h.lesson_id IN (SELECT l.id FROM lesson AS l WHERE (l.course_id = ?1)))",
             nativeQuery = true)
     Long deleteByCourseId(Integer courseId);
 

@@ -14,8 +14,9 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+
+import static by.triumgroup.recourse.util.Util.allItemsPage;
 
 @Configuration
 @Import({
@@ -67,7 +68,7 @@ public class MainConfiguration extends SpringBootServletInitializer {
     PageableHandlerMethodArgumentResolver pageableHandlerMethodArgumentResolver() {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setOneIndexedParameters(true);
-        resolver.setFallbackPageable(new PageRequest(0, Integer.MAX_VALUE));
+        resolver.setFallbackPageable(allItemsPage());
         return resolver;
     }
 }

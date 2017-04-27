@@ -58,6 +58,11 @@ public class CourseControllerImpl
     }
 
     @Override
+    public List<User> getStudents(@PathVariable("courseId") Integer courseId) {
+        return wrapServiceCall(logger, () -> courseService.findStudentsForCourse(courseId));
+    }
+
+    @Override
     public List<Course> searchByTitle(@RequestParam("title") String title, Pageable pageable) {
         return wrapServiceCall(logger, () -> courseService.searchByTitle(title, pageable));
     }
@@ -68,8 +73,13 @@ public class CourseControllerImpl
     }
 
     @Override
-    public List<Course> getOngoingForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> courseService.findOngoingForUser(studentId, pageable));
+    public List<Course> getAvailableForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable) {
+        return wrapServiceCall(logger, () -> courseService.findAvailableForUser(studentId, pageable));
+    }
+
+    @Override
+    public List<Course> getRegisteredForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable) {
+        return wrapServiceCall(logger, () -> courseService.findRegisteredForUser(studentId, pageable));
     }
 
     @Override

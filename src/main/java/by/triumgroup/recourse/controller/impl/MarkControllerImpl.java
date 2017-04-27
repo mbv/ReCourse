@@ -57,6 +57,6 @@ public class MarkControllerImpl
                 return Objects.equals(lesson.get().getTeacher().getId(), authDetails.getId());
             }
         }
-        return true; //TODO: why true here?
+        return false;
     }
 }

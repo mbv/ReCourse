@@ -34,6 +34,17 @@ public class HometaskSolutionServiceImpl
     }
 
     @Override
+    public <S extends HometaskSolution> Optional<S> add(S entity) {
+        return super.add(entity);
+    }
+
+    @Override
+    public Optional<HometaskSolution> update(HometaskSolution entity, Integer integer) {
+
+        return super.update(entity, integer);
+    }
+
+    @Override
     public Optional<List<HometaskSolution>> findByLessonId(Integer id, Pageable pageable) {
         return wrapJPACallToOptional(() -> (lessonRepository.exists(id))
                 ? repository.findByLessonId(id, pageable)
