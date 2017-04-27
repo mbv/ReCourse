@@ -2,6 +2,8 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.repository.CourseRepository;
+import by.triumgroup.recourse.repository.HometaskSolutionRepository;
+import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.CrudService;
@@ -30,7 +32,9 @@ public class CourseServiceTest extends CrudServiceTest<Course, Integer> {
     public CourseServiceTest() {
         userRepository = Mockito.mock(UserRepository.class);
         courseRepository = Mockito.mock(CourseRepository.class);
-        courseService = new CourseServiceImpl(courseRepository, userRepository);
+        LessonRepository lessonRepository = Mockito.mock(LessonRepository.class);
+        HometaskSolutionRepository hometaskSolutionRepository = Mockito.mock(HometaskSolutionRepository.class);
+        courseService = new CourseServiceImpl(courseRepository, userRepository, lessonRepository, hometaskSolutionRepository);
         courseSupplier = new CourseSupplier();
     }
 

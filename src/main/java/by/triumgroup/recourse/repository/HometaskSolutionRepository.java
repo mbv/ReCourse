@@ -14,4 +14,6 @@ public interface HometaskSolutionRepository extends PagingAndSortingRepository<H
 
     HometaskSolution findByStudentIdAndLessonId(Integer studentId, Integer lessonId);
 
+    Long deleteByLessonId(Integer lessonId);
+
 }

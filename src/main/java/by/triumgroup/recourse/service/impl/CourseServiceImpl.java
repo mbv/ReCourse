@@ -16,10 +16,7 @@ import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
@@ -59,6 +56,19 @@ public class CourseServiceImpl
     }
 
     @Override
+    public Optional<Course> update(Course entity, Integer id) {
+        Course course = wrapJPACall(() -> courseRepository.findOne(id));
+        if (course != null && course.getStatus() != Course.Status.REGISTRATION && entity.getStatus() == Course.Status.REGISTRATION) {
+            wrapJPACall(() -> {
+                List<Lesson> lessons = lessonRepository.findByCourseIdOrderByStartTimeDesc(course.getId(), allItemsPage());
+                lessons.forEach(lesson -> hometaskSolutionRepository.deleteByLessonId(lesson.getId()));
+            });
+            logger.debug("All hometask solution has been deleted from curse {}", course);
+        }
+        return super.update(entity, id);
+    }
+
+    @Override
     public void registerStudentToCourse(Integer studentId, Integer courseId, boolean force) {
         Course course = wrapJPACall(() -> courseRepository.findOne(courseId));
         User user = wrapJPACall(() -> userRepository.findOne(studentId));
@@ -76,14 +86,16 @@ public class CourseServiceImpl
         validateUserAndCourseToRemoveFromCourse(user, course, force);
         Set<User> registeredStudents = course.getStudents();
         if (registeredStudents.remove(user)) {
-            List<Lesson> lessons = lessonRepository.findByCourseIdOrderByStartTimeDesc(courseId, allItemsPage());
-            List<Integer> lessonIds = lessons.stream().map(Lesson::getId).collect(Collectors.toList());
-            List<HometaskSolution> solutions = hometaskSolutionRepository.findByStudentId(studentId, allItemsPage());
-            List<HometaskSolution> collected = solutions.stream()
-                    .filter(solution -> lessonIds.contains(solution.getLessonId()))
-                    .collect(Collectors.toList());
-            wrapJPACall(() -> collected.forEach(hometaskSolutionRepository::delete));
-            logger.debug("All {} solutions of unregistered user has been deleted", collected.size());
+            wrapJPACall(() -> {
+                List<Lesson> lessons = lessonRepository.findByCourseIdOrderByStartTimeDesc(courseId, allItemsPage());
+                List<Integer> lessonIds = lessons.stream().map(Lesson::getId).collect(Collectors.toList());
+                List<HometaskSolution> solutions = hometaskSolutionRepository.findByStudentId(studentId, allItemsPage());
+                List<HometaskSolution> collected = solutions.stream()
+                        .filter(solution -> lessonIds.contains(solution.getLessonId()))
+                        .collect(Collectors.toList());
+                hometaskSolutionRepository.delete(collected);
+                logger.debug("All {} solutions of unregistered user has been deleted", collected.size());
+            });
         }
         logger.debug("{} unregistered from curse {}", user, course);
         wrapJPACall(() -> courseRepository.save(course));

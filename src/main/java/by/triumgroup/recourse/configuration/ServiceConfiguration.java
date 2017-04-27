@@ -38,8 +38,10 @@ public class ServiceConfiguration {
     @Bean
     public CourseService courseService(
             CourseRepository courseRepository,
-            UserRepository userRepository) {
-        return new CourseServiceImpl(courseRepository, userRepository);
+            UserRepository userRepository,
+            LessonRepository lessonRepository,
+            HometaskSolutionRepository hometaskSolutionRepository) {
+        return new CourseServiceImpl(courseRepository, userRepository, lessonRepository, hometaskSolutionRepository);
     }
 
     @Bean
