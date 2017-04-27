@@ -268,7 +268,11 @@ INSERT INTO `recourse`.`course` (title, description, status, max_students) VALUE
   ('Awesome Java Course',
    'Get out of your fucking mind with our java course',
    'ONGOING',
-   20);
+   20),
+  ('Awesome C# Course',
+   'Get out of your fucking mind with our C# course',
+   'ONGOING',
+   10);
 
 INSERT INTO `recourse`.`lesson` (start_time, duration, course_id, topic, teacher_id, task) VALUES
   (date('2016-01-01'),
@@ -277,7 +281,8 @@ INSERT INTO `recourse`.`lesson` (start_time, duration, course_id, topic, teacher
    'Java Spring',
    (select `id` from `recourse`.`user` where `role` = 'TEACHER' limit 1),
    'Very long long long long long long long long long long long long long text.'
-  );
+  )
+;
 
 INSERT INTO `recourse`.`hometask_solution` (lesson_id, student_id, solution) VALUES
   ( 1,
