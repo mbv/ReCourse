@@ -68,6 +68,11 @@ public class CourseControllerImpl
     }
 
     @Override
+    public List<Course> getOngoingForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable) {
+        return wrapServiceCall(logger, () -> courseService.findOngoingForUser(studentId, pageable));
+    }
+
+    @Override
     protected boolean hasAuthorityToEdit(Course entity, UserAuthDetails authDetails) {
         return authDetails.getRole() == User.Role.ADMIN;
     }

@@ -29,6 +29,9 @@ public interface CourseController extends CrudController<Course, Integer> {
     @GetMapping(value = "/search", params = "status")
     List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable);
 
+    @GetMapping(value = "/actual/{studentId}")
+    List<Course> getOngoingForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable);
+
     @PostMapping("{courseId}/register")
     @ResponseStatus(HttpStatus.OK)
     void registerToCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails);
