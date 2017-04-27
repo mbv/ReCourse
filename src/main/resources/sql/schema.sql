@@ -294,4 +294,14 @@ INSERT INTO `recourse`.`mark` (score, solution_id, comment) VALUES
       10,
     1,
     "comment"
-  )
+  );
+
+INSERT INTO `recourse`.`course_feedback` (course_id, student_id, heading, report, pros, cons) VALUES
+(
+  (select `id` from `recourse`.`course` limit 1),
+  (select `id` from `recourse`.`user` where `role` = 'STUDENT' limit 1),
+  'Very nice course',
+  'Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text',
+  'Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text',
+  'Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text'
+);

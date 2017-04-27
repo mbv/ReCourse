@@ -10,6 +10,11 @@ function CourseFactory($resource) {
             url: 'api/courses/:id/lessons',
             isArray: true
         },
+        getFeedbacks: {
+            method: 'GET',
+            url: 'api/courses/:id/feedbacks',
+            isArray: true
+        },
         registerStudent: {
             method: 'POST',
             url: 'api/courses/:id/register?studentId=:studentId',

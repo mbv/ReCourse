@@ -1,0 +1,67 @@
+<md-dialog>
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 ng-if="self.updateMode">Update Feedback</h2>
+                <h2 ng-if="!self.updateMode">Create Feedback</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="self.cancel()">
+                    <i class="material-icons">close</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content layout="column" layout-padding style="margin-top: 20px; width: 600px;">
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Heading</label>
+                    <input ng-model="self.feedback.heading">
+                </md-input-container>
+            </div>
+            <div layout="row" layout-align="space-between center">
+                <label style="color: rgba(0, 0, 0, 0.38); margin-right: 20px;">Student</label>
+                <md-block flex>
+                    <md-autocomplete
+                            md-search-text="self.studentSearchText"
+                            md-selected-item="self.feedback.student"
+                            md-item-text="student.name + ' ' + student.surname + ' ('+ student.email +')'"
+                            placeholder="Select a student"
+                            md-min-length="0"
+                            md-no-cache="true"
+                            md-select-on-match="true"
+                            md-items="student in self.students | propertyFilter: { searchText: self.studentSearchText, properties: ['name', 'surname', 'email'] }">
+                        <md-item-template>
+                            <span md-highlight-text="self.studentSearchText">{{student .name}} </span>
+                            <span md-highlight-text="self.studentSearchText">{{student .surname}} </span>
+                            <span md-highlight-text="self.studentSearchText">({{student .email}})</span>
+                        </md-item-template>
+                        <md-not-found>
+                            No students matching "{{self.studentSearchText}}" were found.
+                        </md-not-found>
+                    </md-autocomplete>
+                </md-block>
+            </div>
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Report</label>
+                    <textarea ng-model="self.feedback.report" style="max-height: 120px;" rows="5" md-select-on-focus></textarea>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Pros</label>
+                    <textarea ng-model="self.feedback.pros" style="max-height: 120px;" rows="5" md-select-on-focus></textarea>
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Cons</label>
+                    <textarea ng-model="self.feedback.cons" style="max-height: 120px;" rows="5" md-select-on-focus></textarea>
+                </md-input-container>
+            </div>
+            <div layout="row">
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="self.saveFeedback()">Save</md-button>
+            <md-button ng-click="self.cancel()">Cancel</md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
