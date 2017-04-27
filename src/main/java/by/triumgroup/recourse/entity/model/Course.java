@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -83,6 +84,9 @@ public class Course extends BaseEntity<Integer> {
     }
 
     public Set<User> getStudents() {
+        if (students == null) {
+            return Collections.emptySet();
+        }
         return students;
     }
 
