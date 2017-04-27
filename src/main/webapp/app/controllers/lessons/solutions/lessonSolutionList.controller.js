@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonSolutionListController', LessonSolutionListController);
 
-function LessonSolutionListController($mdDialog, SolutionFactory, $stateParams) {
+function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, $stateParams) {
     var self = this;
 
     self.lessonId = $stateParams.id;
@@ -18,6 +18,12 @@ function LessonSolutionListController($mdDialog, SolutionFactory, $stateParams) 
     function refresh() {
         SolutionFactory.getForLesson({ id: self.lessonId }).$promise.then(function (result) {
             self.solutions = result;
+            for (var i = 0; i < self.solutions.length; i++) {
+                const index = i;
+                SolutionFactory.getMark({id: self.solutions[index].id}).$promise.then(function (result) {
+                    self.solutions[index].mark = result;
+                })
+            }
         });
     }
 
@@ -26,7 +32,14 @@ function LessonSolutionListController($mdDialog, SolutionFactory, $stateParams) 
     }
 
     function deleteSolution(solution) {
-        SolutionFactory.delete({id: solution.id}, refresh);
+        if (solution.mark.id){
+            MarkFactory.delete({id: solution.mark.id}, function() {
+                SolutionFactory.delete({id: solution.id}, refresh);
+            })
+        } else {
+            SolutionFactory.delete({id: solution.id}, refresh);
+        }
+
     }
 
     function editSolution (solution) {

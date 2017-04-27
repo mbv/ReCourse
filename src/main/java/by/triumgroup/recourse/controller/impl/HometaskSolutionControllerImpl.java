@@ -43,6 +43,7 @@ public class HometaskSolutionControllerImpl
         this.lessonService = lessonService;
     }
 
+
     @Override
     public Iterable<HometaskSolution> getAll(@Auth UserAuthDetails authDetails) {
         Iterable<HometaskSolution> result;
@@ -126,7 +127,7 @@ public class HometaskSolutionControllerImpl
 
     @Override
     protected boolean hasAuthorityToEdit(HometaskSolution entity, UserAuthDetails authDetails) {
-        return Objects.equals(entity.getStudent().getId(), authDetails.getId());
+        return authDetails.isAdmin() || Objects.equals(entity.getStudent().getId(), authDetails.getId());
     }
 
     @Override

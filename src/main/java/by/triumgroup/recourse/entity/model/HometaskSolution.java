@@ -4,8 +4,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Objects;
 
 @Entity
@@ -27,19 +27,14 @@ public class HometaskSolution extends BaseEntity<Integer> {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String solution;
 
-    @Null
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "solution_id")
-    private Mark mark;
 
     public HometaskSolution() {
     }
 
-    public HometaskSolution(Integer lessonId, User student, String solution, Mark mark) {
+    public HometaskSolution(Integer lessonId, User student, String solution) {
         this.lessonId = lessonId;
         this.student = student;
         this.solution = solution;
-        this.mark = mark;
     }
 
     public Integer getLessonId() {
@@ -66,14 +61,6 @@ public class HometaskSolution extends BaseEntity<Integer> {
         this.solution = solution;
     }
 
-    public Mark getMark() {
-        return mark;
-    }
-
-    public void setMark(Mark mark) {
-        this.mark = mark;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -82,12 +69,11 @@ public class HometaskSolution extends BaseEntity<Integer> {
         HometaskSolution that = (HometaskSolution) o;
         return Objects.equals(lessonId, that.lessonId) &&
                 Objects.equals(student, that.student) &&
-                Objects.equals(solution, that.solution) &&
-                Objects.equals(mark, that.mark);
+                Objects.equals(solution, that.solution);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), lessonId, student, solution, mark);
+        return Objects.hash(super.hashCode(), lessonId, student, solution);
     }
 }
