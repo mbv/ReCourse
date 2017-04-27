@@ -20,9 +20,12 @@
                     <td md-cell>{{feedback.student.name}} {{feedback.student.surname}}</td>
                     <td md-cell>{{feedback.heading}}</td>
                     <td md-cell>{{feedback.report | strLengthLimit : 100}}</td>
-                    <td md-cell style="width: 80px;">
+                    <td md-cell style="width: 120px;">
                         <md-button class="md-icon-button" ng-click="self.editFeedback(feedback)">
                             <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
+                        </md-button>
+                        <md-button class="md-icon-button" ng-click="self.deleteFeedback(feedback)">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
                         </md-button>
                     </td>
                 </tr>
