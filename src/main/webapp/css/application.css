@@ -1,3 +1,15 @@
 .nav-active {
     background-color: rgba(158, 158, 158, 0.2);
 }
+
+.md-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.md-fab i {
+    position: absolute;
+    top: 17px;
+    left: 16.5px;
+}
