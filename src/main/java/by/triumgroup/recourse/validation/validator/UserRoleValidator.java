@@ -39,7 +39,10 @@ public class UserRoleValidator<E extends BaseEntity<ID>, ID extends Serializable
     @SuppressWarnings("unchecked")
     public void validate(Object o, Errors errors) {
         E newEntity = (E) o;
-        E databaseEntity = wrapJPACall(() -> entityRepository.findOne(newEntity.getId()));
+        E databaseEntity = null;
+        if (newEntity.getId() != null) {
+            databaseEntity = wrapJPACall(() -> entityRepository.findOne(newEntity.getId()));
+        }
         for (UserFieldInfo<E, ID> userFieldInfo : allowedRoles) {
             Integer userId = userFieldInfo.getUserFieldGetter().apply(newEntity).getId();
             User databaseUser = wrapJPACall(() -> userRepository.findOne(userId));
