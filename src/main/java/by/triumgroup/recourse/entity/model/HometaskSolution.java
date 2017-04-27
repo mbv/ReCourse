@@ -4,8 +4,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Objects;
 
 @Entity
@@ -27,7 +27,7 @@ public class HometaskSolution extends BaseEntity<Integer> {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String solution;
 
-    @Null
+    @Valid
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id", referencedColumnName = "solution_id")
     private Mark mark;
