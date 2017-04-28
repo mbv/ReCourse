@@ -8,7 +8,7 @@
 USE `recourse`;
 
 INSERT INTO user (password_hash, surname, name, email, gender, birthday, role) VALUES
-  ('$2a$12$5EeGW2rSJVdrg4g8bp9g0exNjaGsjHNAq0BkR6UTU5baFr8Y3i522', 'Ivan', 'Shimko', 'Ivan_Shimko@triumgroup.com',
+  ('$2a$12$5EeGW2rSJVdrg4g8bp9g0exNjaGsjHNAq0BkR6UTU5baFr8Y3i522', 'Foo', 'Bar', 'admin@triumgroup.com',
    'MALE', NULL, 'ADMIN');
 INSERT INTO user (password_hash, surname, name, email, gender, birthday, role) VALUES
   ('$2a$12$5EeGW2rSJVdrg4g8bp9g0exNjaGsjHNAq0BkR6UTU5baFr8Y3i522', 'Danser', 'Dominique',

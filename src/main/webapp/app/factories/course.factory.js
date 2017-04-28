@@ -28,6 +28,12 @@ function CourseFactory($resource) {
             params: {
                 studentId: '@studentId'
             }
+        },
+        getStudentCourses: {
+            method: 'GET',
+            url: 'api/courses/registered/:id',
+            isArray: true
         }
+
     });
 }

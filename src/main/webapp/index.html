@@ -31,6 +31,10 @@
                         <md-tab ui-sref="lessons" label="my lessons"></md-tab>
                     </div>
 
+                    <div ng-if="self.getRole() === 'STUDENT'">
+                        <md-tab ui-sref="student" label="my courses"></md-tab>
+                    </div>
+
                     <md-tab ng-click="self.signOut()" label="sign out"></md-tab>
 
                 </div>
@@ -90,6 +94,7 @@
     <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionList.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/teacherLessonModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/studentCourseController.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/solutions/teacherSolutionModal.controller.js"></script>
 
     <script type="text/javascript" src="app/filters/propertyFilter.js"></script>

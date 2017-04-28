@@ -60,5 +60,3 @@ function CourseListController($mdDialog, CourseFactory, $state) {
         }).then(refresh, refresh);
     }
 }
-
-
