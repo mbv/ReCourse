@@ -13,7 +13,6 @@ import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.MarkService;
 import org.slf4j.Logger;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
+import static by.triumgroup.recourse.util.Util.allItemsPage;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class HometaskSolutionControllerImpl
@@ -30,9 +30,9 @@ public class HometaskSolutionControllerImpl
         implements HometaskSolutionController {
 
     private static final Logger logger = getLogger(HometaskSolutionControllerImpl.class);
-    private HometaskSolutionService hometaskSolutionService;
     private final MarkService markService;
     private final LessonService lessonService;
+    private HometaskSolutionService hometaskSolutionService;
 
     public HometaskSolutionControllerImpl(HometaskSolutionService hometaskSolutionService,
                                           MarkService markService,
@@ -51,7 +51,7 @@ public class HometaskSolutionControllerImpl
             if (authDetails.getRole() == User.Role.STUDENT) {
                 result = wrapServiceCall(logger, () -> {
                     Optional<List<HometaskSolution>> hometaskSolutions = hometaskSolutionService
-                            .findByStudentId(authDetails.getId(), new PageRequest(0, Integer.MAX_VALUE));
+                            .findByStudentId(authDetails.getId(), allItemsPage());
                     return hometaskSolutions.orElseThrow(NotFoundException::new);
                 });
             } else {

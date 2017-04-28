@@ -14,14 +14,14 @@ import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
-import org.springframework.data.domain.PageRequest;
+import org.slf4j.Logger;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -29,10 +29,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.*;
+import static by.triumgroup.recourse.util.Util.allItemsPage;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Component
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
+
+    private static final Logger logger = getLogger(UserServiceImpl.class);
 
     private final LessonRepository lessonRepository;
     private final TokenStore tokenStore;
@@ -60,13 +64,19 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     @Override
+    public List<User> findByRole(User.Role role, Pageable pageable) {
+        return wrapJPACall(() -> userRepository.findByRole(role, pageable));
+    }
+
+    @Override
     public Optional<User> findByEmail(String email) throws ServiceException {
         return wrapJPACallToOptional(() -> userRepository.findByEmail(email));
     }
 
     @Override
     public Optional<User> update(User entity, Integer id) {
-        throw new NotImplementedException();
+        logger.warn("This method shouldn't be called.");
+        throw new ServiceException();
     }
 
     @Override
@@ -127,7 +137,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 break;
             case TEACHER:
                 List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
-                        newUser.getId(), new PageRequest(0, Integer.MAX_VALUE)));
+                        newUser.getId(), allItemsPage()));
                 if (lessons.stream().anyMatch(
                         lesson -> lesson.getStartTime().after(Timestamp.from(Instant.now())))) {
                     rejectRoleChanging("Teacher has lessons in the future.");
@@ -139,7 +149,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     private void checkTeacherRoleUpdate(User teacher) {
         List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
-                teacher.getId(), new PageRequest(0, Integer.MAX_VALUE)));
+                teacher.getId(), allItemsPage()));
         if (!lessons.isEmpty()){
             rejectRoleChanging("Teacher has lessons.");
         }
@@ -178,8 +188,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         newUser.setBirthday(registrationDetails.getBirthday());
         newUser.setGender(registrationDetails.getGender());
         newUser.setPasswordHash(passwordEncoder.encode(registrationDetails.getPassword()));
-        // TODO Replace with something proper
-        newUser.setRole(User.Role.ADMIN);
+        newUser.setRole(User.Role.STUDENT);
 
         return wrapJPACallToBoolean(() -> userRepository.save(newUser));
     }

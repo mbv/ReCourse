@@ -68,21 +68,21 @@ public class CourseControllerTest extends CrudControllerTest<Course, Integer> {
 
     @Test
     public void searchByTitleTest() throws Exception {
-        when(courseService.searchByTitle(any(), any())).thenReturn(Lists.emptyList());
+        when(courseService.searchByTitle(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
         sendGet(COURSE_SEARCH_REQUEST, "title", "title")
                 .andExpect(status().isOk());
     }
 
     @Test
     public void searchByStatusTest() throws Exception {
-        when(courseService.findByStatus(any(), any())).thenReturn(Lists.emptyList());
+        when(courseService.findByStatus(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
         sendGet(COURSE_SEARCH_REQUEST, "status", Course.Status.ONGOING)
                 .andExpect(status().isOk());
     }
 
     @Test
     public void searchByInvalidStatusTest() throws Exception {
-        when(courseService.findByStatus(any(), any())).thenReturn(Lists.emptyList());
+        when(courseService.findByStatus(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
         sendGet(COURSE_SEARCH_REQUEST, "status", "NOT_A_VALID_STATUS")
                 .andExpect(status().isBadRequest());
     }

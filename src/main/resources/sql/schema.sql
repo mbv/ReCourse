@@ -18,7 +18,6 @@ CREATE TABLE `user` (
   `gender`        ENUM ('MALE', 'FEMALE') NOT NULL,
   `birthday`      DATE                                              DEFAULT NULL,
   `role`          ENUM ('STUDENT', 'TEACHER', 'ADMIN', 'DISABLED')  DEFAULT NULL,
-  `is_deleted`    BOOL                    NOT NULL                  DEFAULT FALSE,
   PRIMARY KEY (`id`),
   KEY `IDX_name` (`name`, `surname`),
   UNIQUE KEY `email_UNIQUE` (`email`)
@@ -242,66 +241,4 @@ INSERT INTO `oauth_client_details` VALUES (
                NULL,
                NULL,
                NULL
-);
-
--- -----------------------------------------------------------
--- User data
--- -----------------------------------------------------------
-INSERT INTO `user` (email, password_hash, name, surname, gender, birthday, role) VALUES
-  ('Ivan_Shimko@triumgroup.com',
-   '$2a$12$5EeGW2rSJVdrg4g8bp9g0exNjaGsjHNAq0BkR6UTU5baFr8Y3i522', /* 12345 */
-   'Ivan', 'Shimko', 'male', NULL, 'teacher'),
-  ('Andrey_Tatarenko@triumgroup.com',
-   '$2a$12$eI7e3tSsXOBx5ZDUxY4gAeZQTu7yxKH7fGmPrVindUoJPDz4Cp03G', /* 54321 */
-   'Andrey', 'Tatarenko', 'male', NULL, 'student'),
-  ('Mikhail_Snitavets@triumgroup.com',
-   '$2a$12$dhZ.l.x3RwbAYSMTOS.ERuRlRy6ikeSVIkdDPbD20uGrP08WmmZRe', /* 09876 */
-   'Mikhail', 'Snitavets', 'male', NULL, 'student'),
-  ('admin@triumgroup.com',
-  '$2a$12$dhZ.l.x3RwbAYSMTOS.ERuRlRy6ikeSVIkdDPbD20uGrP08WmmZRe', /* 09876 */
-  'Foo', 'Bar', 'male', NULL, 'admin');
-
--- -----------------------------------------------------------
--- Course data
--- -----------------------------------------------------------
-INSERT INTO `recourse`.`course` (title, description, status, max_students) VALUES
-  ('Awesome Java Course',
-   'Get out of your fucking mind with our java course',
-   'ONGOING',
-   20),
-  ('Awesome C# Course',
-   'Get out of your fucking mind with our C# course',
-   'ONGOING',
-   10);
-
-INSERT INTO `recourse`.`lesson` (start_time, duration, course_id, topic, teacher_id, task) VALUES
-  (date('2016-01-01'),
-   time('5:00:00'),
-   (select `id` from `recourse`.`course` limit 1),
-   'Java Spring',
-   (select `id` from `recourse`.`user` where `role` = 'TEACHER' limit 1),
-   'Very long long long long long long long long long long long long long text.'
-  )
-;
-
-INSERT INTO `recourse`.`hometask_solution` (lesson_id, student_id, solution) VALUES
-  ( 1,
-    2,
-    'Solution');
-
-INSERT INTO `recourse`.`mark` (score, solution_id, comment) VALUES
-  (
-      10,
-    1,
-    "comment"
-  );
-
-INSERT INTO `recourse`.`course_feedback` (course_id, student_id, heading, report, pros, cons) VALUES
-(
-  (select `id` from `recourse`.`course` limit 1),
-  (select `id` from `recourse`.`user` where `role` = 'STUDENT' limit 1),
-  'Very nice course',
-  'Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text',
-  'Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text',
-  'Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text'
 );

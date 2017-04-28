@@ -5,6 +5,7 @@ import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.entity.model.Lesson;
+import by.triumgroup.recourse.entity.model.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +24,23 @@ public interface CourseController extends CrudController<Course, Integer> {
     List<CourseFeedback> getFeedbacks(
             @PathVariable("courseId") Integer courseId, Pageable pageable);
 
+    @GetMapping("{courseId}/students")
+    List<User> getStudents(
+            @PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails);
+
     @GetMapping(value = "/search", params = "title")
     List<Course> searchByTitle(@RequestParam("title") String title, Pageable pageable);
 
     @GetMapping(value = "/search", params = "status")
     List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable);
+
+    @GetMapping(value = "/available/{studentId}")
+    List<Course> getAvailableForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable);
+
+    @GetMapping(value = "/registered/{studentId}")
+    List<Course> getRegisteredForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable);
+
+
 
     @PostMapping("{courseId}/register")
     @ResponseStatus(HttpStatus.OK)

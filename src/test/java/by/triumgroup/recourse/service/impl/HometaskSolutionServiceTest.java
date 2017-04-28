@@ -2,6 +2,7 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.HometaskSolutionRepository;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
@@ -26,6 +27,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolution, Integer> {
+    private CourseRepository courseRepository;
     private LessonRepository lessonRepository;
     private HometaskSolutionService hometaskSolutionService;
     private HometaskSolutionRepository hometaskSolutionRepository;
@@ -37,7 +39,8 @@ public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolutio
         hometaskSolutionRepository = Mockito.mock(HometaskSolutionRepository.class);
         userRepository = Mockito.mock(UserRepository.class);
         lessonRepository = Mockito.mock(LessonRepository.class);
-        hometaskSolutionService = new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository);
+        courseRepository = Mockito.mock(CourseRepository.class);
+        hometaskSolutionService = new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository, courseRepository);
         hometaskSolutionSupplier = new HometaskSolutionSupplier();
         userSupplier = new UserSupplier();
     }
