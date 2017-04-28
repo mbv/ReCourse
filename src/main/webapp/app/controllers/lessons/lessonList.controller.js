@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonListController', LessonListController);
 
-function LessonListController($mdDialog, LessonFactory, CourseFactory, $state, $stateParams) {
+function LessonListController($mdDialog, LessonFactory, CourseFactory, AuthService, $state, $stateParams) {
     var self = this;
 
     self.title = '';
@@ -12,27 +12,38 @@ function LessonListController($mdDialog, LessonFactory, CourseFactory, $state, $
     self.addLesson = addLesson;
     self.deleteLesson = deleteLesson;
     self.editLesson = editLesson;
+    self.showLesson = showLesson;
     self.showSolutions = showSolutions;
     self.courseId = $stateParams.course;
+    if (AuthService.user.role === 'TEACHER'){
+        self.teacherId = AuthService.user.id;
+    }
+
 
     refresh();
 
     function refresh() {
-        if (self.courseId){
-            self.title = 'Course Lessons';
-            CourseFactory.getLessons({ id: self.courseId }).$promise.then(function (result) {
+        if (self.teacherId) {
+            LessonFactory.getForTeacher({id: self.teacherId}).$promise.then(function (result) {
                 self.lessons = result;
-            });
+            })
         } else {
-            self.title = 'Lessons';
-            LessonFactory.query().$promise.then(function (result) {
-                self.lessons = result;
-            });
+            if (self.courseId) {
+                self.title = 'Course Lessons';
+                CourseFactory.getLessons({id: self.courseId}).$promise.then(function (result) {
+                    self.lessons = result;
+                });
+            } else {
+                self.title = 'Lessons';
+                LessonFactory.query().$promise.then(function (result) {
+                    self.lessons = result;
+                });
+            }
         }
     }
 
     function addLesson() {
-        openModal();
+        openEditModal();
     }
 
     function deleteLesson(lesson ) {
@@ -40,17 +51,39 @@ function LessonListController($mdDialog, LessonFactory, CourseFactory, $state, $
     }
 
     function editLesson (lesson) {
-        openModal(lesson);
+        openEditModal(lesson);
+    }
+
+    function showLesson(lesson) {
+        openShowModal(lesson);
     }
 
     function showSolutions(lesson) {
-        $state.go('crud.lessons.solutions', { id: lesson.id });
+        if (!self.teacherId){
+            $state.go('crud.lessons.solutions', { id: lesson.id });
+        } else {
+            $state.go('teacher.solutions', { id: lesson.id });
+        }
+
     }
 
-    function openModal(lesson) {
+    function openEditModal(lesson) {
         $mdDialog.show({
             controller: 'LessonModalController as self',
             templateUrl: 'templates/crud/lessons/modal.html',
+            parent: angular.element(document.body),
+            clickOutsideToClose: true,
+            locals: {
+                lesson: angular.copy(lesson),
+                courseId: self.courseId
+            }
+        }).then(refresh, refresh);
+    }
+
+    function openShowModal(lesson) {
+        $mdDialog.show({
+            controller: 'TeacherLessonModalController as self',
+            templateUrl: 'templates/teacher/lessons/modal.html',
             parent: angular.element(document.body),
             clickOutsideToClose: true,
             locals: {

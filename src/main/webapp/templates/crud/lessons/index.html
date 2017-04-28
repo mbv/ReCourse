@@ -41,19 +41,31 @@
                                     </md-menu-item>
                                 </md-menu-content>
                             </md-menu>
-                            <md-button class="md-icon-button" ng-click="self.editLesson(lesson)">
-                                <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
-                            </md-button>
-                            <md-button class="md-icon-button" ng-click="self.deleteLesson(lesson)">
-                                <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
-                            </md-button>
+
+                            <div ng-if="!self.teacherId">
+                                <md-button class="md-icon-button" ng-click="self.editLesson(lesson)">
+                                    <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="self.deleteLesson(lesson)">
+                                    <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
+                                </md-button>
+                            </div>
+
+                            <div ng-if="self.teacherId">
+                                <md-button class="md-icon-button" ng-click="self.showLesson(lesson)">
+                                    <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">info_outline</i>
+                                </md-button>
+                            </div>
+
                         </td>
                     </tr>
                 </tbody>
             </table>
         </md-table-container>
     </md-card>
-    <md-button class="md-fab" ng-click="self.addLesson()">
-        <i class="material-icons">add</i>
-    </md-button>
+    <div ng-if="!self.teacherId">
+        <md-button class="md-fab" ng-click="self.addLesson()">
+            <i class="material-icons">add</i>
+        </md-button>
+    </div>
 </ui-view>

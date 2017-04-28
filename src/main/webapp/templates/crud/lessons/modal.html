@@ -73,6 +73,12 @@
                     </md-autocomplete>
                 </md-block>
             </div>
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Hometask</label>
+                    <input ng-model="self.lesson.hometask">
+                </md-input-container>
+            </div>
         </md-dialog-content>
         <md-dialog-actions layout="row">
             <md-button ng-click="self.saveLesson()">Save</md-button>

@@ -2,7 +2,7 @@ angular
     .module('app')
     .service('AuthService', AuthService);
 
-function AuthService($http, $state, $cookies) {
+function AuthService($http, $state, $cookies, UserFactory) {
 
     var self = {
         isAuthorized: false,
@@ -11,7 +11,8 @@ function AuthService($http, $state, $cookies) {
         signIn: signIn,
         signUp: signUp,
         signOut: signOut,
-        role: null
+        role: null,
+        user: null
     };
 
     return self;
@@ -20,7 +21,7 @@ function AuthService($http, $state, $cookies) {
         var accessToken = $cookies.get('recourse-access-token');
         if (!!accessToken) {
             self.isAuthorized = true;
-            initRole(accessToken);
+            initUser(accessToken);
             injectAccessTokenToOutgoingHttpRequests(accessToken);
         }
     }
@@ -64,7 +65,7 @@ function AuthService($http, $state, $cookies) {
 
         if (!!accessToken) {
             injectAccessTokenToOutgoingHttpRequests(accessToken);
-            initRole(accessToken);
+            initUser(accessToken);
             self.isAuthorized = true;
             if (needToRemember) {
                 var expirationDate = new Date();
@@ -100,11 +101,14 @@ function AuthService($http, $state, $cookies) {
         };
     }
 
-    function initRole(accessToken) {
+    function initUser(accessToken) {
         $http.get('/ReCourse/oauth/check_token', {params: {token:accessToken}}).then(function (response) {
             if (response.status === 200) {
                 self.role = response.data.authorities[0];
             }
+        });
+        UserFactory.me(function(response) {
+            self.user = response;
         });
     }
 }

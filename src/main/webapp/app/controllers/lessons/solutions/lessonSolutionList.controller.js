@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('LessonSolutionListController', LessonSolutionListController);
 
-function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, $stateParams) {
+function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, AuthService, $stateParams) {
     var self = this;
 
     self.title = 'Lesson Solutions';
@@ -13,6 +13,11 @@ function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, $
     self.addSolution = addSolution;
     self.deleteSolution = deleteSolution;
     self.editSolution = editSolution;
+    self.showSolution = showSolution;
+
+    if (AuthService.user.role === 'TEACHER'){
+        self.teacherId = AuthService.user.id;
+    }
 
     refresh();
 
@@ -29,7 +34,7 @@ function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, $
     }
 
     function addSolution() {
-        openModal();
+        openEditModal();
     }
 
     function deleteSolution(solution) {
@@ -44,13 +49,30 @@ function LessonSolutionListController($mdDialog, SolutionFactory, MarkFactory, $
     }
 
     function editSolution (solution) {
-        openModal(solution);
+        openEditModal(solution);
     }
 
-    function openModal(solution) {
+    function showSolution(solution) {
+        openShowModal(solution);
+    }
+
+    function openEditModal(solution) {
         $mdDialog.show({
             controller: 'LessonSolutionModalController as self',
             templateUrl: 'templates/crud/lessons/solutions/modal.html',
+            parent: angular.element(document.body),
+            clickOutsideToClose: true,
+            locals: {
+                solution: angular.copy(solution),
+                lessonId: self.lessonId
+            }
+        }).then(refresh, refresh);
+    }
+
+    function openShowModal(solution) {
+        $mdDialog.show({
+            controller: 'TeacherLessonSolutionModalController as self',
+            templateUrl: 'templates/teacher/lessons/solutions/modal.html',
             parent: angular.element(document.body),
             clickOutsideToClose: true,
             locals: {

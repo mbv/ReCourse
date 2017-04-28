@@ -98,6 +98,15 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
+    public User getMyInfo(@Auth UserAuthDetails authDetails) {
+        return wrapServiceCall(logger, () -> {
+                Optional<User> callResult = userService.findById(authDetails.getId());
+                return callResult.orElseThrow(NotFoundException::new);
+            }
+        );
+    }
+
+    @Override
     protected boolean hasAuthorityToEdit(User entity, UserAuthDetails authDetails) {
         return authDetails.isAdmin();
     }
