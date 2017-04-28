@@ -1,0 +1,44 @@
+<md-dialog>
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 ng-if="self.updateMode">Update Lesson</h2>
+                <h2 ng-if="!self.updateMode">Create Lesson</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="self.cancel()">
+                    <i class="material-icons">close</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content layout="column" layout-padding style="margin-top: 20px; width: 550px;">
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Topic</label>
+                    <input ng-model="self.lesson.topic" readonly>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container>
+                    <label>Start Time</label>
+                    <md-datepicker md-hide-icons="calendar" md-date-filter="" ng-model="self.lesson.startTime" ng-disabled="true"></md-datepicker>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                Teacher: {{ self.lesson.teacher.name }} {{ self.lesson.teacher.surname }}
+            </div>
+            <div layout="row">
+                Course: {{ self.course.title }}
+            </div>
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Hometask</label>
+                    <input ng-model="self.lesson.task">
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="self.saveHometask()">Save</md-button>
+            <md-button ng-click="self.cancel()">Cancel</md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

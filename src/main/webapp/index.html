@@ -19,18 +19,20 @@
         <p>ReCourse CRUD</p>
             <md-tabs class="md-primary" md-no-pagination="true" style="width: 400px;">
 
-                <div ng-if="self.getRole() === 'ADMIN'">
-                    <md-tab ui-sref="home" label="home"></md-tab>
-                    <md-tab ui-sref="crud" label="crud"></md-tab>
-                    <md-tab ui-sref="about" label="about"></md-tab>
-                </div>
-
-                <div ng-if="self.getRole() === 'TEACHER'">
-                    <md-tab ui-sref="home" label="teacher stuff"></md-tab>
-                </div>
-
                 <div ng-if="self.isAuthorized()">
+                    <md-tab ui-sref="home" label="home"></md-tab>
+
+                    <div ng-if="self.getRole() === 'ADMIN'">
+                        <md-tab ui-sref="crud" label="crud"></md-tab>
+                        <md-tab ui-sref="about" label="about"></md-tab>
+                    </div>
+
+                    <div ng-if="self.getRole() === 'TEACHER'">
+                        <md-tab ui-sref="lessons" label="my lessons"></md-tab>
+                    </div>
+
                     <md-tab ng-click="self.signOut()" label="sign out"></md-tab>
+
                 </div>
 
                 <div ng-if="!self.isAuthorized()">
@@ -87,6 +89,7 @@
     <script type="text/javascript" src="app/controllers/navigation.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionList.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/teacherLessonModal.controller.js"></script>
 
     <script type="text/javascript" src="app/filters/propertyFilter.js"></script>
     <script type="text/javascript" src="app/filters/strLengthLimit.js"></script>

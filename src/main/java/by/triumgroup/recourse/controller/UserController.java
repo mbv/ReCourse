@@ -20,6 +20,9 @@ public interface UserController extends CrudController<User, Integer> {
     @GetMapping(value = "", params = "role")
     List<User> getUsersByRole(@RequestParam("role") User.Role role, Pageable pageable, @Auth UserAuthDetails authDetails);
 
+    @GetMapping("/me")
+    User getMyInfo(@Auth UserAuthDetails authDetails);
+
     @PostMapping("/register")
     void register(@RequestBody RegistrationDetails registrationDetails) throws ControllerException;
 
