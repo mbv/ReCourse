@@ -7,9 +7,7 @@ import by.triumgroup.recourse.controller.exception.AccessDeniedException;
 import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.BaseEntity;
-import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,12 +20,10 @@ import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
 
 public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> implements CrudController<E, ID> {
 
-    private final UserService userService;
     private final Logger logger;
     private final CrudService<E, ID> crudService;
 
-    AbstractCrudController(CrudService<E, ID> crudService, UserService userService, Logger logger) {
-        this.userService = userService;
+    AbstractCrudController(CrudService<E, ID> crudService, Logger logger) {
         this.logger = logger;
         this.crudService = crudService;
     }
@@ -39,17 +35,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
     }
 
     protected void checkAuthority(E entity, UserAuthDetails authDetails, BiFunction<E, UserAuthDetails, Boolean> authorityChecker) {
-        refreshAuthDetails(authDetails);
         if (!authDetails.isAdmin() && !authorityChecker.apply(entity, authDetails)) {
-            throw new AccessDeniedException();
-        }
-    }
-
-    protected void refreshAuthDetails(UserAuthDetails authDetails) {
-        Optional<User> user = userService.findById(authDetails.getId());
-        if (user.isPresent()) {
-            authDetails.setRole(user.get().getRole());
-        } else {
             throw new AccessDeniedException();
         }
     }

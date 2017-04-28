@@ -22,38 +22,33 @@ public class ControllerConfiguration {
             LessonService lessonService,
             CourseFeedbackService courseFeedbackService,
             UserService userService) {
-        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService, userService);
+        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService);
     }
 
     @Bean
-    public CourseFeedbackController courseFeedbackController(CourseFeedbackService courseFeedbackService,
-                                                             UserService userService) {
-        return new CourseFeedbackControllerImpl(courseFeedbackService, userService);
+    public CourseFeedbackController courseFeedbackController(CourseFeedbackService courseFeedbackService) {
+        return new CourseFeedbackControllerImpl(courseFeedbackService);
     }
 
     @Bean
     public HometaskSolutionController hometaskSolutionController(
-            HometaskSolutionService hometaskSolutionSevice,
+            HometaskSolutionService hometaskSolutionService,
             MarkService markService,
-            LessonService lessonService,
-            UserService userService) {
-        return new HometaskSolutionControllerImpl(hometaskSolutionSevice, markService, lessonService, userService);
+            LessonService lessonService) {
+        return new HometaskSolutionControllerImpl(hometaskSolutionService, markService, lessonService);
     }
 
     @Bean
-    public LessonController lessonController(LessonService lessonService,
-                                             UserService userService) {
-        return new LessonControllerImpl(lessonService, userService);
+    public LessonController lessonController(LessonService lessonService) {
+        return new LessonControllerImpl(lessonService);
     }
 
     @Bean
     public MarkController markController(
             MarkService markService,
             HometaskSolutionService hometaskSolutionService,
-            LessonService lessonService,
-            UserService userService
-    ) {
-        return new MarkControllerImpl(markService, hometaskSolutionService, lessonService, userService);
+            LessonService lessonService) {
+        return new MarkControllerImpl(markService, hometaskSolutionService, lessonService);
     }
 
     @Bean
