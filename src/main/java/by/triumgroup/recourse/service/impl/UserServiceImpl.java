@@ -14,6 +14,7 @@ import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
@@ -57,6 +58,11 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
         this.tokenStore = tokenStore;
         this.consumerTokenServices = consumerTokenServices;
         this.passwordChangingValidator = passwordChangingValidator;
+    }
+
+    @Override
+    public List<User> findByRole(User.Role role, Pageable pageable) {
+        return wrapJPACall(() -> userRepository.findByRole(role, pageable));
     }
 
     @Override

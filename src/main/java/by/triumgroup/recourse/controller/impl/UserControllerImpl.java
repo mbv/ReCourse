@@ -3,10 +3,7 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.UserController;
-import by.triumgroup.recourse.controller.exception.BadRequestException;
-import by.triumgroup.recourse.controller.exception.ControllerException;
-import by.triumgroup.recourse.controller.exception.MethodNotAllowedException;
-import by.triumgroup.recourse.controller.exception.NotFoundException;
+import by.triumgroup.recourse.controller.exception.*;
 import by.triumgroup.recourse.entity.dto.PasswordChanging;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
@@ -14,13 +11,16 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
@@ -56,6 +56,14 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
             Optional<User> callResult = userService.update(entity, id, authDetails);
             return callResult.orElseThrow(NotFoundException::new);
         });
+    }
+
+    @Override
+    public List<User> getUsersByRole(@RequestParam("role") User.Role role, Pageable pageable, @Auth UserAuthDetails authDetails) {
+        if (!authDetails.isAdmin()) {
+            throw new AccessDeniedException();
+        }
+        return wrapServiceCall(logger, () -> userService.findByRole(role, pageable));
     }
 
     @Override
