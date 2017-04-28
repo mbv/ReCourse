@@ -21,8 +21,8 @@ function AuthService($http, $state, $cookies, UserFactory) {
         var accessToken = $cookies.get('recourse-access-token');
         if (!!accessToken) {
             self.isAuthorized = true;
-            initUser(accessToken);
             injectAccessTokenToOutgoingHttpRequests(accessToken);
+            initUser(accessToken);
         }
     }
 

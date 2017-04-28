@@ -8,6 +8,7 @@ import by.triumgroup.recourse.entity.model.Mark;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.MarkService;
+import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 
 import java.util.Objects;
@@ -26,9 +27,10 @@ public class MarkControllerImpl
     public MarkControllerImpl(
             MarkService markService,
             HometaskSolutionService hometaskSolutionService,
-            LessonService lessonService
+            LessonService lessonService,
+            UserService userService
     ) {
-        super(markService, logger);
+        super(markService, userService, logger);
         this.hometaskSolutionService = hometaskSolutionService;
         this.lessonService = lessonService;
     }

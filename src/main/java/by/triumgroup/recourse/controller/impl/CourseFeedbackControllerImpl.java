@@ -4,6 +4,7 @@ import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseFeedbackController;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.service.CourseFeedbackService;
+import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 
 import java.util.Objects;
@@ -16,8 +17,8 @@ public class CourseFeedbackControllerImpl
 
     private static final Logger logger = getLogger(CourseFeedbackControllerImpl.class);
 
-    public CourseFeedbackControllerImpl(CourseFeedbackService courseFeedbackService) {
-        super(courseFeedbackService, logger);
+    public CourseFeedbackControllerImpl(CourseFeedbackService courseFeedbackService, UserService userService) {
+        super(courseFeedbackService, userService, logger);
     }
 
 

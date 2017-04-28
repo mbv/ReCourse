@@ -13,6 +13,7 @@ import by.triumgroup.recourse.entity.support.CourseStatusEnumConverter;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
+import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.WebDataBinder;
@@ -37,9 +38,10 @@ public class CourseControllerImpl
 
     public CourseControllerImpl(CourseService courseService,
                                 LessonService lessonService,
-                                CourseFeedbackService courseFeedbackService
+                                CourseFeedbackService courseFeedbackService,
+                                UserService userService
     ) {
-        super(courseService, logger);
+        super(courseService, userService, logger);
         this.courseService = courseService;
         this.lessonService = lessonService;
         this.courseFeedbackService = courseFeedbackService;
@@ -69,6 +71,7 @@ public class CourseControllerImpl
 
     @Override
     public List<User> getStudents(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        refreshAuthDetails(authDetails);
         if (authDetails.isAdmin()) {
             return wrapServiceCall(logger, () -> courseService.findStudentsForCourse(courseId));
         } else {

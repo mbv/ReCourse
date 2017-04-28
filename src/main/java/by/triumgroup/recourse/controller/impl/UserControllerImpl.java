@@ -37,7 +37,7 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     @Autowired
     public UserControllerImpl(UserService userService, DefaultTokenServices defaultTokenServices) {
-        super(userService, logger);
+        super(userService, userService, logger);
         this.userService = userService;
         this.defaultTokenServices = defaultTokenServices;
     }

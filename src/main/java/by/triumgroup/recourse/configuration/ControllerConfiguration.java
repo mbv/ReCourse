@@ -20,35 +20,40 @@ public class ControllerConfiguration {
     public CourseController courseController(
             CourseService courseService,
             LessonService lessonService,
-            CourseFeedbackService courseFeedbackService) {
-        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService);
+            CourseFeedbackService courseFeedbackService,
+            UserService userService) {
+        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService, userService);
     }
 
     @Bean
-    public CourseFeedbackController courseFeedbackController(CourseFeedbackService courseFeedbackService) {
-        return new CourseFeedbackControllerImpl(courseFeedbackService);
+    public CourseFeedbackController courseFeedbackController(CourseFeedbackService courseFeedbackService,
+                                                             UserService userService) {
+        return new CourseFeedbackControllerImpl(courseFeedbackService, userService);
     }
 
     @Bean
     public HometaskSolutionController hometaskSolutionController(
             HometaskSolutionService hometaskSolutionSevice,
             MarkService markService,
-            LessonService lessonService) {
-        return new HometaskSolutionControllerImpl(hometaskSolutionSevice, markService, lessonService);
+            LessonService lessonService,
+            UserService userService) {
+        return new HometaskSolutionControllerImpl(hometaskSolutionSevice, markService, lessonService, userService);
     }
 
     @Bean
-    public LessonController lessonController(LessonService lessonService) {
-        return new LessonControllerImpl(lessonService);
+    public LessonController lessonController(LessonService lessonService,
+                                             UserService userService) {
+        return new LessonControllerImpl(lessonService, userService);
     }
 
     @Bean
     public MarkController markController(
             MarkService markService,
             HometaskSolutionService hometaskSolutionService,
-            LessonService lessonService
+            LessonService lessonService,
+            UserService userService
     ) {
-        return new MarkControllerImpl(markService, hometaskSolutionService, lessonService);
+        return new MarkControllerImpl(markService, hometaskSolutionService, lessonService, userService);
     }
 
     @Bean

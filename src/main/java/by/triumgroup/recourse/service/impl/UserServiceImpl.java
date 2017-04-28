@@ -82,6 +82,8 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     @Override
     public <S extends User> Optional<S> update(S newUser, Integer id, User performer) throws ServiceException {
         Optional<S> result;
+        Integer performerId = performer.getId();
+        performer = wrapJPACall(() -> userRepository.findOne(performerId));
         Optional<User> databaseUserOptional = wrapJPACallToOptional(() -> userRepository.findOne(id));
         if (databaseUserOptional.isPresent()) {
             User databaseUser = databaseUserOptional.get();
@@ -120,6 +122,8 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 case STUDENT:
                     checkStudentRoleUpdate(databaseUser);
                     break;
+                case ADMIN:
+                    break;
                 case DISABLED:
                     checkUserEnabling(databaseUser, newUser.getRole());
                     break;
@@ -127,6 +131,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                     rejectRoleChanging("Unknown role");
             }
         }
+        forceLogoutUser(databaseUser);
     }
 
     private void checkUserEnabling(User disabledUser, User.Role newRole) {
@@ -171,7 +176,6 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 }
                 break;
         }
-        forceLogoutUser(databaseUser);
     }
 
     private void checkTeacherRoleUpdate(User teacher) {

@@ -6,6 +6,7 @@ import by.triumgroup.recourse.controller.LessonController;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.service.LessonService;
+import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +25,9 @@ public class LessonControllerImpl
     private static final Logger logger = getLogger(LessonControllerImpl.class);
     private LessonService lessonService;
 
-    public LessonControllerImpl(LessonService lessonService) {
-        super(lessonService, logger);
+    public LessonControllerImpl(LessonService lessonService,
+                                UserService userService) {
+        super(lessonService, userService, logger);
         this.lessonService = lessonService;
     }
 
