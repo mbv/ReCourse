@@ -1,23 +1,23 @@
 package by.triumgroup.recourse.service;
 
 import by.triumgroup.recourse.entity.model.BaseEntity;
+import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
+import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Matchers;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Pair;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Matchers.any;
@@ -30,7 +30,9 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     public ExpectedException thrown = ExpectedException.none();
 
     @Captor
-    private ArgumentCaptor<E> captor;
+    protected ArgumentCaptor<E> captor;
+
+    protected UserRepository userRepository = Mockito.mock(UserRepository.class);
 
     @Before
     public void initTests() {
@@ -67,9 +69,20 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     }
 
     @Test
+    public void findAllEntitiesTest() throws Exception {
+        when(getCrudRepository().findAll()).thenReturn(Lists.newArrayList(getEntitySupplier().getValidEntityWithId()));
+
+        List<E> list = Lists.newArrayList(getCrudService().findAll());
+
+        verify(getCrudRepository(), times(1)).findAll();
+        Assert.assertEquals(1, list.size());
+    }
+
+    @Test
     public void addValidEntityTest() throws Exception {
         E expectedEntity = getEntitySupplier().getValidEntityWithoutId();
         when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        setupAllowedRoles(expectedEntity);
 
         Optional<E> actualResult = getCrudService().add(expectedEntity);
 
@@ -81,6 +94,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     public void addEntityWithExistingIdTest() throws Exception {
         E entity = getEntitySupplier().getValidEntityWithId();
         when(getCrudRepository().save(entity)).thenReturn(entity);
+        setupAllowedRoles(entity);
 
         getCrudService().add(entity);
 
@@ -89,27 +103,34 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Assert.assertNull(captor.getValue().getId());
     }
 
+
     @Test
-    public void addInvalidEntityTest() throws Exception {
+    public void addEntityExceptionTest() throws Exception {
+        E invalidEntity = getEntitySupplier().getValidEntityWithoutId();
         when(getCrudRepository().save(Matchers.<E>any())).thenThrow(new DataIntegrityViolationException(""));
+        setupAllowedRoles(invalidEntity);
 
         thrown.expect(ServiceException.class);
 
-        getCrudService().add(getEntitySupplier().getInvalidEntity());
+        getCrudService().add(invalidEntity);
     }
 
     @Test
     public void updateEntityWithoutIdTest() throws Exception {
-        E expectedEntity = getEntitySupplier().getValidEntityWithoutId();
+        E newEntity = getEntitySupplier().getValidEntityWithoutId();
+        E databaseEntity = getEntitySupplier().getValidEntityWithoutId();
         ID parameterId = getEntitySupplier().getAnyId();
-        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        databaseEntity.setId(parameterId);
+        when(getCrudRepository().save(newEntity)).thenReturn(newEntity);
         when(getCrudRepository().exists(parameterId)).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(databaseEntity);
+        setupAllowedRoles(newEntity);
 
-        Optional<E> actualResult = getCrudService().update(expectedEntity, parameterId);
+        Optional<E> actualResult = getCrudService().update(newEntity, parameterId);
 
         verify(getCrudRepository()).save(captor.capture());
-        verifyCallsForUpdate();
-        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
+        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
+        Assert.assertEquals(newEntity, actualResult.orElse(null));
         Assert.assertEquals(parameterId, captor.getValue().getId());
     }
 
@@ -118,29 +139,50 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Pair<ID, ID> ids = getEntitySupplier().getDifferentIds();
         ID entityId = ids.getFirst();
         ID parameterId = ids.getSecond();
-        E expectedEntity = getEntitySupplier().getValidEntityWithoutId();
-        expectedEntity.setId(entityId);
-        when(getCrudRepository().save(expectedEntity)).thenReturn(expectedEntity);
+        E newEntity = getEntitySupplier().getValidEntityWithoutId();
+        E databaseEntity = getEntitySupplier().getValidEntityWithoutId();
+        databaseEntity.setId(parameterId);
+        newEntity.setId(entityId);
+        when(getCrudRepository().save(newEntity)).thenReturn(newEntity);
         when(getCrudRepository().exists(parameterId)).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(databaseEntity);
+        setupAllowedRoles(newEntity);
 
-        Optional<E> actualResult = getCrudService().update(expectedEntity, parameterId);
+        Optional<E> actualResult = getCrudService().update(newEntity, parameterId);
 
         verify(getCrudRepository()).save(captor.capture());
-        verifyCallsForUpdate();
-        Assert.assertEquals(expectedEntity, actualResult.orElse(null));
+        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
+        Assert.assertEquals(newEntity, actualResult.orElse(null));
         Assert.assertEquals(parameterId, captor.getValue().getId());
     }
 
     @Test
-    public void updateInvalidEntityTest() throws Exception {
+    public void updateNotExistingEntityTest() throws Exception {
+        E entity = getEntitySupplier().getValidEntityWithoutId();
+        ID parameterId = getEntitySupplier().getAnyId();
+        when(getCrudRepository().exists(parameterId)).thenReturn(false);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(null);
+
+        Optional<E> actualResult = getCrudService().update(entity, parameterId);
+
+        verify(getCrudRepository(), times(0)).save(entity);
+        Assert.assertFalse(actualResult.isPresent());
+    }
+
+    @Test
+    public void updateEntityExceptionTest() throws Exception {
+        E entity = getEntitySupplier().getValidEntityWithoutId();
+        ID parameterId = getEntitySupplier().getAnyId();
         when(getCrudRepository().save(Matchers.<E>any())).thenThrow(new DataIntegrityViolationException(""));
         when(getCrudRepository().exists(any())).thenReturn(true);
+        when(getCrudRepository().findOne(parameterId)).thenReturn(entity);
+        setupAllowedRoles(entity);
 
         thrown.expect(ServiceException.class);
 
-        getCrudService().update(getEntitySupplier().getInvalidEntity(), getEntitySupplier().getAnyId());
+        getCrudService().update(entity, parameterId);
 
-        verifyCallsForUpdate();
+        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
     }
 
     @Test
@@ -160,8 +202,5 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
         Assert.assertFalse(actual.isPresent());
     }
 
-    private void verifyCallsForUpdate(){
-        verify(getCrudRepository(), times(1)).exists(any());
-        verify(getCrudRepository(), times(1)).save(Matchers.<E>any());
-    }
+    protected abstract void setupAllowedRoles(E entity);
 }

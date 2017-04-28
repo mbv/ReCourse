@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public class UserAuthDetails extends User implements UserDetails, Serializable {
 
-    UserAuthDetails(User user) {
+    public UserAuthDetails(User user) {
         super(user);
     }
 
@@ -19,6 +19,10 @@ public class UserAuthDetails extends User implements UserDetails, Serializable {
         return AuthorityUtils.createAuthorityList(
                 getRole().name()
         );
+    }
+
+    public boolean isAdmin() {
+        return getRole() == Role.ADMIN;
     }
 
     @Override
@@ -48,6 +52,6 @@ public class UserAuthDetails extends User implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        return !isDeleted();
+        return getRole() != Role.DISABLED;
     }
 }

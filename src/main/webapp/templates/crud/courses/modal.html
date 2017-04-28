@@ -1,0 +1,42 @@
+<md-dialog>
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 ng-if="self.updateMode">Update Course</h2>
+                <h2 ng-if="!self.updateMode">Create Course</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="self.cancel()">
+                    <i class="material-icons">close</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content layout="column" layout-padding style="margin-top: 20px; width: 600px;">
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Title</label>
+                    <input ng-model="self.course.title">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Status</label>
+                    <md-select ng-model="self.course.status">
+                        <md-option ng-repeat="status in self.statuses" value="{{status}}">{{status}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Max students</label>
+                    <input ng-model="self.course.maxStudents">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container flex>
+                    <label>Description</label>
+                    <textarea ng-model="self.course.description" style="max-height: 120px;" rows="5" md-select-on-focus></textarea>
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="self.saveCourse()">Save</md-button>
+            <md-button ng-click="self.cancel()">Cancel</md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

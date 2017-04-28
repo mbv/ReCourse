@@ -1,6 +1,7 @@
 package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.CourseFeedback;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.CourseFeedbackRepository;
 import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.service.CourseFeedbackService;
@@ -8,6 +9,7 @@ import by.triumgroup.recourse.service.CrudService;
 import by.triumgroup.recourse.service.CrudServiceTest;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.CourseFeedbackSupplier;
+import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -26,27 +28,14 @@ public class CourseFeedbackServiceTest extends CrudServiceTest<CourseFeedback, I
     private CourseFeedbackRepository courseFeedbackRepository;
     private CourseFeedbackSupplier courseFeedbackSupplier;
     private CourseRepository courseRepository;
+    private UserSupplier userSupplier;
 
     public CourseFeedbackServiceTest() {
         courseRepository = Mockito.mock(CourseRepository.class);
         courseFeedbackRepository = Mockito.mock(CourseFeedbackRepository.class);
-        courseFeedbackService = new CourseFeedbackServiceImpl(courseFeedbackRepository, courseRepository);
+        courseFeedbackService = new CourseFeedbackServiceImpl(courseFeedbackRepository, courseRepository, userRepository);
         courseFeedbackSupplier = new CourseFeedbackSupplier();
-    }
-
-    @Override
-    protected CrudService<CourseFeedback, Integer> getCrudService() {
-        return courseFeedbackService;
-    }
-
-    @Override
-    protected CrudRepository<CourseFeedback, Integer> getCrudRepository() {
-        return courseFeedbackRepository;
-    }
-
-    @Override
-    protected EntitySupplier<CourseFeedback, Integer> getEntitySupplier() {
-        return courseFeedbackSupplier;
+        userSupplier = new UserSupplier();
     }
 
     @Test
@@ -73,4 +62,26 @@ public class CourseFeedbackServiceTest extends CrudServiceTest<CourseFeedback, I
         verify(courseRepository, times(1)).exists(id);
         assertFalse(feedbacks.isPresent());
     }
+
+    @Override
+    protected CrudService<CourseFeedback, Integer> getCrudService() {
+        return courseFeedbackService;
+    }
+
+    @Override
+    protected CrudRepository<CourseFeedback, Integer> getCrudRepository() {
+        return courseFeedbackRepository;
+    }
+
+    @Override
+    protected EntitySupplier<CourseFeedback, Integer> getEntitySupplier() {
+        return courseFeedbackSupplier;
+    }
+
+    @Override
+    protected void setupAllowedRoles(CourseFeedback entity) {
+        Integer studentId = entity.getStudent().getId();
+        when(userRepository.findOne(studentId)).thenReturn(userSupplier.getWithRole(User.Role.STUDENT));
+    }
+
 }

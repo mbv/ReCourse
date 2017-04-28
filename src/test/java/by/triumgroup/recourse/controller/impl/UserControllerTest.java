@@ -3,7 +3,6 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.UserController;
-import by.triumgroup.recourse.controller.impl.UserControllerImpl;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
@@ -11,10 +10,12 @@ import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 
 import java.util.Optional;
 
@@ -25,11 +26,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserControllerTest extends CrudControllerTest<User, Integer> {
 
+    private static final String USER_REGISTER_REQUEST = "/api/users/register";
     private RegistrationDetailsSupplier registrationDetailsSupplier;
 
     private UserService userService;
-
-    private RegistrationDetailsValidator registrationDetailsValidator;
 
     private UserController userController;
 
@@ -37,9 +37,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
 
     public UserControllerTest() {
         userService = Mockito.mock(UserService.class);
-        registrationDetailsValidator = Mockito.mock(RegistrationDetailsValidator.class);
-        when(registrationDetailsValidator.supports(RegistrationDetails.class)).thenReturn(true);
-        userController = new UserControllerImpl(userService, registrationDetailsValidator);
+        userController = new UserControllerImpl(userService, null);
         entitySupplier = new UserSupplier();
         registrationDetailsSupplier = new RegistrationDetailsSupplier();
     }
@@ -49,32 +47,81 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
         RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
         when(userService.register(any())).thenReturn(Optional.of(true));
 
-        sendPost("/user/register", registrationDetails)
+        sendPost(USER_REGISTER_REQUEST, registrationDetails)
                 .andExpect(status().isOk());
 
-        verify(registrationDetailsValidator, times(1)).validate(any(), any());
+        verify(userService, times(1)).register(any());
     }
 
 
     @Test
     public void registrationWithFailedValidationTest() throws Exception {
         RegistrationDetails registrationDetails = registrationDetailsSupplier.get();
-        doAnswer(invocationOnMock -> {
-            Errors errors = (Errors)invocationOnMock.getArguments()[1];
-            errors.rejectValue("", "");
-            return null;
-        }).when(registrationDetailsValidator).validate(any(), any());
-        when(userService.register(any())).thenReturn(Optional.of(true));
+        BindingResult bindingResult = new BeanPropertyBindingResult(registrationDetails, "registration details");
+        when(userService.register(any())).thenThrow(new ServiceBadRequestException(bindingResult));
 
-        sendPost("/user/register", registrationDetails)
+        sendPost(USER_REGISTER_REQUEST, registrationDetails)
                 .andExpect(status().isBadRequest());
 
-        verify(registrationDetailsValidator, times(1)).validate(any(), any());
+        verify(userService, times(1)).register(any());
+    }
+
+    @Override
+    public void createValidEntityTest() throws Exception {
+        postEntityAuthorized(getEntitySupplier().getValidEntityWithoutId())
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Override
+    public void createInvalidEntityTest() throws Exception {
+        postEntityAuthorized(getEntitySupplier().getValidEntityWithoutId())
+                .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Override
+    public void deleteExistingEntityTest() throws Exception {
+        sendDelete(idRequest, userSupplier.getWithRole(User.Role.ADMIN), entitySupplier.getAnyId()).
+                andExpect(status().isMethodNotAllowed());
+    }
+
+    @Override
+    public void deleteNotExistingEntityTest() throws Exception {
+        sendDelete(idRequest, userSupplier.getWithRole(User.Role.ADMIN), entitySupplier.getAnyId()).
+                andExpect(status().isMethodNotAllowed());
+    }
+
+    @Override
+    public void updateNotExistingEntityTest() throws Exception {
+        when(userService.update(any(), any(), any())).thenReturn(Optional.empty());
+
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
+                .andExpect(status().isNotFound());
+    }
+
+    @Override
+    public void updateEntityValidDataTest() throws Exception {
+        when(userService.update(any(), any(), any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
+
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
+                .andExpect(status().isOk());
+    }
+
+    @Override
+    public void getAllEntitiesTest() throws Exception {
+        when(getService().findAll()).thenReturn(Lists.emptyList());
+        User admin = userSupplier.getWithRole(User.Role.ADMIN);
+        sendGet(generalRequest, admin)
+                .andExpect(status().isOk());
+    }
+
+    @Override
+    public void updateEntityInvalidDataTest() throws Exception {
+        super.updateEntityInvalidDataTest();
     }
 
     @Override
     protected String getEntityName() {
-        return "user";
+        return "users";
     }
 
     @Override
@@ -90,5 +137,11 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
     @Override
     protected EntitySupplier<User, Integer> getEntitySupplier() {
         return entitySupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(User entity, User validUserWithId) {
+        validUserWithId.setRole(User.Role.ADMIN);
+        return validUserWithId;
     }
 }

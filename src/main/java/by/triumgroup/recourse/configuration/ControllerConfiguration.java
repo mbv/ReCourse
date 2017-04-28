@@ -4,16 +4,16 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.controller.*;
 import by.triumgroup.recourse.controller.impl.*;
 import by.triumgroup.recourse.service.*;
-import by.triumgroup.recourse.validation.RegistrationDetailsValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 
 @Configuration
 public class ControllerConfiguration {
 
     @Bean
-    public UserController userController(UserService userService, RegistrationDetailsValidator registrationDetailsValidator) {
-        return new UserControllerImpl(userService, registrationDetailsValidator);
+    public UserController userController(UserService userService, DefaultTokenServices defaultTokenServices) {
+        return new UserControllerImpl(userService, defaultTokenServices);
     }
 
     @Bean
@@ -21,71 +21,45 @@ public class ControllerConfiguration {
             CourseService courseService,
             LessonService lessonService,
             CourseFeedbackService courseFeedbackService,
-            StudentReportService studentReportService) {
-        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService, studentReportService);
+            UserService userService) {
+        return new CourseControllerImpl(courseService, lessonService, courseFeedbackService, userService);
     }
 
     @Bean
-    public CourseFeedbackController courseFeedbackController(CourseFeedbackService courseFeedbackService) {
-        return new CourseFeedbackControllerImpl(courseFeedbackService);
-    }
-
-    @Bean
-    public HometaskController hometaskController(
-            HometaskService hometaskService,
-            HometaskSolutionService hometaskSolutionService) {
-        return new HometaskControllerImpl(hometaskService, hometaskSolutionService);
+    public CourseFeedbackController courseFeedbackController(CourseFeedbackService courseFeedbackService,
+                                                             UserService userService) {
+        return new CourseFeedbackControllerImpl(courseFeedbackService, userService);
     }
 
     @Bean
     public HometaskSolutionController hometaskSolutionController(
             HometaskSolutionService hometaskSolutionSevice,
-            MarkService markService) {
-        return new HometaskSolutionControllerImpl(hometaskSolutionSevice, markService);
-    }
-
-    @Bean
-    public LessonController lessonController(
+            MarkService markService,
             LessonService lessonService,
-            HometaskService hometaskService) {
-        return new LessonControllerImpl(lessonService, hometaskService);
+            UserService userService) {
+        return new HometaskSolutionControllerImpl(hometaskSolutionSevice, markService, lessonService, userService);
     }
 
     @Bean
-    public MarkController markController(MarkService markService) {
-        return new MarkControllerImpl(markService);
+    public LessonController lessonController(LessonService lessonService,
+                                             UserService userService) {
+        return new LessonControllerImpl(lessonService, userService);
     }
 
     @Bean
-    public OrganizerController organizerController(CourseService courseService) {
-        return new OrganizerControllerImpl(courseService);
-    }
-
-    @Bean
-    public StudentController studentController(
-            StudentReportService studentReportService,
-            TeacherFeedbackService teacherFeedbackService,
-            HometaskSolutionService hometaskSolutionService) {
-        return new StudentControllerImpl(studentReportService, teacherFeedbackService, hometaskSolutionService);
-    }
-
-    @Bean
-    public StudentReportController studentReportController(StudentReportService studentReportService) {
-        return new StudentReportControllerImpl(studentReportService);
+    public MarkController markController(
+            MarkService markService,
+            HometaskSolutionService hometaskSolutionService,
+            LessonService lessonService,
+            UserService userService
+    ) {
+        return new MarkControllerImpl(markService, hometaskSolutionService, lessonService, userService);
     }
 
     @Bean
     public TeacherController teacherController(
-            CourseService courseService,
-            LessonService lessonService,
-            StudentReportService studentReportService,
-            TeacherFeedbackService teacherFeedbackService) {
-        return new TeacherControllerImpl(courseService, lessonService, studentReportService, teacherFeedbackService);
-    }
-
-    @Bean
-    public TeacherFeedbackController teacherFeedbackController(TeacherFeedbackService teacherFeedbackService) {
-        return new TeacherFeedbackControllerImpl(teacherFeedbackService);
+            LessonService lessonService) {
+        return new TeacherControllerImpl(lessonService);
     }
 
 }

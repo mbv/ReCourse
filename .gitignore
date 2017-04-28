@@ -12,5 +12,8 @@ out/
 *.war
 *.ear
 
-#MacOS Files #
+# MacOS Files #
 .DS_Store
+
+# NPM module
+node_modules

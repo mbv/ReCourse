@@ -11,6 +11,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -49,11 +50,12 @@ public class User extends BaseEntity<Integer> {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM ('STUDENT', 'TEACHER', 'ORGANIZER')")
+    @Column(columnDefinition = "ENUM ('STUDENT', 'TEACHER', 'ADMIN')")
     private Role role;
 
     @JsonIgnore
-    private boolean isDeleted;
+    @ManyToMany(mappedBy = "students")
+    private Set<Course> courses;
 
     public User() {
     }
@@ -66,7 +68,7 @@ public class User extends BaseEntity<Integer> {
         gender = user.gender;
         birthday = user.birthday;
         role = user.role;
-        isDeleted = user.isDeleted;
+        setId(user.getId());
     }
 
     public String getEmail() {
@@ -125,12 +127,12 @@ public class User extends BaseEntity<Integer> {
         this.role = role;
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
+    public Set<Course> getCourses() {
+        return courses;
     }
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 
     @Override
@@ -139,8 +141,7 @@ public class User extends BaseEntity<Integer> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         User user = (User) o;
-        return isDeleted == user.isDeleted &&
-                Objects.equals(email, user.email) &&
+        return Objects.equals(email, user.email) &&
                 Objects.equals(passwordHash, user.passwordHash) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(surname, user.surname) &&
@@ -151,7 +152,7 @@ public class User extends BaseEntity<Integer> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), email, passwordHash, name, surname, gender, birthday, role, isDeleted);
+        return Objects.hash(super.hashCode(), email, passwordHash, name, surname, gender, birthday, role);
     }
 
     public enum Gender {
@@ -159,6 +160,6 @@ public class User extends BaseEntity<Integer> {
     }
 
     public enum Role {
-        STUDENT, TEACHER, ORGANIZER
+        STUDENT, TEACHER, ADMIN, DISABLED
     }
 }

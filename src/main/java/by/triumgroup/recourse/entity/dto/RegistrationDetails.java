@@ -3,7 +3,9 @@ package by.triumgroup.recourse.entity.dto;
 import by.triumgroup.recourse.entity.model.User.Gender;
 import org.hibernate.validator.constraints.Email;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
@@ -31,6 +33,8 @@ public class RegistrationDetails {
     @NotNull
     private Gender gender;
 
+    @Past
+    @Column(columnDefinition = "DATE")
     private Timestamp birthday;
 
     public String getEmail() {

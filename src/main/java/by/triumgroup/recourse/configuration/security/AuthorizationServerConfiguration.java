@@ -16,7 +16,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
@@ -28,7 +27,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     private final DataSource dataSource;
     private final PasswordEncoder passwordEncoder;
-    private final TokenEnhancer tokenEnhancer;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
 
@@ -37,13 +35,11 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             DataSource dataSource,
             PasswordEncoder passwordEncoder,
             @Qualifier("authenticationManagerBean") AuthenticationManager authenticationManager,
-            UserDetailsService userDetailsService,
-            TokenEnhancer tokenEnhancer) {
+            UserDetailsService userDetailsService) {
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
-        this.tokenEnhancer = tokenEnhancer;
     }
 
     @Bean
@@ -62,8 +58,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .authorizationCodeServices(authorizationCodeServices())
                 .tokenStore(tokenStore())
                 .authenticationManager(this.authenticationManager)
-                .userDetailsService(userDetailsService)
-                .tokenEnhancer(tokenEnhancer);
+                .userDetailsService(userDetailsService);
     }
 
     @Override
@@ -75,7 +70,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.allowFormAuthenticationForClients();
+        security.checkTokenAccess("permitAll()");
     }
 
     @Bean
@@ -83,8 +78,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public DefaultTokenServices tokenServices() {
         DefaultTokenServices tokenServices = new DefaultTokenServices();
         tokenServices.setSupportRefreshToken(true);
+        tokenServices.setAccessTokenValiditySeconds(86400);
         tokenServices.setTokenStore(tokenStore());
-        tokenServices.setTokenEnhancer(tokenEnhancer);
         return tokenServices;
     }
 }

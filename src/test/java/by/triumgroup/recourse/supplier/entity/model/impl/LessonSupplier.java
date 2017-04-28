@@ -17,6 +17,7 @@ public class LessonSupplier implements EntityIntegerPKSupplier<Lesson> {
         lesson.setStartTime(new Timestamp(Long.MAX_VALUE));
         lesson.setTeacher(userSupplier.getValidEntityWithId());
         lesson.setTopic("topic");
+        lesson.setTask("2+2=?");
         return lesson;
     }
 

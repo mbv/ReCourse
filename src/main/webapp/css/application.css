@@ -1,0 +1,15 @@
+.md-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.md-fab i {
+    position: absolute;
+    top: 17px;
+    left: 16.5px;
+}
+
+md-sidenav {
+    width: 250px;
+}

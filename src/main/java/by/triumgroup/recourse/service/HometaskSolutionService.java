@@ -8,10 +8,10 @@ import java.util.Optional;
 
 public interface HometaskSolutionService extends CrudService<HometaskSolution, Integer> {
 
-    Optional<List<HometaskSolution>> findByHometaskId(Integer id, Pageable pageable);
+    Optional<List<HometaskSolution>> findByLessonId(Integer id, Pageable pageable);
 
     Optional<List<HometaskSolution>> findByStudentId(Integer id, Pageable pageable);
 
-    Optional<HometaskSolution> findByStudentIdAndHometaskId(Integer studentId, Integer hometaskId);
+    Optional<HometaskSolution> findByStudentIdAndLessonId(Integer studentId, Integer hometaskId);
 
 }

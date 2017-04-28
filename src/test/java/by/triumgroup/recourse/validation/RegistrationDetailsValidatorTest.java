@@ -4,6 +4,7 @@ import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.supplier.entity.dto.RegistrationDetailsSupplier;
+import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +15,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
 import static by.triumgroup.recourse.util.TestUtil.createValidationErrors;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class RegistrationDetailsValidatorTest {
     @InjectMocks
@@ -41,6 +44,7 @@ public class RegistrationDetailsValidatorTest {
         validator.validate(registrationDetails, errors);
 
         Assert.assertFalse(errors.hasFieldErrors());
+        verify(userRepository, times(1)).findByEmail(registrationDetails.getEmail());
     }
 
     @Test
@@ -55,6 +59,7 @@ public class RegistrationDetailsValidatorTest {
         Assert.assertTrue(errors.getErrorCount() == 1);
         FieldError fieldError = errors.getFieldError();
         Assert.assertEquals("email", fieldError.getField());
+        verify(userRepository, times(1)).findByEmail(registrationDetails.getEmail());
     }
 
     @Test
@@ -71,5 +76,6 @@ public class RegistrationDetailsValidatorTest {
         Assert.assertTrue(errors.getErrorCount() == 1);
         FieldError fieldError = errors.getFieldError();
         Assert.assertEquals("password", fieldError.getField());
+        verify(userRepository, times(1)).findByEmail(registrationDetails.getEmail());
     }
 }

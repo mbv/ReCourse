@@ -1,17 +1,23 @@
 package by.triumgroup.recourse.controller.impl;
 
+import by.triumgroup.recourse.configuration.security.Auth;
+import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseController;
+import by.triumgroup.recourse.controller.exception.AccessDeniedException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.entity.model.Lesson;
-import by.triumgroup.recourse.entity.model.StudentReport;
+import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.entity.support.CourseStatusEnumConverter;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
-import by.triumgroup.recourse.service.StudentReportService;
+import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -29,18 +35,22 @@ public class CourseControllerImpl
     private final CourseService courseService;
     private final LessonService lessonService;
     private final CourseFeedbackService courseFeedbackService;
-    private final StudentReportService studentReportService;
 
     public CourseControllerImpl(CourseService courseService,
                                 LessonService lessonService,
                                 CourseFeedbackService courseFeedbackService,
-                                StudentReportService studentReportService
+                                UserService userService
     ) {
-        super(courseService, logger);
+        super(courseService, userService, logger);
         this.courseService = courseService;
         this.lessonService = lessonService;
         this.courseFeedbackService = courseFeedbackService;
-        this.studentReportService = studentReportService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Course.Status.class,
+                new CourseStatusEnumConverter());
     }
 
     @Override
@@ -60,20 +70,62 @@ public class CourseControllerImpl
     }
 
     @Override
-    public List<StudentReport> getReports(@PathVariable("courseId") Integer courseId, Pageable pageable) {
-        return wrapServiceCall(logger, () -> {
-            Optional<List<StudentReport>> reports = studentReportService.findByCourseId(courseId, pageable);
-            return reports.orElseThrow(NotFoundException::new);
-        });
+    public List<User> getStudents(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        refreshAuthDetails(authDetails);
+        if (authDetails.isAdmin()) {
+            return wrapServiceCall(logger, () -> courseService.findStudentsForCourse(courseId));
+        } else {
+            throw new AccessDeniedException();
+        }
     }
 
     @Override
     public List<Course> searchByTitle(@RequestParam("title") String title, Pageable pageable) {
-        return wrapServiceCall(logger, () -> courseService.searchByTitle(title, pageable));
+        return wrapServiceCall(logger, () -> courseService.searchByTitle(title, pageable))
+                .orElseThrow(NotFoundException::new);
     }
 
     @Override
     public List<Course> searchByStatus(@RequestParam("status") Course.Status status, Pageable pageable) {
-        return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable));
+        return wrapServiceCall(logger, () -> courseService.findByStatus(status, pageable))
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public List<Course> getAvailableForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable) {
+        return wrapServiceCall(logger, () -> courseService.findAvailableForUser(studentId, pageable))
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public List<Course> getRegisteredForStudent(@PathVariable("studentId") Integer studentId, Pageable pageable) {
+        return wrapServiceCall(logger, () -> courseService.findRegisteredForUser(studentId, pageable))
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    protected boolean hasAuthorityToEdit(Course entity, UserAuthDetails authDetails) {
+        return authDetails.getRole() == User.Role.ADMIN;
+    }
+
+    public void registerToCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, authDetails.getId(), false));
+    }
+
+    @Override
+    public void unregisterFromCourse(@PathVariable("courseId") Integer courseId, @Auth UserAuthDetails authDetails) {
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, authDetails.getId(), false));
+    }
+
+    @Override
+    public void registerStudentToCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails, this::hasAuthorityToEdit);
+        wrapServiceCall(logger, () -> courseService.registerStudentToCourse(courseId, studentId, true));
+    }
+
+    @Override
+    public void unregisterStudentFromCourse(@PathVariable("courseId") Integer courseId, @RequestParam("studentId") Integer studentId, @Auth UserAuthDetails authDetails) {
+        checkAuthority(null, authDetails, this::hasAuthorityToEdit);
+        wrapServiceCall(logger, () -> courseService.removeStudentFromCourse(courseId, studentId, true));
     }
 }

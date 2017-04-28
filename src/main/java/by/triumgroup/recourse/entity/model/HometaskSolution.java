@@ -4,8 +4,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +14,7 @@ public class HometaskSolution extends BaseEntity<Integer> {
 
     @NotNull
     @Column(columnDefinition = "INT(11)", nullable = false)
-    private Integer hometaskId;
+    private Integer lessonId;
 
     @NotNull
     @ManyToOne(targetEntity = User.class)
@@ -27,27 +27,22 @@ public class HometaskSolution extends BaseEntity<Integer> {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String solution;
 
-    @Null
-    @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "solution_id")
-    private Mark mark;
 
     public HometaskSolution() {
     }
 
-    public HometaskSolution(Integer hometaskId, User student, String solution, Mark mark) {
-        this.hometaskId = hometaskId;
+    public HometaskSolution(Integer lessonId, User student, String solution) {
+        this.lessonId = lessonId;
         this.student = student;
         this.solution = solution;
-        this.mark = mark;
     }
 
-    public Integer getHometaskId() {
-        return hometaskId;
+    public Integer getLessonId() {
+        return lessonId;
     }
 
-    public void setHometaskId(Integer hometaskId) {
-        this.hometaskId = hometaskId;
+    public void setLessonId(Integer lessonId) {
+        this.lessonId = lessonId;
     }
 
     public User getStudent() {
@@ -66,28 +61,19 @@ public class HometaskSolution extends BaseEntity<Integer> {
         this.solution = solution;
     }
 
-    public Mark getMark() {
-        return mark;
-    }
-
-    public void setMark(Mark mark) {
-        this.mark = mark;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         HometaskSolution that = (HometaskSolution) o;
-        return Objects.equals(hometaskId, that.hometaskId) &&
+        return Objects.equals(lessonId, that.lessonId) &&
                 Objects.equals(student, that.student) &&
-                Objects.equals(solution, that.solution) &&
-                Objects.equals(mark, that.mark);
+                Objects.equals(solution, that.solution);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), hometaskId, student, solution, mark);
+        return Objects.hash(super.hashCode(), lessonId, student, solution);
     }
 }

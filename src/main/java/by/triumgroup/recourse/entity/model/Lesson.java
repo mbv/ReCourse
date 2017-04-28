@@ -3,7 +3,6 @@ package by.triumgroup.recourse.entity.model;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Time;
@@ -15,7 +14,6 @@ import java.util.Objects;
 public class Lesson extends BaseEntity<Integer> {
 
     @NotNull
-    @Future
     @Column(columnDefinition = "DATETIME", nullable = false)
     private Timestamp startTime;
 
@@ -37,6 +35,9 @@ public class Lesson extends BaseEntity<Integer> {
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "teacher_id")
     private User teacher;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String task;
 
     public Lesson() {
     }
@@ -89,6 +90,14 @@ public class Lesson extends BaseEntity<Integer> {
         this.teacher = teacher;
     }
 
+    public String getTask() {
+        return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,11 +108,12 @@ public class Lesson extends BaseEntity<Integer> {
                 Objects.equals(duration, lesson.duration) &&
                 Objects.equals(courseId, lesson.courseId) &&
                 Objects.equals(topic, lesson.topic) &&
+                Objects.equals(task, lesson.task) &&
                 Objects.equals(teacher, lesson.teacher);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), startTime, duration, courseId, topic, teacher);
+        return Objects.hash(super.hashCode(), startTime, duration, courseId, topic, teacher, task);
     }
 }

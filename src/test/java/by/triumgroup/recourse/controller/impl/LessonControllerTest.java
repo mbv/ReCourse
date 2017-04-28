@@ -4,13 +4,11 @@ import by.triumgroup.recourse.controller.CrudController;
 import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.LessonController;
 import by.triumgroup.recourse.entity.model.Lesson;
+import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.service.HometaskService;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
-import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.LessonSupplier;
-import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.Optional;
@@ -21,32 +19,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class LessonControllerTest extends CrudControllerTest<Lesson, Integer> {
 
-    private static final String HOMETASK_REQUEST = "/lesson/1/hometask";
     private LessonController lessonController;
     private LessonService lessonService;
     private LessonSupplier lessonSupplier;
-    private HometaskService hometaskService;
-    private HometaskSupplier hometaskSupplier;
 
     public LessonControllerTest() {
         lessonService = Mockito.mock(LessonService.class);
-        hometaskService = Mockito.mock(HometaskService.class);
-        lessonController = new LessonControllerImpl(lessonService, hometaskService);
+        lessonController = new LessonControllerImpl(lessonService);
         lessonSupplier = new LessonSupplier();
-        hometaskSupplier = new HometaskSupplier();
     }
 
-    @Test
-    public void getHometaskExistingLessonTest() throws Exception {
-        when(hometaskService.findByLessonId(any())).thenReturn(Optional.of(hometaskSupplier.getValidEntityWithId()));
-        sendGet(HOMETASK_REQUEST)
+    @Override
+    public void updateEntityValidDataTest() throws Exception {
+        when(lessonService.update(any(), any(), any())).thenReturn(Optional.of(getEntitySupplier().getValidEntityWithId()));
+
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void getHometaskNotExistingLessonTest() throws Exception {
-        when(hometaskService.findByLessonId(any())).thenReturn(Optional.empty());
-        sendGet(HOMETASK_REQUEST)
+    @Override
+    public void updateNotExistingEntityTest() throws Exception {
+        when(lessonService.update(any(), any(), any())).thenReturn(Optional.empty());
+
+        putEntityByIdAuthorized(getEntitySupplier().getAnyId(), getEntitySupplier().getValidEntityWithoutId())
                 .andExpect(status().isNotFound());
     }
 
@@ -62,11 +57,17 @@ public class LessonControllerTest extends CrudControllerTest<Lesson, Integer> {
 
     @Override
     protected String getEntityName() {
-        return "lesson";
+        return "lessons";
     }
 
     @Override
     protected EntitySupplier<Lesson, Integer> getEntitySupplier() {
         return lessonSupplier;
+    }
+
+    @Override
+    protected User prepareAuthorizedUser(Lesson entity, User validUserWithId) {
+        validUserWithId.setId(entity.getTeacher().getId());
+        return validUserWithId;
     }
 }

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ReCourse</title>
+    <link type="text/css" rel="stylesheet" href="node_modules/angular-material/angular-material.min.css">
+    <link type="text/css" rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.min.css">
+    <link type="text/css" rel="stylesheet" href="node_modules/angular-material-data-table/dist/md-data-table.min.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="css/application.css">
+</head>
+
+<body ng-app="app" ng-cloak layout="column">
+
+    <md-toolbar layout="row" md-whiteframe="2" layout-align="space-around center" ng-controller="NavigationController as self">
+        <p>ReCourse CRUD</p>
+            <md-tabs class="md-primary" md-no-pagination="true" style="width: 400px;">
+
+                <div ng-if="self.isAuthorized()">
+                    <md-tab ui-sref="home" label="home"></md-tab>
+
+                    <div ng-if="self.getRole() === 'ADMIN'">
+                        <md-tab ui-sref="crud" label="crud"></md-tab>
+                        <md-tab ui-sref="about" label="about"></md-tab>
+                    </div>
+
+                    <div ng-if="self.getRole() === 'TEACHER'">
+                        <md-tab ui-sref="lessons" label="my lessons"></md-tab>
+                    </div>
+
+                    <div ng-if="self.getRole() === 'STUDENT'">
+                        <md-tab ui-sref="student" label="my courses"></md-tab>
+                    </div>
+
+                    <md-tab ng-click="self.signOut()" label="sign out"></md-tab>
+
+                </div>
+
+                <div ng-if="!self.isAuthorized()">
+                    <md-tab ui-sref="signIn" label="sign in"></md-tab>
+                    <md-tab ui-sref="signUp" label="sign up"></md-tab>
+                </div>
+
+            </md-tabs>
+    </md-toolbar>
+
+    <md-content flex ui-view layout="row">Loading...</md-content>
+
+    <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-animate/angular-animate.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-aria/angular-aria.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-loading-bar/build/loading-bar.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-material/angular-material.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-material-data-table/dist/md-data-table.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-resource/angular-resource.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-ui-date/dist/date.js"></script>
+    <script type="text/javascript" src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-ui-router-redirect/dist/ui.router.redirect.js"></script>
+    <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="node_modules/angular-permission/dist/angular-permission.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-permission/dist/angular-permission-ui.min.js"></script>
+
+    <script type="text/javascript" src="app/application.js"></script>
+    <script type="text/javascript" src="app/configs/states.config.js"></script>
+    <script type="text/javascript" src="app/configs/unauthorizedErrorHandler.config.js"></script>
+    <script type="text/javascript" src="app/configs/initializers/authentification.initializer.js"></script>
+
+    <script type="text/javascript" src="app/services/auth.service.js"></script>
+
+    <script type="text/javascript" src="app/factories/user.factory.js"></script>
+    <script type="text/javascript" src="app/factories/course.factory.js"></script>
+    <script type="text/javascript" src="app/factories/lesson.factory.js"></script>
+    <script type="text/javascript" src="app/factories/solution.factory.js"></script>
+    <script type="text/javascript" src="app/factories/mark.factory.js"></script>
+    <script type="text/javascript" src="app/factories/feedback.factory.js"></script>
+
+    <script type="text/javascript" src="app/controllers/signIn.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/signUp.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/users/userList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/users/userModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/courseList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/courseModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/students/courseStudentModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/feedbacks/courseFeedbackList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/feedbacks/courseFeedbackModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/lessonList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/lessonModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/navigation.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/teacherLessonModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/studentCourseController.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/solutions/teacherSolutionModal.controller.js"></script>
+
+    <script type="text/javascript" src="app/filters/propertyFilter.js"></script>
+    <script type="text/javascript" src="app/filters/strLengthLimit.js"></script>
+</body>
+</html>
