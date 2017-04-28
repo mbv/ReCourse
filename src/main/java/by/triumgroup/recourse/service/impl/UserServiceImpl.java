@@ -88,7 +88,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
             restoreUserPermanentValues(databaseUser, newUser);
             if (databaseUser.getRole() != newUser.getRole()) {
                 if (performer.getRole() == User.Role.ADMIN) {
-                    if (!performer.getId().equals(databaseUser.getId())){
+                    if (!performer.getId().equals(databaseUser.getId())) {
                         handleRoleUpdating(databaseUser, newUser);
                     } else {
                         rejectRoleChanging("Admin can not downgrade himself");
@@ -120,9 +120,36 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 case STUDENT:
                     checkStudentRoleUpdate(databaseUser);
                     break;
+                case DISABLED:
+                    checkUserEnabling(databaseUser, newUser.getRole());
+                    break;
                 default:
                     rejectRoleChanging("Unknown role");
             }
+        }
+    }
+
+    private void checkUserEnabling(User disabledUser, User.Role newRole) {
+        switch (newRole) {
+            case TEACHER:
+                if (!disabledUser.getCourses().isEmpty()) {
+                    rejectRoleChanging("Teacher can't be registered to courses.");
+                }
+                break;
+            case STUDENT:
+                List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(disabledUser.getId(), allItemsPage()));
+                if (!lessons.isEmpty()) {
+                    rejectRoleChanging("Teacher can't have any lessons.");
+                }
+                break;
+            case ADMIN:
+                lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(disabledUser.getId(), allItemsPage()));
+                if (!lessons.isEmpty() || !disabledUser.getCourses().isEmpty()) {
+                    rejectRoleChanging("Admin can't have any lessons or be registered to courses.");
+                }
+                break;
+            default:
+                rejectRoleChanging("Unknown role");
         }
     }
 
@@ -150,13 +177,13 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     private void checkTeacherRoleUpdate(User teacher) {
         List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
                 teacher.getId(), allItemsPage()));
-        if (!lessons.isEmpty()){
+        if (!lessons.isEmpty()) {
             rejectRoleChanging("Teacher has lessons.");
         }
     }
 
     private void checkStudentRoleUpdate(User student) {
-        if (!student.getCourses().isEmpty()){
+        if (!student.getCourses().isEmpty()) {
             rejectRoleChanging("Student is registered to courses.");
         }
     }
