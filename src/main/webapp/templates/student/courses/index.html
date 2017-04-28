@@ -1,0 +1,58 @@
+<ui-view flex>
+    <h2>Ongoing</h2>
+    <md-card flex>
+        <md-toolbar class="md-table-toolbar md-default">
+            <div class="md-toolbar-tools">
+                <span>{{self.title}}</span>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table>
+                <thead md-head>
+                <tr md-row>
+                    <th md-column>#</th>
+                    <th md-column>Title</th>
+                    <th md-column>Description</th>
+                    <th md-column>Max students</th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row ng-repeat="course in self.ongoingCourses">
+                    <td md-cell>{{course.id}}</td>
+                    <td md-cell>{{course.title}}</td>
+                    <td md-cell>{{course.description | strLengthLimit : 70}}</td>
+                    <td md-cell>{{course.maxStudents}}</td>
+                    <td md-cell style="width: 180px;">
+                        <md-menu>
+                            <md-button class="md-icon-button" ng-click="$mdMenu.open($event)">
+                                <md-icon md-menu-origin>
+                                    <i class="material-icons">apps</i>
+                                </md-icon>
+                            </md-button>
+                            <md-menu-content>
+                                <md-menu-item>
+                                    <md-button ng-click="self.showLessons(course)">
+                                        <md-icon md-menu-origin>
+                                            <i class="material-icons">event_note</i>
+                                        </md-icon>
+                                        Show Lessons
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="self.showFeedbacks(course)">
+                                        <md-icon md-menu-origin>
+                                            <i class="material-icons">message</i>
+                                        </md-icon>
+                                        Show Feedbacks
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+    </md-card>
+</ui-view>
