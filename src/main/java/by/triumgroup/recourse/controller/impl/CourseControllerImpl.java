@@ -8,11 +8,14 @@ import by.triumgroup.recourse.entity.model.Course;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.entity.support.CourseStatusEnumConverter;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import by.triumgroup.recourse.service.CourseService;
 import by.triumgroup.recourse.service.LessonService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -39,6 +42,12 @@ public class CourseControllerImpl
         this.courseService = courseService;
         this.lessonService = lessonService;
         this.courseFeedbackService = courseFeedbackService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Course.Status.class,
+                new CourseStatusEnumConverter());
     }
 
     @Override

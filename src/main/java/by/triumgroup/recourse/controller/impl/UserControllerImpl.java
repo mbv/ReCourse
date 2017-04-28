@@ -7,6 +7,7 @@ import by.triumgroup.recourse.controller.exception.*;
 import by.triumgroup.recourse.entity.dto.PasswordChanging;
 import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.entity.support.UserRoleEnumConverter;
 import by.triumgroup.recourse.service.UserService;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +41,13 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
         this.userService = userService;
         this.defaultTokenServices = defaultTokenServices;
     }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(User.Role.class,
+                new UserRoleEnumConverter());
+    }
+
 
     @Override
     public <S extends User> S create(S entity, @Auth UserAuthDetails authDetails) {
