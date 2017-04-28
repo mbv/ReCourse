@@ -10,7 +10,8 @@ function AuthService($http, $state, $cookies) {
         unauthorize: unauthorize,
         signIn: signIn,
         signUp: signUp,
-        signOut: signOut
+        signOut: signOut,
+        role: null
     };
 
     return self;
@@ -19,6 +20,7 @@ function AuthService($http, $state, $cookies) {
         var accessToken = $cookies.get('recourse-access-token');
         if (!!accessToken) {
             self.isAuthorized = true;
+            initRole(accessToken);
             injectAccessTokenToOutgoingHttpRequests(accessToken);
         }
     }
@@ -27,6 +29,7 @@ function AuthService($http, $state, $cookies) {
         $cookies.remove('recourse-access-token');
         rejectAccessTokenToOutgoingHttpRequests();
         self.isAuthorized = false;
+        self.role = null;
         $state.go('root');
     }
 
@@ -61,6 +64,7 @@ function AuthService($http, $state, $cookies) {
 
         if (!!accessToken) {
             injectAccessTokenToOutgoingHttpRequests(accessToken);
+            initRole(accessToken);
             self.isAuthorized = true;
             if (needToRemember) {
                 var expirationDate = new Date();
@@ -94,5 +98,13 @@ function AuthService($http, $state, $cookies) {
             },
             params: params
         };
+    }
+
+    function initRole(accessToken) {
+        $http.get('/ReCourse/oauth/check_token', {params: {token:accessToken}}).then(function (response) {
+            if (response.status === 200) {
+                self.role = response.data.authorities[0];
+            }
+        });
     }
 }

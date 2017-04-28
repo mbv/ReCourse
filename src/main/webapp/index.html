@@ -17,18 +17,28 @@
 
     <md-toolbar layout="row" md-whiteframe="2" layout-align="space-around center" ng-controller="NavigationController as self">
         <p>ReCourse CRUD</p>
-        <md-tabs class="md-primary" md-no-pagination="true" style="width: 400px;">
-            <div ng-if="self.isAuthorized()">
-                <md-tab ui-sref="home" label="home"></md-tab>
-                <md-tab ui-sref="crud" label="crud"></md-tab>
-                <md-tab ui-sref="about" label="about"></md-tab>
-                <md-tab ng-click="self.signOut()" label="sign out"></md-tab>
-            </div>
-            <div ng-if="!self.isAuthorized()">
-                <md-tab ui-sref="signIn" label="sign in"></md-tab>
-                <md-tab ui-sref="signUp" label="sign up"></md-tab>
-            </div>
-        </md-tabs>
+            <md-tabs class="md-primary" md-no-pagination="true" style="width: 400px;">
+
+                <div ng-if="self.getRole() === 'ADMIN'">
+                    <md-tab ui-sref="home" label="home"></md-tab>
+                    <md-tab ui-sref="crud" label="crud"></md-tab>
+                    <md-tab ui-sref="about" label="about"></md-tab>
+                </div>
+
+                <div ng-if="self.getRole() === 'TEACHER'">
+                    <md-tab ui-sref="home" label="teacher stuff"></md-tab>
+                </div>
+
+                <div ng-if="self.isAuthorized()">
+                    <md-tab ng-click="self.signOut()" label="sign out"></md-tab>
+                </div>
+
+                <div ng-if="!self.isAuthorized()">
+                    <md-tab ui-sref="signIn" label="sign in"></md-tab>
+                    <md-tab ui-sref="signUp" label="sign up"></md-tab>
+                </div>
+
+            </md-tabs>
     </md-toolbar>
 
     <md-content flex ui-view layout="row">Loading...</md-content>
@@ -46,6 +56,8 @@
     <script type="text/javascript" src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="node_modules/angular-ui-router-redirect/dist/ui.router.redirect.js"></script>
     <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="node_modules/angular-permission/dist/angular-permission.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-permission/dist/angular-permission-ui.min.js"></script>
 
     <script type="text/javascript" src="app/application.js"></script>
     <script type="text/javascript" src="app/configs/states.config.js"></script>
