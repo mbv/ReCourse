@@ -68,10 +68,7 @@ public class CourseServiceImpl
     public Optional<Course> update(Course entity, Integer id) {
         Course course = wrapJPACall(() -> courseRepository.findOne(id));
         if (course != null && course.getStatus() != Course.Status.REGISTRATION && entity.getStatus() == Course.Status.REGISTRATION) {
-            wrapJPACall(() -> {
-                Long affected = hometaskSolutionRepository.deleteByCourseId(course.getId());
-                logger.debug("{} hometask solutions has been deleted from curse {}", affected, course);
-            });
+            wrapJPACall(() -> hometaskSolutionRepository.deleteByCourseId(course.getId()));
         }
         return super.update(entity, id);
     }
@@ -94,10 +91,7 @@ public class CourseServiceImpl
         validateUserAndCourseToRemoveFromCourse(user, course, force);
         Set<User> registeredStudents = course.getStudents();
         if (registeredStudents.remove(user)) {
-            wrapJPACall(() -> {
-                Long affected = hometaskSolutionRepository.deleteByStudentIdCourseId(studentId, courseId);
-                logger.debug("{} solutions of unregistered user has been deleted", affected);
-            });
+            wrapJPACall(() -> hometaskSolutionRepository.deleteByStudentIdCourseId(studentId, courseId));
         }
         logger.debug("{} unregistered from curse {}", user, course);
         wrapJPACall(() -> courseRepository.save(course));
