@@ -59,7 +59,12 @@ function LessonListController($mdDialog, LessonFactory, CourseFactory, AuthServi
     }
 
     function showSolutions(lesson) {
-        $state.go('crud.lessons.solutions', { id: lesson.id });
+        if (!self.teacherId){
+            $state.go('crud.lessons.solutions', { id: lesson.id });
+        } else {
+            $state.go('teacher.solutions', { id: lesson.id });
+        }
+
     }
 
     function openEditModal(lesson) {

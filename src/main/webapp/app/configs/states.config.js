@@ -67,6 +67,12 @@ function AppStates($stateProvider, $urlRouterProvider) {
             controller: 'LessonListController as self',
             templateUrl: 'templates/crud/lessons/index.html'
         },
+        {
+            name: 'teacher.solutions',
+            url: '/:id/solutions',
+            controller: 'LessonSolutionListController as self',
+            templateUrl: 'templates/crud/lessons/solutions/index.html'
+        },
         { name: 'otherwise', url: '/otherwise', template: '<h1>404</h1>' }
     ].forEach(function(state) { $stateProvider.state(state) });
 

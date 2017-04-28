@@ -19,12 +19,20 @@
                 <td md-cell>{{solution.student.name}} {{solution.student.surname}}</td>
                 <td md-cell>{{solution.mark.score || 'N/A'}}</td>
                 <td md-cell style="width: 120px;">
-                    <md-button class="md-icon-button" ng-click="self.editSolution(solution)">
-                        <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
-                    </md-button>
-                    <md-button class="md-icon-button" ng-click="self.deleteSolution(solution)">
-                        <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
-                    </md-button>
+                    <div ng-if="self.teacherId">
+                        <md-button class="md-icon-button" ng-click="self.showSolution(solution)">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">info_outline</i>
+                        </md-button>
+                    </div>
+
+                    <div ng-if="!self.teacherId">
+                        <md-button class="md-icon-button" ng-click="self.editSolution(solution)">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
+                        </md-button>
+                        <md-button class="md-icon-button" ng-click="self.deleteSolution(solution)">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
+                        </md-button>
+                    </div>
                 </td>
             </tr>
             </tbody>

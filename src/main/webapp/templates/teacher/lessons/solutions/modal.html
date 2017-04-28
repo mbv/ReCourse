@@ -1,0 +1,56 @@
+<md-dialog>
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 ng-if="self.updateMode">Update Solution</h2>
+                <h2 ng-if="!self.updateMode">Create Solution</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="self.cancel()">
+                    <i class="material-icons">close</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content layout="column" layout-padding style="margin-top: 20px; width: 550px;">
+            <div layout="column">
+                <md-input-container flex>
+                    <label>Description</label>
+                    <textarea ng-model="self.solution.solution" style="max-height: 120px;" rows="5" md-select-on-focus></textarea>
+                </md-input-container>
+
+                <div layout="row">
+                    Student: {{ self.solution.student.name }} {{ self.solution.student.surname }}
+                </div>
+
+
+                <div ng-if="self.solution.mark" layout="column">
+                    <div layout="row">
+                        <md-input-container flex>
+                            <label>Mark</label>
+                            <input ng-model="self.solution.mark.score">
+                        </md-input-container>
+
+                        <md-button class="md-icon-button" ng-click="self.removeMark()">
+                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
+                        </md-button>
+                    </div>
+
+                    <md-input-container flex>
+                        <label>Comment</label>
+                        <textarea ng-model="self.solution.mark.comment" style="max-height: 120px;" rows="5" md-select-on-focus></textarea>
+                    </md-input-container>
+                </div>
+
+                <div ng-if="!self.solution.mark">
+                    <md-button class="md-icon-button" ng-click="self.addMark()">
+                        <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">add</i>
+                    </md-button>
+                </div>
+
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button ng-click="self.saveMark()">Save</md-button>
+            <md-button ng-click="self.cancel()">Cancel</md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
