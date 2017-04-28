@@ -2,16 +2,18 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.User;
+import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.HometaskSolutionRepository;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.validation.support.UserFieldInfo;
+import by.triumgroup.recourse.validation.validator.HometaskSolutionReferenceValidator;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,19 +26,20 @@ public class HometaskSolutionServiceImpl
 
     private final HometaskSolutionRepository repository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
     private LessonRepository lessonRepository;
 
-    public HometaskSolutionServiceImpl(HometaskSolutionRepository repository, UserRepository userRepository, LessonRepository lessonRepository) {
+    public HometaskSolutionServiceImpl(HometaskSolutionRepository repository,
+                                       UserRepository userRepository,
+                                       LessonRepository lessonRepository,
+                                       CourseRepository courseRepository) {
         super(repository);
         this.repository = repository;
         this.userRepository = userRepository;
         this.lessonRepository = lessonRepository;
+        this.courseRepository = courseRepository;
     }
 
-    @Override
-    public <S extends HometaskSolution> Optional<S> add(S entity) {
-        return super.add(entity);
-    }
 
     @Override
     public Optional<HometaskSolution> update(HometaskSolution entity, Integer integer) {
@@ -80,6 +83,8 @@ public class HometaskSolutionServiceImpl
                 "student",
                 User.Role.STUDENT
         );
-        return Collections.singletonList(new UserRoleValidator<>(studentFieldInfo, userRepository, repository));
+        return Arrays.asList(
+                new UserRoleValidator<>(studentFieldInfo, userRepository, repository),
+                new HometaskSolutionReferenceValidator(lessonRepository, userRepository, courseRepository));
     }
 }
