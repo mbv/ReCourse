@@ -14,6 +14,7 @@ import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -21,7 +22,6 @@ import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -30,10 +30,13 @@ import java.util.stream.Collectors;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.*;
 import static by.triumgroup.recourse.util.Util.allItemsPage;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Component
 public class UserServiceImpl extends AbstractCrudService<User, Integer> implements UserService {
+
+    private static final Logger logger = getLogger(UserServiceImpl.class);
 
     private final LessonRepository lessonRepository;
     private final TokenStore tokenStore;
@@ -72,7 +75,8 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
 
     @Override
     public Optional<User> update(User entity, Integer id) {
-        throw new NotImplementedException();
+        logger.warn("This method shouldn't be called.");
+        throw new ServiceException();
     }
 
     @Override

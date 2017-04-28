@@ -45,23 +45,23 @@ public class CourseServiceImpl
     }
 
     @Override
-    public List<Course> searchByTitle(String title, Pageable pageable) {
-        return wrapJPACall(() -> courseRepository.findByTitleContainingIgnoreCaseOrderByIdDesc(title, pageable));
+    public Optional<List<Course>> searchByTitle(String title, Pageable pageable) {
+        return wrapJPACallToOptional(() -> courseRepository.findByTitleContainingIgnoreCaseOrderByIdDesc(title, pageable));
     }
 
     @Override
-    public List<Course> findByStatus(Course.Status status, Pageable pageable) {
-        return wrapJPACall(() -> courseRepository.findByStatusOrderByIdDesc(status, pageable));
+    public Optional<List<Course>> findByStatus(Course.Status status, Pageable pageable) {
+        return wrapJPACallToOptional(() -> courseRepository.findByStatusOrderByIdDesc(status, pageable));
     }
 
     @Override
-    public List<Course> findAvailableForUser(Integer userId, Pageable pageable) {
-        return wrapJPACall(() -> courseRepository.findAvailableForUser(userId, pageable));
+    public Optional<List<Course>> findAvailableForUser(Integer userId, Pageable pageable) {
+        return wrapJPACallToOptional(() -> courseRepository.findAvailableForUser(userId, pageable));
     }
 
     @Override
-    public List<Course> findRegisteredForUser(Integer userId, Pageable pageable) {
-        return wrapJPACall(() -> courseRepository.findRegisteredForUser(userId, pageable));
+    public Optional<List<Course>> findRegisteredForUser(Integer userId, Pageable pageable) {
+        return wrapJPACallToOptional(() -> courseRepository.findRegisteredForUser(userId, pageable));
     }
 
     @Override

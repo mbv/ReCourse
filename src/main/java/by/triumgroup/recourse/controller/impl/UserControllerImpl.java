@@ -48,12 +48,6 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
                 new UserRoleEnumConverter());
     }
 
-
-    @Override
-    public <S extends User> S create(S entity, @Auth UserAuthDetails authDetails) {
-        throw new MethodNotAllowedException();
-    }
-
     @Override
     public void delete(Integer integer, @Auth UserAuthDetails authDetails) {
         throw new MethodNotAllowedException();

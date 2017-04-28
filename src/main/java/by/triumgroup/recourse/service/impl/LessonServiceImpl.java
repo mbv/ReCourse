@@ -6,12 +6,13 @@ import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.LessonService;
+import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.validation.support.UserFieldInfo;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,10 +20,13 @@ import java.util.Optional;
 
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
 import static by.triumgroup.recourse.util.Util.ifExistsWithRole;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class LessonServiceImpl
         extends AbstractCrudService<Lesson, Integer>
         implements LessonService {
+
+    private static final Logger logger = getLogger(LessonServiceImpl.class);
 
     private final LessonRepository repository;
     private final CourseRepository courseRepository;
@@ -39,7 +43,8 @@ public class LessonServiceImpl
 
     @Override
     public Optional<Lesson> update(Lesson entity, Integer integer) {
-        throw new NotImplementedException();
+        logger.warn("This method shouldn't be called.");
+        throw new ServiceException();
     }
 
     public Optional<Lesson> update(Lesson entity, Integer id, User.Role performerRole) {
