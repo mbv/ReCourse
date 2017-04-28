@@ -2,6 +2,7 @@ package by.triumgroup.recourse.controller.exception;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
 import by.triumgroup.recourse.entity.dto.ValidationErrorInfo;
+import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
 import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.exception.ServiceNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -34,11 +35,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ServiceNotFoundException.class)
     protected ResponseEntity<Object> handleServiceNotFoundException(ServiceNotFoundException ex) {
-        return new ResponseEntity<>(
-                createValidationErrorInfo(
-                        ex.getErrorMessages(),
-                        HttpStatus.NOT_FOUND),
-                HttpStatus.NOT_FOUND);
+        return createResponseEntity(ex.getErrorMessages(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ServiceAccessDeniedException.class)
+    protected ResponseEntity<Object> handleServiceAccessDeniedException(ServiceAccessDeniedException ex) {
+        return createResponseEntity(ex.getErrorMessages(), HttpStatus.FORBIDDEN);
     }
 
     private ValidationErrorInfo createValidationErrorInfo(BindingResult bindingResult, HttpStatus status) {
@@ -54,5 +56,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ValidationErrorInfo createValidationErrorInfo(List<ErrorMessage> messages, HttpStatus status) {
         return new ValidationErrorInfo(status.getReasonPhrase(), status.value(), messages);
+    }
+
+    private ResponseEntity<Object> createResponseEntity(List<ErrorMessage> messages, HttpStatus status){
+        return new ResponseEntity<>(createValidationErrorInfo(messages, status), status);
     }
 }
