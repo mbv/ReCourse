@@ -51,7 +51,7 @@ function CourseListController($mdDialog, CourseFactory, $state) {
     function openModal(course) {
         $mdDialog.show({
             controller: 'CourseModalController as self',
-            templateUrl: 'templates/crud/courses/modal.html',
+            templateUrl: 'templates/courses/modal.html',
             parent: angular.element(document.body),
             clickOutsideToClose: true,
             locals: {

@@ -31,7 +31,7 @@ function AuthService($http, $state, $cookies, UserFactory) {
         rejectAccessTokenToOutgoingHttpRequests();
         self.isAuthorized = false;
         self.role = null;
-        $state.go('root');
+        $state.go('signIn');
     }
 
     function signIn(email, password, needToRemember) {
@@ -73,8 +73,6 @@ function AuthService($http, $state, $cookies, UserFactory) {
                 $cookies.put('recourse-access-token', accessToken, { expires: expirationDate } );
             }
         }
-
-        $state.go('root');
     }
 
     function injectAccessTokenToOutgoingHttpRequests(token) {
@@ -105,6 +103,12 @@ function AuthService($http, $state, $cookies, UserFactory) {
         $http.get('/ReCourse/oauth/check_token', {params: {token:accessToken}}).then(function (response) {
             if (response.status === 200) {
                 self.role = response.data.authorities[0];
+
+                if (self.role === 'ADMIN'){
+                    $state.go('users')
+                } else if (self.role === 'TEACHER') {
+                    $state.go('teacher-lessons');
+                }
             }
         });
         UserFactory.me(function(response) {

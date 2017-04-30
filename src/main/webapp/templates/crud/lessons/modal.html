@@ -27,7 +27,7 @@
                     <input ng-model="self.lesson.duration">
                 </md-input-container>
             </div>
-            <div layout="row" layout-align="space-between center">
+            <div layout="row">
                 <label style="color: rgba(0, 0, 0, 0.38); margin-right: 20px;">Teacher</label>
                 <md-block flex>
                     <md-autocomplete
@@ -50,29 +50,29 @@
                     </md-autocomplete>
                 </md-block>
             </div>
-            <div ng-if="!self.courseId" layout="row" layout-align="space-between center">
-                <label style="color: rgba(0, 0, 0, 0.38); margin-right: 20px;">Course</label>
-                <md-block flex>
-                    <md-autocomplete
-                            md-search-text="self.courseSearchText"
-                            md-selected-item="self.course"
-                            md-item-text="course.title + ' (' + course.status + ')'"
-                            placeholder="Select a course"
-                            md-min-length="0"
-                            md-selected-item-change="self.courseSelected(course)"
-                            md-no-cache="true"
-                            md-select-on-match="true"
-                            md-items="course in self.courses | propertyFilter: { searchText: self.courseSearchText, properties: ['title', 'status'] }">
-                        <md-item-template>
-                            <span md-highlight-text="self.courseSearchText">{{course.title}} </span>
-                            <span md-highlight-text="self.courseSearchText">({{course.status}})</span>
-                        </md-item-template>
-                        <md-not-found>
-                            No course matching "{{self.courseSearchText}}" were found.
-                        </md-not-found>
-                    </md-autocomplete>
-                </md-block>
+
+            <div ng-if="!self.courseId">
+                <md-autocomplete
+                        md-search-text="self.courseSearchText"
+                        md-selected-item="self.course"
+                        md-item-text="course.title"
+                        placeholder="Select a course"
+                        md-min-length="0"
+                        md-selected-item-change="self.courseSelected(course)"
+                        md-no-cache="true"
+                        md-select-on-match="true"
+                        md-items="course in self.courses | propertyFilter: { searchText: self.courseSearchText, properties: ['title', 'status'] }"
+                        md-floating-label="Course">
+                    <md-item-template>
+                        <span md-highlight-text="self.courseSearchText">{{course.title}} </span>
+                        <span md-highlight-text="self.courseSearchText">({{course.status}})</span>
+                    </md-item-template>
+                    <md-not-found>
+                        No course matching "{{self.courseSearchText}}" were found.
+                    </md-not-found>
+                </md-autocomplete>
             </div>
+
             <div layout="row">
                 <md-input-container flex>
                     <label>Hometask</label>

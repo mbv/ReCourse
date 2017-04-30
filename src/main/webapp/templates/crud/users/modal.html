@@ -1,56 +1,55 @@
-<md-dialog>
+<md-dialog flex="90" flex-gt-xs="30">
     <form ng-cloak>
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h2 ng-if="self.updateMode">Update Person</h2>
-                <h2 ng-if="!self.updateMode">Create Person</h2>
-                <span flex></span>
-                <md-button class="md-icon-button" ng-click="self.cancel()">
-                    <i class="material-icons">close</i>
-                </md-button>
-            </div>
-        </md-toolbar>
-        <md-dialog-content layout="column" layout-padding style="margin-top: 20px;">
-            <div layout="row">
-                <md-input-container flex>
-                    <label>Email</label>
-                    <input ng-model="self.user.email" type="email">
-                </md-input-container>
-            </div>
-            <div layout="row">
-                <md-input-container flex>
-                    <label>Name</label>
-                    <input ng-model="self.user.name">
-                </md-input-container>
-                <md-input-container flex>
-                    <label>Surname</label>
-                    <input ng-model="self.user.surname">
-                </md-input-container>
-            </div>
-            <div layout="row">
-                <md-input-container flex>
-                    <label>Gender</label>
-                    <md-select ng-model="self.user.gender">
-                        <md-option ng-repeat="gender in self.genders" value="{{gender}}">{{gender}}</md-option>
-                    </md-select>
-                </md-input-container>
-                <md-input-container flex>
-                    <label>Role</label>
-                    <md-select ng-model="self.user.role">
-                        <md-option ng-repeat="role in self.roles" value="{{role}}">{{role}}</md-option>
-                    </md-select>
-                </md-input-container>
-            </div>
-            <div layout="row">
-                <md-input-container ng-if="!self.updateMode">
-                    <label>Password Hash</label>
-                    <input ng-model="self.user.passwordHash">
-                </md-input-container>
-                <md-input-container>
-                    <label>Birthday</label>
-                    <md-datepicker md-hide-icons="calendar" md-date-filter="" ng-model="self.user.birthday"></md-datepicker>
-                </md-input-container>
-            </div>
+        <md-dialog-content class="md-dialog-content">
+
+            <h2 class="md-title" ng-if="self.updateMode">Update Person</h2>
+            <h2 class="md-title" ng-if="!self.updateMode">Create Person</h2>
+
+
+                <div layout="column" layout-wrap>
+
+                    <div layout="row" layout-wrap>
+                        <md-input-container>
+                            <label>Email</label>
+                            <input ng-model="self.user.email" type="email">
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row" layout-wrap>
+                        <md-input-container>
+                            <label>Name</label>
+                            <input ng-model="self.user.name">
+                        </md-input-container>
+                        <md-input-container>
+                            <label>Surname</label>
+                            <input ng-model="self.user.surname">
+                        </md-input-container>
+                    </div>
+                    <div layout="row" layout-wrap>
+                        <md-input-container>
+                            <label>Gender</label>
+                            <md-select ng-model="self.user.gender">
+                                <md-option ng-repeat="gender in self.genders" value="{{gender}}">{{gender}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container>
+                            <label>Role</label>
+                            <md-select ng-model="self.user.role">
+                                <md-option ng-repeat="role in self.roles" value="{{role}}">{{role}}</md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div layout="row" layout-wrap>
+                        <md-input-container ng-if="!self.updateMode">
+                            <label>Password Hash</label>
+                            <input ng-model="self.user.passwordHash">
+                        </md-input-container>
+                        <md-input-container>
+                            <label>Birthday</label>
+                            <md-datepicker md-hide-icons="calendar" md-date-filter="" ng-model="self.user.birthday"></md-datepicker>
+                        </md-input-container>
+                    </div>
+                </div>
         </md-dialog-content>
         <md-dialog-actions layout="row">
             <md-button ng-click="self.saveUser()">Save</md-button>

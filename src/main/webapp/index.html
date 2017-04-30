@@ -15,39 +15,37 @@
 
 <body ng-app="app" ng-cloak layout="column">
 
-    <md-toolbar layout="row" md-whiteframe="2" layout-align="space-around center" ng-controller="NavigationController as self">
-        <p>ReCourse CRUD</p>
-            <md-tabs class="md-primary" md-no-pagination="true" style="width: 400px;">
+    <div ng-controller="NavigationController as self">
+        <div layout="row" class="md-toolbar-tools">
+            <h3>ReCourse</h3>
 
-                <div ng-if="self.isAuthorized()">
-                    <md-tab ui-sref="home" label="home"></md-tab>
+            <div ng-if="self.isAuthorized()">
+                <md-nav-bar ng-if="self.getRole() === 'ADMIN'" md-selected-nav-item="currentNavItem">
+                    <md-nav-item md-nav-sref="courses" name="courses" value="courses">courses</md-nav-item>
+                    <md-nav-item md-nav-sref="users" name="users" name="users">users</md-nav-item>
+                </md-nav-bar>
 
-                    <div ng-if="self.getRole() === 'ADMIN'">
-                        <md-tab ui-sref="crud" label="crud"></md-tab>
-                        <md-tab ui-sref="about" label="about"></md-tab>
-                    </div>
+                <md-nav-bar ng-if="self.getRole() === 'TEACHER'" md-selected-nav-item="currentNavItem">
+                    <md-nav-item md-nav-sref="lessons" name="teacher-lessons">Lessons</md-nav-item>
+                </md-nav-bar>
 
-                    <div ng-if="self.getRole() === 'TEACHER'">
-                        <md-tab ui-sref="lessons" label="my lessons"></md-tab>
-                    </div>
+                <md-nav-bar ng-if="self.getRole() === 'STUDENT'" md-selected-nav-item="currentNavItem">
+                    <md-nav-item md-nav-sref="student" name="student-courses"></md-nav-item>
+                </md-nav-bar>
+            </div>
 
-                    <div ng-if="self.getRole() === 'STUDENT'">
-                        <md-tab ui-sref="student" label="my courses"></md-tab>
-                    </div>
 
-                    <md-tab ng-click="self.signOut()" label="sign out"></md-tab>
+            <md-button ng-click="self.signOut()">Sign out</md-button>
 
-                </div>
 
-                <div ng-if="!self.isAuthorized()">
-                    <md-tab ui-sref="signIn" label="sign in"></md-tab>
-                    <md-tab ui-sref="signUp" label="sign up"></md-tab>
-                </div>
+            <md-nav-bar ng-if="!self.isAuthorized()" md-selected-nav-item="currentNavItem">
+                <md-nav-item md-nav-sref="signIn" name="signIn">Sign In</md-nav-item>
+                <md-nav-item md-nav-sref="signUp" name="signUp">Sign Up</md-nav-item>
+            </md-nav-bar>
+        </div>
+    </div>
 
-            </md-tabs>
-    </md-toolbar>
-
-    <md-content flex ui-view layout="row">Loading...</md-content>
+    <md-content ui-view >Loading...</md-content>
 
     <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
     <script type="text/javascript" src="node_modules/angular-animate/angular-animate.min.js"></script>
@@ -69,6 +67,7 @@
     <script type="text/javascript" src="app/configs/states.config.js"></script>
     <script type="text/javascript" src="app/configs/unauthorizedErrorHandler.config.js"></script>
     <script type="text/javascript" src="app/configs/initializers/authentification.initializer.js"></script>
+    <script type="text/javascript" src="app/configs/initializers/navigation.initializer.js"></script>
 
     <script type="text/javascript" src="app/services/auth.service.js"></script>
 
@@ -83,7 +82,7 @@
     <script type="text/javascript" src="app/controllers/signUp.controller.js"></script>
     <script type="text/javascript" src="app/controllers/users/userList.controller.js"></script>
     <script type="text/javascript" src="app/controllers/users/userModal.controller.js"></script>
-    <script type="text/javascript" src="app/controllers/courses/courseList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/lists/course.list.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/courseModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/students/courseStudentModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/feedbacks/courseFeedbackList.controller.js"></script>
