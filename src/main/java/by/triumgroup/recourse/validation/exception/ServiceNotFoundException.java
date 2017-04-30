@@ -1,11 +1,18 @@
 package by.triumgroup.recourse.validation.exception;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-public class ServiceNotFoundException extends ValidationException {
+public class ServiceNotFoundException extends ServiceRequestException {
+
     public ServiceNotFoundException(List<ErrorMessage> messages) {
-        super(messages);
+        super(HttpStatus.NOT_FOUND, messages);
     }
+
+    public ServiceNotFoundException(ErrorMessage... message) {
+        super(HttpStatus.NOT_FOUND, message);
+    }
+
 }

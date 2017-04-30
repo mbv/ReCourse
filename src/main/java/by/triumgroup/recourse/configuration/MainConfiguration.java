@@ -41,7 +41,7 @@ public class MainConfiguration extends SpringBootServletInitializer {
 
     @Bean
     DefaultErrorAttributes errorAttributes() {
-        return new ErrorAttributesWithoutExceptionName();
+        return new CustomErrorAttributes();
     }
 
     @Bean

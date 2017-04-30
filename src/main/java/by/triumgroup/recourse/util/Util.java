@@ -18,4 +18,8 @@ public class Util {
         return ALL_ITERMS_PAGE_REQUEST;
     }
 
+    public static <T> T ifNullDefault(T toTest, T defaultValue) {
+        return toTest == null ? defaultValue : toTest;
+    }
+
 }

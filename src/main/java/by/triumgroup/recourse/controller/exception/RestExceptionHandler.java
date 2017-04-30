@@ -1,64 +1,77 @@
 package by.triumgroup.recourse.controller.exception;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
-import by.triumgroup.recourse.entity.dto.ValidationErrorInfo;
-import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
-import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
-import by.triumgroup.recourse.validation.exception.ServiceNotFoundException;
+import by.triumgroup.recourse.entity.dto.OauthError;
+import by.triumgroup.recourse.entity.dto.RestError;
+import by.triumgroup.recourse.util.Util;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         BindingResult bindingResult = ex.getBindingResult();
-        Object responseBody = createValidationErrorInfo(bindingResult, status);
-        return ResponseEntity.badRequest().body(responseBody);
+        RestError apiError = createRestError(bindingResult, status);
+        return handleExceptionInternal(ex, apiError, headers, status, request);
     }
 
-    @ExceptionHandler(ServiceBadRequestException.class)
-    protected ResponseEntity<Object> handleServiceException(ServiceBadRequestException ex) {
-        Object responseBody = createValidationErrorInfo(ex.getErrorMessages(), HttpStatus.BAD_REQUEST);
-        return ResponseEntity.badRequest().body(responseBody);
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        RestError apiError = createRestError(status, new ErrorMessage("Invalid path", ex.getRequestURL()));
+        return handleExceptionInternal(ex, apiError, headers, status, request);
     }
 
-    @ExceptionHandler(ServiceNotFoundException.class)
-    protected ResponseEntity<Object> handleServiceNotFoundException(ServiceNotFoundException ex) {
-        return createResponseEntity(ex.getErrorMessages(), HttpStatus.NOT_FOUND);
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        Throwable cause = ex.getCause();
+        ErrorMessage errorMessage;
+        if (cause instanceof InvalidFormatException) {
+            InvalidFormatException e = (InvalidFormatException) cause;
+            errorMessage = new ErrorMessage(
+                    "Invalid entity",
+                    "Invalid value '" + e.getValue() + "' of type " + e.getTargetType().getSimpleName()
+            );
+        } else if (cause instanceof JsonParseException) {
+            errorMessage = new ErrorMessage("Invalid JSON", "Invalid JSON format");
+        } else {
+            errorMessage = new ErrorMessage(
+                    "Message not readable",
+                    Util.ifNullDefault(cause.getMessage(), "Unknown error")
+            );
+        }
+        return handleExceptionInternal(ex, createRestError(status, errorMessage), headers, status, request);
     }
 
-    @ExceptionHandler(ServiceAccessDeniedException.class)
-    protected ResponseEntity<Object> handleServiceAccessDeniedException(ServiceAccessDeniedException ex) {
-        return createResponseEntity(ex.getErrorMessages(), HttpStatus.FORBIDDEN);
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                "Invalid path variable",
+                "Invalid value '" + ex.getValue() + "' for type '" + ex.getRequiredType().getSimpleName() + "'"
+        );
+        return handleExceptionInternal(ex, createRestError(status, errorMessage), headers, status, request);
     }
 
-    private ValidationErrorInfo createValidationErrorInfo(BindingResult bindingResult, HttpStatus status) {
-        return new ValidationErrorInfo(
-                status.getReasonPhrase(),
-                status.value(),
-                bindingResult
-                        .getFieldErrors()
-                        .stream()
-                        .map(ErrorMessage::fromFieldError)
-                        .collect(Collectors.toList()));
+    @ExceptionHandler(RequestException.class)
+    protected ResponseEntity<Object> handleServiceException(RequestException ex) {
+        return createResponseEntity(ex.getStatus(), ex.getErrors());
     }
 
-    private ValidationErrorInfo createValidationErrorInfo(List<ErrorMessage> messages, HttpStatus status) {
-        return new ValidationErrorInfo(status.getReasonPhrase(), status.value(), messages);
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        return new ResponseEntity<>(new OauthError("access_denied", "Access is denied"), HttpStatus.FORBIDDEN);
     }
 
-    private ResponseEntity<Object> createResponseEntity(List<ErrorMessage> messages, HttpStatus status){
-        return new ResponseEntity<>(createValidationErrorInfo(messages, status), status);
-    }
 }

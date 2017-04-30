@@ -1,21 +1,18 @@
 package by.triumgroup.recourse.service.exception;
 
-public class ServiceConstraintViolationException extends ServiceException {
+import by.triumgroup.recourse.entity.dto.ErrorMessage;
+import by.triumgroup.recourse.validation.exception.ServiceRequestException;
+import org.springframework.http.HttpStatus;
 
-    public ServiceConstraintViolationException() {
-        super();
+import java.util.List;
+
+public class ServiceConstraintViolationException extends ServiceRequestException {
+
+    public ServiceConstraintViolationException(ErrorMessage... message) {
+        super(HttpStatus.BAD_REQUEST, message);
     }
 
-    public ServiceConstraintViolationException(String cause) {
-        super(cause);
+    public ServiceConstraintViolationException(List<ErrorMessage> messages) {
+        super(HttpStatus.BAD_REQUEST, messages);
     }
-
-    public ServiceConstraintViolationException(Throwable t) {
-        super(t);
-    }
-
-    public ServiceConstraintViolationException(String cause, Throwable t) {
-        super(cause, t);
-    }
-
 }

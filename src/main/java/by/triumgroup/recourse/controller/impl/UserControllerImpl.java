@@ -13,6 +13,7 @@ import by.triumgroup.recourse.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
@@ -50,7 +51,7 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     @Override
     public void delete(Integer integer, @Auth UserAuthDetails authDetails) {
-        throw new MethodNotAllowedException();
+        throw new MethodNotAllowedException(HttpMethod.DELETE);
     }
 
     @Override
