@@ -31,6 +31,10 @@
                         <md-tab ui-sref="lessons" label="my lessons"></md-tab>
                     </div>
 
+                    <div ng-if="self.getRole() === 'STUDENT'">
+                        <md-tab ui-sref="available_courses" label="Available Courses"></md-tab>
+                    </div>
+
                     <md-tab ng-click="self.signOut()" label="sign out"></md-tab>
 
                 </div>

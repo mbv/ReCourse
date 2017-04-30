@@ -15,13 +15,13 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, Int
 
     List<Course> findByStatusOrderByIdDesc(Course.Status status, Pageable pageable);
 
-    @Query(value = "SELECT *\n" +
+    @Query(value = "SELECT id, title, description, status, max_students\n" +
             "FROM course\n" +
             "  LEFT JOIN course_student ON ((course.id = course_student.course_id) AND\n" +
             "                              (course_student.student_id != ?1) OR (course_student.course_id IS NULL))\n" +
             "WHERE (course.status = 'REGISTRATION')\n" +
-            "GROUP BY id\n" +
-            "ORDER BY id DESC\n" +
+            "GROUP BY course.id\n" +
+            "ORDER BY course.id DESC\n" +
             "#pageable\n",
             nativeQuery = true)
     List<Course> findAvailableForUser(Integer userId, Pageable pageable);

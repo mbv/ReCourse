@@ -22,6 +22,14 @@ function CourseFactory($resource) {
                 studentId: '@studentId'
             }
         },
+        availableForStudent: {
+            method: 'GET',
+            url: 'api/courses/available/:studentId',
+            isArray: true,
+            params: {
+                studentId: '@studentId'
+            }
+        },
         unregisterStudent: {
             method: 'POST',
             url: 'api/courses/:id/unregister?studentId=:studentId',

@@ -2,13 +2,15 @@ angular
     .module('app')
     .controller('CourseListController', CourseListController);
 
-function CourseListController($mdDialog, CourseFactory, $state) {
+function CourseListController($mdDialog, CourseFactory, AuthService, $state) {
     var self = this;
 
     self.courses = [];
     self.isUpdatingChosen = false;
 
-    self.title = 'Courses';
+    self.title = '';
+    self.isStudent = AuthService.user.role === 'STUDENT';
+
     self.addCourse = addCourse;
     self.deleteCourse = deleteCourse;
     self.editCourse = editCourse;
@@ -19,9 +21,17 @@ function CourseListController($mdDialog, CourseFactory, $state) {
     refresh();
 
     function refresh() {
-        CourseFactory.query().$promise.then(function (result) {
-            self.courses = result;
-        });
+        if (self.isStudent) {
+            self.title = 'Available Courses'
+            CourseFactory.availableForStudent({ studentId: AuthService.user.id}).$promise.then(function (result) {
+                self.courses = result;
+            })
+        } else {
+            self.title = 'Courses';
+            CourseFactory.query().$promise.then(function (result) {
+                self.courses = result;
+            });
+        }
     }
 
     function addCourse() {
@@ -34,6 +44,10 @@ function CourseListController($mdDialog, CourseFactory, $state) {
 
     function editCourse(course) {
         openModal(course);
+    }
+
+    function registerStudent() {
+        CourseFactory.registerStudent(AuthService.user.id).then(refresh);
     }
 
     function showLessons(course) {

@@ -69,7 +69,7 @@
             </table>
         </md-table-container>
     </md-card>
-    <md-button class="md-fab" ng-click="self.addCourse()">
+    <md-button class="md-fab" ng-click="self.addCourse()" ng-if="!self.isStudent">
         <i class="material-icons">add</i>
     </md-button>
 </ui-view>

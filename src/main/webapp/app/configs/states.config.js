@@ -27,7 +27,7 @@ function AppStates($stateProvider, $urlRouterProvider) {
         },
         {
             name: 'crud.users',
-            url: '/users?course',
+            url: '/users',
             controller: 'UserListController as self',
             templateUrl: 'templates/crud/users/index.html'
         },
@@ -72,6 +72,12 @@ function AppStates($stateProvider, $urlRouterProvider) {
             url: '/:id/solutions',
             controller: 'LessonSolutionListController as self',
             templateUrl: 'templates/crud/lessons/solutions/index.html'
+        },
+        {
+            name: 'available_courses',
+            url: '/available_courses',
+            controller: 'CourseListController as self',
+            templateUrl: 'templates/crud/courses/index.html'
         },
         { name: 'otherwise', url: '/otherwise', template: '<h1>404</h1>' }
     ].forEach(function(state) { $stateProvider.state(state) });
