@@ -8,5 +8,6 @@ angular
         'ngAnimate',
         'ngMaterial',
         'angular-loading-bar',
-        'md.data.table'
+        'md.data.table',
+        'angular-toast'
     ]);
