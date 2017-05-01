@@ -35,7 +35,7 @@
             </div>
 
 
-            <md-button ng-click="self.signOut()">Sign out</md-button>
+            <md-button ng-if="self.isAuthorized()" ng-click="self.signOut()">Sign out</md-button>
 
 
             <md-nav-bar ng-if="!self.isAuthorized()" md-selected-nav-item="currentNavItem">
@@ -80,21 +80,25 @@
 
     <script type="text/javascript" src="app/controllers/signIn.controller.js"></script>
     <script type="text/javascript" src="app/controllers/signUp.controller.js"></script>
-    <script type="text/javascript" src="app/controllers/users/userList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/users/lists/user.list.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/users/lists/all.user.list.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/users/lists/course.user.list.controller.js"></script>
     <script type="text/javascript" src="app/controllers/users/userModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/lists/course.list.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/courseModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/students/courseStudentModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/feedbacks/courseFeedbackList.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/feedbacks/courseFeedbackModal.controller.js"></script>
-    <script type="text/javascript" src="app/controllers/lessons/lessonList.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/lists/lesson.list.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/lists/admin.lesson.list.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/lessons/lists/teacher.lesson.list.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/lessonModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/navigation.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionList.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/teacherLessonModal.controller.js"></script>
-    <script type="text/javascript" src="app/controllers/courses/studentCourseController.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/solutions/teacherSolutionModal.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/courses/studentCourseController.js"></script>
 
     <script type="text/javascript" src="app/filters/propertyFilter.js"></script>
     <script type="text/javascript" src="app/filters/strLengthLimit.js"></script>

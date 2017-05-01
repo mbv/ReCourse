@@ -23,11 +23,11 @@
                     <td md-cell>{{course.description | strLengthLimit : 70}}</td>
                     <td md-cell>{{course.status}}</td>
                     <td md-cell>{{course.maxStudents}}</td>
-                    <td md-cell style="width: 180px;">
+                    <td md-cell>
                         <md-menu>
                             <md-button class="md-icon-button" ng-click="$mdMenu.open($event)">
                                 <md-icon md-menu-origin>
-                                    <i class="material-icons">apps</i>
+                                    <i class="material-icons">more_vert</i>
                                 </md-icon>
                             </md-button>
                             <md-menu-content>
@@ -36,7 +36,7 @@
                                         <md-icon md-menu-origin>
                                             <i class="material-icons">face</i>
                                         </md-icon>
-                                        Show Students
+                                        Students
                                     </md-button>
                                 </md-menu-item>
                                 <md-menu-item>
@@ -44,7 +44,7 @@
                                         <md-icon md-menu-origin>
                                             <i class="material-icons">event_note</i>
                                         </md-icon>
-                                        Show Lessons
+                                        Lessons
                                     </md-button>
                                 </md-menu-item>
                                 <md-menu-item>
@@ -52,17 +52,27 @@
                                         <md-icon md-menu-origin>
                                             <i class="material-icons">message</i>
                                         </md-icon>
-                                        Show Feedbacks
+                                        Feedbacks
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="self.editCourse(course)">
+                                        <md-icon md-menu-origin>
+                                            <i class="material-icons">mode_edit</i>
+                                        </md-icon>
+                                        Edit
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item>
+                                    <md-button ng-click="self.deleteCourse(course)">
+                                        <md-icon md-menu-origin>
+                                            <i class="material-icons">delete</i>
+                                        </md-icon>
+                                        Delete
                                     </md-button>
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
-                        <md-button class="md-icon-button" ng-click="self.editCourse(course)">
-                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">mode_edit</i>
-                        </md-button>
-                        <md-button class="md-icon-button" ng-click="self.deleteCourse(course)">
-                            <i class="material-icons" style="color: rgba(0, 0, 0, 0.54);">delete</i>
-                        </md-button>
                     </td>
                 </tr>
                 </tbody>

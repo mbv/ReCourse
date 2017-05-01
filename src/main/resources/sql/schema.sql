@@ -130,7 +130,7 @@ CREATE TABLE `mark`
   CONSTRAINT `solution_id` UNIQUE (`solution_id` ASC),
   CONSTRAINT `FK_mark_hometask_solution`
   FOREIGN KEY (`solution_id`) REFERENCES `hometask_solution` (`id`)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
     ON UPDATE RESTRICT
 )
   ENGINE = InnoDB

@@ -19,10 +19,18 @@ function AppStates($stateProvider, $urlRouterProvider) {
         },
         {
             name: 'users',
-            url: '/users?course',
-            controller: 'UserListController as self',
-            templateUrl: 'templates/crud/users/index.html'
+            url: '/users',
+            controller: 'AllUserListController as self',
+            templateUrl: 'templates/users/index.html'
         },
+
+        {
+            name: 'course-users',
+            url: '/courses/:id/users',
+            controller: 'CourseUserListController as self',
+            templateUrl: 'templates/users/index.html'
+        },
+
         {
             name: 'courses',
             url: '/courses',
@@ -33,25 +41,34 @@ function AppStates($stateProvider, $urlRouterProvider) {
             name: 'feedbacks',
             url: '/feedbacks?course',
             controller: 'CourseFeedbackListController as self',
-            templateUrl: 'templates/crud/courses/feedbacks/index.html'
+            templateUrl: 'templates/courses/feedbacks/index.html'
         },
         {
             name: 'course-lessons',
             url: '/lessons?course',
-            controller: 'LessonListController as self',
-            templateUrl: 'templates/crud/lessons/index.html'
+            controller: 'AdminLessonListController as self',
+            templateUrl: 'templates/lessons/index.html'
         },
         {
             name: 'lesson-solutions',
             url: '/solutions/?lesson',
             controller: 'LessonSolutionListController as self',
-            templateUrl: 'templates/crud/lessons/solutions/index.html'
+            templateUrl: 'templates/lessons/solutions/index.html'
         },
         {
             name: 'teacher-lessons',
             url: '/teacher/lessons',
-            controller: 'LessonListController as self',
-            templateUrl: 'templates/crud/lessons/index.html'
+            views: {
+                '': { templateUrl: 'templates/lessons/lessons.future.past.html'},
+                'future@teacher-lessons':{
+                    controller: 'TeacherLessonListController as self',
+                    templateUrl: 'templates/lessons/index.html'
+                },
+                'past@teacher-lessons': {
+                    controller: 'TeacherLessonListController as self',
+                    templateUrl: 'templates/lessons/index.html'
+                }
+            }
         },
         {
             name: 'student-courses',

@@ -1,0 +1,96 @@
+<ui-view>
+    <md-card flex>
+
+        <md-toolbar class="md-table-toolbar md-default">
+            <div class="md-toolbar-tools">
+                <span>{{self.title}}</span>
+            </div>
+        </md-toolbar>
+
+        <md-table-container>
+            <table md-table>
+
+                <thead md-head>
+                    <tr md-row>
+
+                        <th ng-if="self.isAdminLessons()" md-column>#</th>
+                        <th md-column>Topic</th>
+                        <th ng-if="self.isAdminLessons()" md-column>Teacher</th>
+                        <th md-column>Start Time</th>
+                        <th md-column>Duration</th>
+                    </tr>
+                </thead>
+
+                <tbody md-body>
+                    <tr md-row ng-repeat="lesson in self.lessons">
+                        <td ng-if="self.isAdminLessons()" md-cell>{{lesson.id}}</td>
+                        <td md-cell>{{lesson.topic}}</td>
+                        <td ng-if="self.isAdminLessons()" md-cell>{{lesson.teacher.name}} {{lesson.teacher.surname}}</td>
+                        <td md-cell>{{lesson.startTime | date : 'MM/dd/yyyy'}}</td>
+                        <td md-cell>{{lesson.duration}}</td>
+                        <td md-cell>
+
+                            <md-menu>
+
+                                <md-button class="md-icon-button" ng-click="$mdMenu.open($event)">
+                                    <md-icon md-menu-origin>
+                                        <i class="material-icons">more_vert</i>
+                                    </md-icon>
+                                </md-button>
+
+                                <md-menu-content>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="self.showSolutions(lesson)">
+                                            <md-icon md-menu-origin>
+                                                <i class="material-icons">event_note</i>
+                                            </md-icon>
+                                            Solutions
+                                        </md-button>
+                                    </md-menu-item>
+
+                                    <div ng-if="self.isAdminLessons()">
+                                        <md-menu-item>
+                                            <md-button ng-click="self.editLesson(lesson)">
+                                                <md-icon md-menu-origin>
+                                                    <i class="material-icons">mode_edit</i>
+                                                </md-icon>
+                                                Edit
+                                            </md-button>
+                                        </md-menu-item>
+
+                                        <md-menu-item>
+                                            <md-button ng-click="self.deleteLesson(lesson)">
+                                                <md-icon md-menu-origin>
+                                                    <i class="material-icons">delete</i>
+                                                </md-icon>
+                                                Delete
+                                            </md-button>
+                                        </md-menu-item>
+                                    </div>
+
+                                    <div ng-if="self.isTeacherLessons()">
+                                        <md-menu-item>
+                                            <md-button ng-click="self.showLesson(lesson)">
+                                                <md-icon md-menu-origin>
+                                                    <i class="material-icons">info_outline</i>
+                                                </md-icon>
+                                                Delete
+                                            </md-button>
+                                        </md-menu-item>
+                                    </div>
+
+                                </md-menu-content>
+                            </md-menu>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+    </md-card>
+    <div ng-if="!self.teacherId">
+        <md-button class="md-fab" ng-click="self.addLesson()">
+            <i class="material-icons">add</i>
+        </md-button>
+    </div>
+</ui-view>

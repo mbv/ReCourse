@@ -37,15 +37,15 @@ function CourseListController($mdDialog, CourseFactory, $state) {
     }
 
     function showLessons(course) {
-        $state.go('crud.lessons', { course: course.id });
+        $state.go('course-lessons', { course: course.id });
     }
 
     function showStudents(course) {
-        $state.go('crud.users', { course: course.id });
+        $state.go('course-users', { id: course.id });
     }
 
     function showFeedbacks(course) {
-        $state.go('crud.feedbacks', { course: course.id });
+        $state.go('course-feedbacks', { course: course.id });
     }
 
     function openModal(course) {
