@@ -6,6 +6,7 @@
     <link type="text/css" rel="stylesheet" href="node_modules/angular-material/angular-material.min.css">
     <link type="text/css" rel="stylesheet" href="node_modules/angular-loading-bar/build/loading-bar.min.css">
     <link type="text/css" rel="stylesheet" href="node_modules/angular-material-data-table/dist/md-data-table.min.css">
+    <link type="text/css" rel="stylesheet" href="node_modules/angular-toast/dist/angular-toast.css">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -14,7 +15,6 @@
 </head>
 
 <body ng-app="app" ng-cloak layout="column">
-
     <md-toolbar layout="row" md-whiteframe="2" layout-align="space-around center" ng-controller="NavigationController as self">
         <p>ReCourse</p>
         <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
@@ -52,14 +52,18 @@
     <script type="text/javascript" src="node_modules/angular-ui-date/dist/date.js"></script>
     <script type="text/javascript" src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="node_modules/angular-ui-router-redirect/dist/ui.router.redirect.js"></script>
+    <script type="text/javascript" src="node_modules/angular-toast/dist/angular-toast.min.js"></script>
 
     <script type="text/javascript" src="app/application.js"></script>
     <script type="text/javascript" src="app/configs/states.config.js"></script>
     <script type="text/javascript" src="app/configs/unauthorizedErrorHandler.config.js"></script>
+    <script type="text/javascript" src="app/configs/httpRequestErrorsHandler.config.js"></script>
     <script type="text/javascript" src="app/configs/initializers/authentification.initializer.js"></script>
     <script type="text/javascript" src="app/configs/initializers/navigation.initializer.js"></script>
+    <script type="text/javascript" src="app/configs/initializers/errorDispatcher.initializer.js"></script>
 
     <script type="text/javascript" src="app/services/auth.service.js"></script>
+    <script type="text/javascript" src="app/services/errors.service.js"></script>
 
     <script type="text/javascript" src="app/factories/user.factory.js"></script>
     <script type="text/javascript" src="app/factories/course.factory.js"></script>
