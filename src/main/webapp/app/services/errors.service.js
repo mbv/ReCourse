@@ -11,7 +11,6 @@ function ErrorsService(toast) {
     return self;
 
     function showErrors(errors) {
-        console.log(errors);
         errors.forEach(function (error) {
             toast.show(error.title + ": " + error.message, 10000);
         });
