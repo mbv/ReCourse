@@ -2,6 +2,8 @@
     <md-toolbar class="md-table-toolbar md-default">
         <div class="md-toolbar-tools">
             <span>{{self.title}}</span>
+            <i ng-if="self.isCourseUsers()" class="material-icons">keyboard_arrow_right</i>
+            <span ng-if="self.isCourseUsers()">{{self.subtitle}}</span>
         </div>
     </md-toolbar>
     <md-table-container>

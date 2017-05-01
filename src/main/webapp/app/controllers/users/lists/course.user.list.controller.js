@@ -2,11 +2,12 @@ angular
     .module('app')
     .controller('CourseUserListController', CourseUserListController);
 
-function CourseUserListController($mdDialog, CourseFactory, $stateParams, $controller) {
+function CourseUserListController($mdDialog, UserFactory, $stateParams, $controller) {
     var self = this;
     $controller('UserListController', {self: self});
 
-    self.title = 'Course users';
+    self.title = 'Course';
+    self.subtitle = 'Students';
     self.course = $stateParams.id;
     self.users = [];
     self.registerStudent = registerStudent;
@@ -15,9 +16,8 @@ function CourseUserListController($mdDialog, CourseFactory, $stateParams, $contr
     refresh();
 
     function refresh() {
-        self.title = 'Course Students';
-        CourseFactory.get({ id: self.course }).$promise.then(function (result) {
-            self.users = result.students;
+        UserFactory.getForCourse({ id: self.course }).$promise.then(function (result) {
+            self.users = result;
         });
     }
 

@@ -10,7 +10,7 @@ function CourseModalController($mdDialog, CourseFactory, course) {
     self.cancel = cancel;
     self.updateMode = !!self.course;
 
-    self.statuses = ['ONGOING', 'REGISTRATION', 'FINISHED'];
+    self.statuses = ['DRAFT', 'PUBLISHED', 'FINISHED'];
 
     function saveCourse() {
         if (self.updateMode){
