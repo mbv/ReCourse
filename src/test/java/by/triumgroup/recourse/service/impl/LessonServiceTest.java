@@ -55,12 +55,12 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     @Test
     public void findByExistingCourseId() throws Exception {
         when(courseRepository.exists(any())).thenReturn(true);
-        when(lessonRepository.findByCourseIdOrderByStartTimeDesc(any(), any())).thenReturn(Lists.emptyList());
+        when(lessonRepository.findByCourseIdOrderByStartTimeAsc(any(), any())).thenReturn(Lists.emptyList());
 
         Optional<List<Lesson>> result = lessonService.findByCourseId(lessonSupplier.getAnyId(), null);
 
         verify(courseRepository, times(1)).exists(any());
-        verify(lessonRepository, times(1)).findByCourseIdOrderByStartTimeDesc(any(), any());
+        verify(lessonRepository, times(1)).findByCourseIdOrderByStartTimeAsc(any(), any());
         assertTrue(result.isPresent());
     }
 
@@ -71,7 +71,7 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
         Optional<List<Lesson>> result = lessonService.findByCourseId(lessonSupplier.getAnyId(), null);
 
         verify(courseRepository, times(1)).exists(any());
-        verify(lessonRepository, times(0)).findByCourseIdOrderByStartTimeDesc(any(), any());
+        verify(lessonRepository, times(0)).findByCourseIdOrderByStartTimeAsc(any(), any());
         Assert.assertFalse(result.isPresent());
     }
 
@@ -79,13 +79,13 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
     public void findByExistingTeacherId() throws Exception {
         User teacher = userSupplier.getValidEntityWithId();
         teacher.setRole(User.Role.TEACHER);
-        when(lessonRepository.findByTeacherIdOrderByStartTimeDesc(any(), any())).thenReturn(Lists.emptyList());
+        when(lessonRepository.findByTeacherIdOrderByStartTimeAsc(any(), any())).thenReturn(Lists.emptyList());
         when(userRepository.findOne(any())).thenReturn(teacher);
 
         Optional<List<Lesson>> hometask = lessonService.findByTeacherId(userSupplier.getAnyId(), null);
 
         verify(userRepository, times(1)).findOne(any());
-        verify(lessonRepository, times(1)).findByTeacherIdOrderByStartTimeDesc(any(), any());
+        verify(lessonRepository, times(1)).findByTeacherIdOrderByStartTimeAsc(any(), any());
         Assert.assertTrue(hometask.isPresent());
     }
 
@@ -98,7 +98,7 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
         Optional<List<Lesson>> hometask = lessonService.findByTeacherId(userSupplier.getAnyId(), null);
 
         verify(userRepository, times(1)).findOne(any());
-        verify(lessonRepository, times(0)).findByTeacherIdOrderByStartTimeDesc(any(), any());
+        verify(lessonRepository, times(0)).findByTeacherIdOrderByStartTimeAsc(any(), any());
         Assert.assertFalse(hometask.isPresent());
     }
 
@@ -109,13 +109,13 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
         teacher.setRole(User.Role.TEACHER);
         when(courseRepository.exists(any())).thenReturn(true);
         when(userRepository.findOne(any())).thenReturn(teacher);
-        when(lessonRepository.findByTeacherIdAndCourseIdOrderByStartTimeDesc(any(), any(), any())).thenReturn(Lists.emptyList());
+        when(lessonRepository.findByTeacherIdAndCourseIdOrderByStartTimeAsc(any(), any(), any())).thenReturn(Lists.emptyList());
 
         Optional<List<Lesson>> result = lessonService.findByTeacherIdAndCourseId(userSupplier.getAnyId(), userSupplier.getAnyId(), null);
 
         verify(courseRepository, times(1)).exists(any());
         verify(userRepository, times(1)).findOne(any());
-        verify(lessonRepository, times(1)).findByTeacherIdAndCourseIdOrderByStartTimeDesc(any(), any(), any());
+        verify(lessonRepository, times(1)).findByTeacherIdAndCourseIdOrderByStartTimeAsc(any(), any(), any());
         Assert.assertTrue(result.isPresent());
     }
 
@@ -130,7 +130,7 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
 
         verify(courseRepository, times(1)).exists(any());
         verify(userRepository, times(1)).findOne(any());
-        verify(lessonRepository, times(0)).findByTeacherIdAndCourseIdOrderByStartTimeDesc(any(), any(), any());
+        verify(lessonRepository, times(0)).findByTeacherIdAndCourseIdOrderByStartTimeAsc(any(), any(), any());
         Assert.assertFalse(result.isPresent());
     }
 
@@ -144,7 +144,7 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
         Optional<List<Lesson>> result = lessonService.findByTeacherIdAndCourseId(userSupplier.getAnyId(), userSupplier.getAnyId(), null);
 
         verify(courseRepository, times(1)).exists(any());
-        verify(lessonRepository, times(0)).findByTeacherIdAndCourseIdOrderByStartTimeDesc(any(), any(), any());
+        verify(lessonRepository, times(0)).findByTeacherIdAndCourseIdOrderByStartTimeAsc(any(), any(), any());
         Assert.assertFalse(result.isPresent());
     }
 
@@ -157,7 +157,7 @@ public class LessonServiceTest extends CrudServiceTest<Lesson, Integer> {
 
         Optional<List<Lesson>> result = lessonService.findByTeacherIdAndCourseId(userSupplier.getAnyId(), userSupplier.getAnyId(), null);
 
-        verify(lessonRepository, times(0)).findByTeacherIdAndCourseIdOrderByStartTimeDesc(any(), any(), any());
+        verify(lessonRepository, times(0)).findByTeacherIdAndCourseIdOrderByStartTimeAsc(any(), any(), any());
         Assert.assertFalse(result.isPresent());
     }
 

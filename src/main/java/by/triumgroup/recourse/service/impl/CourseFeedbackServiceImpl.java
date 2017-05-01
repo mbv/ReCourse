@@ -6,6 +6,7 @@ import by.triumgroup.recourse.repository.CourseFeedbackRepository;
 import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.CourseFeedbackService;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.support.UserFieldInfo;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,13 @@ public class CourseFeedbackServiceImpl
                 ? repository.findByCourseIdOrderByIdDesc(id, pageable)
                 : null
         );
+    }
+
+    @Override
+    protected void validateNestedEntities(CourseFeedback entity) {
+        if (entity.getStudent().getId() == null) {
+            throw new ServiceBadRequestException("student.id", "Student ID is not specified");
+        }
     }
 
     @Override

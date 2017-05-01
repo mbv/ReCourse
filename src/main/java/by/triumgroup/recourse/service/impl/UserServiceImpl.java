@@ -142,13 +142,13 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 }
                 break;
             case STUDENT:
-                List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(disabledUser.getId(), allItemsPage()));
+                List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeAsc(disabledUser.getId(), allItemsPage()));
                 if (!lessons.isEmpty()) {
                     rejectRoleChanging("Teacher can't have any lessons.");
                 }
                 break;
             case ADMIN:
-                lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(disabledUser.getId(), allItemsPage()));
+                lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeAsc(disabledUser.getId(), allItemsPage()));
                 if (!lessons.isEmpty() || !disabledUser.getCourses().isEmpty()) {
                     rejectRoleChanging("Admin can't have any lessons or be registered to courses.");
                 }
@@ -168,7 +168,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
                 newUser.setCourses(courses);
                 break;
             case TEACHER:
-                List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
+                List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeAsc(
                         newUser.getId(), allItemsPage()));
                 if (lessons.stream().anyMatch(
                         lesson -> lesson.getStartTime().after(Timestamp.from(Instant.now())))) {
@@ -179,7 +179,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     private void checkTeacherRoleUpdate(User teacher) {
-        List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeDesc(
+        List<Lesson> lessons = wrapJPACall(() -> lessonRepository.findByTeacherIdOrderByStartTimeAsc(
                 teacher.getId(), allItemsPage()));
         if (!lessons.isEmpty()) {
             rejectRoleChanging("Teacher has lessons.");
@@ -193,7 +193,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     private void rejectRoleChanging(String message) {
-        throw new ServiceBadRequestException(new ErrorMessage("role", message));
+        throw new ServiceBadRequestException("role", message);
     }
 
     private void denyRoleChanging(String message) {

@@ -7,6 +7,7 @@ import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.exception.ServiceException;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.support.UserFieldInfo;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
@@ -47,11 +48,19 @@ public class LessonServiceImpl
         throw new ServiceException();
     }
 
+    @Override
+    protected void validateNestedEntities(Lesson entity) {
+        if (entity.getTeacher().getId() == null) {
+            throw new ServiceBadRequestException("teacher.id", "Teacher ID is not specified");
+        }
+    }
+
     public Optional<Lesson> update(Lesson entity, Integer id, User.Role performerRole) {
         Optional<Lesson> result;
         Optional<Lesson> databaseLessonOptional = wrapJPACallToOptional(() -> repository.findOne(id));
         if (databaseLessonOptional.isPresent()) {
             entity.setId(id);
+            validateNestedEntities(entity);
             validateEntity(entity);
             if (performerRole == User.Role.TEACHER){
                 String hometask = entity.getTask();
@@ -69,7 +78,7 @@ public class LessonServiceImpl
     @Override
     public Optional<List<Lesson>> findByCourseId(Integer id, Pageable pageable) {
         return wrapJPACallToOptional(() -> (courseRepository.exists(id))
-                ? repository.findByCourseIdOrderByStartTimeDesc(id, pageable)
+                ? repository.findByCourseIdOrderByStartTimeAsc(id, pageable)
                 : null
         );
     }
@@ -77,7 +86,7 @@ public class LessonServiceImpl
     @Override
     public Optional<List<Lesson>> findByTeacherId(Integer id, Pageable pageable) {
         return wrapJPACallToOptional(() -> (ifExistsWithRole(userRepository, id, User.Role.TEACHER))
-                ? repository.findByTeacherIdOrderByStartTimeDesc(id, pageable)
+                ? repository.findByTeacherIdOrderByStartTimeAsc(id, pageable)
                 : null
         );
     }
@@ -85,7 +94,7 @@ public class LessonServiceImpl
     @Override
     public Optional<List<Lesson>> findByTeacherIdAndCourseId(Integer teacherId, Integer courseId, Pageable pageable) {
         return wrapJPACallToOptional(() -> (courseRepository.exists(courseId) && ifExistsWithRole(userRepository, teacherId, User.Role.TEACHER))
-                ? repository.findByTeacherIdAndCourseIdOrderByStartTimeDesc(teacherId, courseId, pageable)
+                ? repository.findByTeacherIdAndCourseIdOrderByStartTimeAsc(teacherId, courseId, pageable)
                 : null
         );
     }

@@ -7,6 +7,7 @@ import by.triumgroup.recourse.repository.HometaskSolutionRepository;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.HometaskSolutionService;
+import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.support.UserFieldInfo;
 import by.triumgroup.recourse.validation.validator.HometaskSolutionReferenceValidator;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
@@ -48,6 +49,13 @@ public class HometaskSolutionServiceImpl
     public Optional<HometaskSolution> update(HometaskSolution entity, Integer integer) {
 
         return super.update(entity, integer);
+    }
+
+    @Override
+    protected void validateNestedEntities(HometaskSolution entity) {
+        if (entity.getStudent().getId() == null) {
+            throw new ServiceBadRequestException("student.id", "Student ID is not specified");
+        }
     }
 
     @Override

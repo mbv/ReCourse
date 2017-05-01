@@ -1,22 +1,12 @@
 package by.triumgroup.recourse.controller.exception;
 
+import by.triumgroup.recourse.entity.dto.ErrorMessage;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Error in request")
-public class BadRequestException extends ControllerException {
+public class BadRequestException extends RequestException {
+
     public BadRequestException() {
+        super(HttpStatus.BAD_REQUEST, new ErrorMessage("Error", "Bad request"));
     }
 
-    public BadRequestException(String cause) {
-        super(cause);
-    }
-
-    public BadRequestException(Throwable t) {
-        super(t);
-    }
-
-    public BadRequestException(String cause, Throwable t) {
-        super(cause, t);
-    }
 }

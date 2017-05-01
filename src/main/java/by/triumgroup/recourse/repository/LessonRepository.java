@@ -10,13 +10,16 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
+@SuppressWarnings("SpringDataRepositoryMethodParametersInspection")
 public interface LessonRepository extends PagingAndSortingRepository<Lesson, Integer> {
 
-    List<Lesson> findByCourseIdOrderByStartTimeDesc(Integer id, Pageable pageable);
+    List<Lesson> findByCourseIdOrderByStartTimeAsc(Integer id, Pageable pageable);
 
-    List<Lesson> findByTeacherIdOrderByStartTimeDesc(Integer id, Pageable pageable);
+    List<Lesson> findByTeacherIdOrderByStartTimeAsc(Integer id, Pageable pageable);
 
-    List<Lesson> findByTeacherIdAndCourseIdOrderByStartTimeDesc(Integer teacherId, Integer courseId, Pageable pageable);
+    List<Lesson> findByTeacherIdAndCourseIdOrderByStartTimeAsc(Integer teacherId, Integer courseId, Pageable pageable);
+
+    Lesson findFirstByCourseIdOrderByStartTimeAsc(Integer id);
 
     @Query(value = "SELECT recourse.can_add_lesson(:teacher_id, :new_lesson_start_time, :duration)", nativeQuery = true)
     boolean canAddLesson(@Param("new_lesson_start_time") Timestamp startTime,
@@ -28,4 +31,6 @@ public interface LessonRepository extends PagingAndSortingRepository<Lesson, Int
                             @Param("teacher_id") Integer teacherId,
                             @Param("duration") Time duration,
                             @Param("lesson_id") Integer lessonId);
+
+
 }

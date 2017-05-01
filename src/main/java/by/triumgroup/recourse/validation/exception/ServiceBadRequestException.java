@@ -21,6 +21,10 @@ public class ServiceBadRequestException extends ServiceRequestException {
         super(HttpStatus.BAD_REQUEST, errorMessages);
     }
 
+    public ServiceBadRequestException(String title, String message) {
+        super(HttpStatus.BAD_REQUEST, new ErrorMessage(title, message));
+    }
+
     public ServiceBadRequestException(ErrorMessage... errorMessages) {
         super(HttpStatus.BAD_REQUEST, Arrays.asList(errorMessages));
     }

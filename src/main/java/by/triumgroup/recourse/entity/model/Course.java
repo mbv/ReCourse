@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.SafeHtml;
 
@@ -38,6 +39,7 @@ public class Course extends BaseEntity<Integer> {
     @Range(min = 1, max = 100, message = "Max students count must be in range 1-100")
     private Integer maxStudents;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name="course_student",
@@ -94,6 +96,18 @@ public class Course extends BaseEntity<Integer> {
         return students;
     }
 
+    public void setStudents(Set<User> students) {
+        this.students = students;
+    }
+
+    public Timestamp getRegistrationEnd() {
+        return registrationEnd;
+    }
+
+    public void setRegistrationEnd(Timestamp registrationEnd) {
+        this.registrationEnd = registrationEnd;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,14 +124,6 @@ public class Course extends BaseEntity<Integer> {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), title, description, status, registrationEnd, maxStudents);
-    }
-
-    public Timestamp getRegistrationEnd() {
-        return registrationEnd;
-    }
-
-    public void setRegistrationEnd(Timestamp registrationEnd) {
-        this.registrationEnd = registrationEnd;
     }
 
     public enum Status {

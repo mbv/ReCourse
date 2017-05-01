@@ -34,10 +34,7 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
         Throwable cause = ex.getCause();
         ErrorMessage errorMessage;
         if (cause == null) {
-            errorMessage = new ErrorMessage(
-                    "Error",
-                    "Required request body is missing"
-            );
+            errorMessage = new ErrorMessage("Error", "Required request body is missing");
         } else if (cause instanceof InvalidFormatException) {
             InvalidFormatException e = (InvalidFormatException) cause;
             errorMessage = new ErrorMessage(
@@ -50,16 +47,10 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
             JsonMappingException e = (JsonMappingException) cause;
             List<JsonMappingException.Reference> references = e.getPath();
             StringBuilder message = new StringBuilder("Invalid values in fields");
-            references.forEach(reference -> message
-                    .append(" '")
-                    .append(reference.getFieldName())
-                    .append("'"));
+            references.forEach(reference -> message.append(" '").append(reference.getFieldName()).append("'"));
             errorMessage = new ErrorMessage("Invalid JSON", message.toString());
         } else {
-            errorMessage = new ErrorMessage(
-                    "Message not readable",
-                    "Unknown error"
-            );
+            errorMessage = new ErrorMessage("Message not readable", "Unknown error");
         }
         return handleExceptionInternal(ex, createRestError(status, errorMessage), headers, status, request);
     }
@@ -74,13 +65,19 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RequestException.class)
-    protected ResponseEntity<Object> handleServiceException(RequestException ex) {
+    protected ResponseEntity<Object> handleRequestException(RequestException ex) {
         return createResponseEntity(ex.getStatus(), ex.getErrors());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
         return new ResponseEntity<>(new OauthError("access_denied", "Access is denied"), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ControllerException.class)
+    protected ResponseEntity<Object> handleControllerException(ControllerException ex) {
+        return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
+                new ErrorMessage("Error", "Internal server error"));
     }
 
 }
