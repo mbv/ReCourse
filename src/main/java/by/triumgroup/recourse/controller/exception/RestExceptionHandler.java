@@ -5,6 +5,7 @@ import by.triumgroup.recourse.entity.dto.OauthError;
 import by.triumgroup.recourse.entity.dto.RestError;
 import by.triumgroup.recourse.util.Util;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+
+import java.util.List;
 
 @ControllerAdvice
 public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
@@ -39,6 +42,15 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
             );
         } else if (cause instanceof JsonParseException) {
             errorMessage = new ErrorMessage("Invalid JSON", "Invalid JSON format");
+        } else if (cause instanceof JsonMappingException) {
+            JsonMappingException e = (JsonMappingException) cause;
+            List<JsonMappingException.Reference> references = e.getPath();
+            StringBuilder message = new StringBuilder("Invalid values in fields");
+            references.forEach(reference -> message
+                    .append(" '")
+                    .append(reference.getFieldName())
+                    .append("'"));
+            errorMessage = new ErrorMessage("Invalid JSON", message.toString());
         } else {
             errorMessage = new ErrorMessage(
                     "Message not readable",

@@ -9,7 +9,6 @@ import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.entity.support.UserRoleEnumConverter;
 import by.triumgroup.recourse.service.UserService;
-import by.triumgroup.recourse.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -78,12 +77,8 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     @Override
     public void register(@Valid @RequestBody RegistrationDetails registrationDetails) throws ControllerException {
-        try {
-            userService.register(registrationDetails).orElseThrow(BadRequestException::new);
-        } catch (ServiceException e){
-            logger.warn("Error while user registration", e);
-            throw new ControllerException(e);
-        }
+        wrapServiceCall(logger, () -> userService.register(registrationDetails))
+                .orElseThrow(BadRequestException::new);
     }
 
     @Override
@@ -106,9 +101,9 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     @Override
     public User getMyInfo(@Auth UserAuthDetails authDetails) {
         return wrapServiceCall(logger, () -> {
-                Optional<User> callResult = userService.findById(authDetails.getId());
-                return callResult.orElseThrow(NotFoundException::new);
-            }
+                    Optional<User> callResult = userService.findById(authDetails.getId());
+                    return callResult.orElseThrow(NotFoundException::new);
+                }
         );
     }
 
