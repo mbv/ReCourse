@@ -13,7 +13,7 @@ function ErrorsService(toast) {
     function showErrors(errors) {
         console.log(errors);
         errors.forEach(function (error) {
-            toast.show(error.title + ": " + error.message, 3000);
+            toast.show(error.title + ": " + error.message, 10000);
         });
     }
 }
