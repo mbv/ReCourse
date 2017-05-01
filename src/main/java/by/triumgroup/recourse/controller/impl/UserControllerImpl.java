@@ -50,6 +50,11 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
+    public <S extends User> S create(@Valid @RequestBody S entity, @Auth UserAuthDetails authDetails) {
+        throw new MethodNotAllowedException(HttpMethod.POST);
+    }
+
+    @Override
     public void delete(Integer integer, @Auth UserAuthDetails authDetails) {
         throw new MethodNotAllowedException(HttpMethod.DELETE);
     }

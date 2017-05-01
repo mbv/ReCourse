@@ -3,6 +3,7 @@ package by.triumgroup.recourse.configuration;
 import by.triumgroup.recourse.repository.*;
 import by.triumgroup.recourse.service.*;
 import by.triumgroup.recourse.service.impl.*;
+import by.triumgroup.recourse.validation.validator.HometaskSolutionReferenceValidator;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
@@ -57,8 +58,9 @@ public class ServiceConfiguration {
             HometaskSolutionRepository hometaskSolutionRepository,
             UserRepository userRepository,
             LessonRepository lessonRepository,
-            CourseRepository courseRepository) {
-        return new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository, courseRepository);
+            CourseRepository courseRepository,
+            HometaskSolutionReferenceValidator hometaskSolutionReferenceValidator) {
+        return new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository, courseRepository, hometaskSolutionReferenceValidator);
     }
 
     @Bean
