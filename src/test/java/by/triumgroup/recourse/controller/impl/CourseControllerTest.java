@@ -76,7 +76,7 @@ public class CourseControllerTest extends CrudControllerTest<Course, Integer> {
     @Test
     public void searchByStatusTest() throws Exception {
         when(courseService.findByStatus(any(), any())).thenReturn(Optional.of(Lists.emptyList()));
-        sendGet(COURSE_SEARCH_REQUEST, "status", Course.Status.ONGOING)
+        sendGet(COURSE_SEARCH_REQUEST, "status", Course.Status.DRAFT)
                 .andExpect(status().isOk());
     }
 

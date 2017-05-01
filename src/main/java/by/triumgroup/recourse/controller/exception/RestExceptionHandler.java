@@ -3,7 +3,6 @@ package by.triumgroup.recourse.controller.exception;
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
 import by.triumgroup.recourse.entity.dto.OauthError;
 import by.triumgroup.recourse.entity.dto.RestError;
-import by.triumgroup.recourse.util.Util;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -34,7 +33,12 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Throwable cause = ex.getCause();
         ErrorMessage errorMessage;
-        if (cause instanceof InvalidFormatException) {
+        if (cause == null) {
+            errorMessage = new ErrorMessage(
+                    "Error",
+                    "Required request body is missing"
+            );
+        } else if (cause instanceof InvalidFormatException) {
             InvalidFormatException e = (InvalidFormatException) cause;
             errorMessage = new ErrorMessage(
                     "Invalid entity",
@@ -54,7 +58,7 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
         } else {
             errorMessage = new ErrorMessage(
                     "Message not readable",
-                    Util.ifNullDefault(cause.getMessage(), "Unknown error")
+                    "Unknown error"
             );
         }
         return handleExceptionInternal(ex, createRestError(status, errorMessage), headers, status, request);

@@ -1,29 +1,28 @@
 package by.triumgroup.recourse.entity.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
 @Table(name = "hometask_solution")
 public class HometaskSolution extends BaseEntity<Integer> {
 
-    @NotNull
+    @NotNull(message = "Lesson ID is not specified")
     @Column(columnDefinition = "INT(11)", nullable = false)
     private Integer lessonId;
 
-    @NotNull
+    @NotNull(message = "Student is not specified")
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "student_id")
     private User student;
 
-    @NotNull
+    @NotNull(message = "Solution is not specified")
     @SafeHtml
-    @NotEmpty
+    @Size(min = 1, max = 2000, message = "Solution length must be in range 1-2000")
     @Column(columnDefinition = "TEXT", nullable = false)
     private String solution;
 

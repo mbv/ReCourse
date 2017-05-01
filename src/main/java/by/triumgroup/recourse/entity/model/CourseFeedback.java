@@ -1,6 +1,5 @@
 package by.triumgroup.recourse.entity.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
@@ -12,36 +11,36 @@ import java.util.Objects;
 @Table(name = "course_feedback")
 public class CourseFeedback extends BaseEntity<Integer> {
 
-    @NotNull
+    @NotNull(message = "Course ID is not specified")
     @Column(columnDefinition = "INT(11)", nullable = false)
     private Integer courseId;
 
-    @NotNull
+    @NotNull(message = "Student is not specified")
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "student_id")
     private User student;
 
-    @NotNull
+    @NotNull(message = "Heading is not specified")
     @SafeHtml
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "Heading length must be in range 1-50")
     @Column(length = 50)
     private String heading;
 
-    @NotNull
+    @NotNull(message = "Report is not specified")
     @SafeHtml
-    @NotEmpty
+    @Size(min = 1, max = 2000, message = "Report length must be in range 1-2000")
     @Column(columnDefinition = "TEXT")
     private String report;
 
-    @NotNull
+    @NotNull(message = "Pros are not specified")
     @SafeHtml
-    @NotEmpty
+    @Size(min = 1, max = 2000, message = "Pros length must be in range 1-2000")
     @Column(columnDefinition = "TEXT")
     private String pros;
 
-    @NotNull
+    @NotNull(message = "Cons are is not specified")
     @SafeHtml
-    @NotEmpty
+    @Size(min = 1, max = 2000, message = "Cons length must be in range 1-2000")
     @Column(columnDefinition = "TEXT")
     private String cons;
 

@@ -28,11 +28,12 @@ CREATE TABLE `user` (
 
 DROP TABLE IF EXISTS `course` CASCADE;
 CREATE TABLE `course` (
-  `id`           INT                                          NOT NULL AUTO_INCREMENT,
-  `title`        VARCHAR(50)                                  NOT NULL,
-  `description`  TEXT                                         NOT NULL,
-  `status`       ENUM ('ONGOING', 'REGISTRATION', 'FINISHED') NOT NULL,
-  `max_students` INT                                          NOT NULL,
+  `id`               INT                                     NOT NULL AUTO_INCREMENT,
+  `title`            VARCHAR(50)                             NOT NULL,
+  `description`      TEXT                                    NOT NULL,
+  `status`           ENUM ('DRAFT', 'PUBLISHED', 'FINISHED') NOT NULL,
+  `registration_end` DATETIME                                NOT NULL,
+  `max_students`     INT                                     NOT NULL,
   CONSTRAINT `PK_Course` PRIMARY KEY (`id` ASC)
 )
   ENGINE = InnoDB

@@ -13,25 +13,25 @@ import java.util.Objects;
 @Table(name = "lesson")
 public class Lesson extends BaseEntity<Integer> {
 
-    @NotNull
+    @NotNull(message = "Start time is not specified")
     @Column(columnDefinition = "DATETIME", nullable = false)
     private Timestamp startTime;
 
-    @NotNull
+    @NotNull(message = "Duration is not specified")
     @Column(columnDefinition = "TIME", nullable = false)
     private Time duration;
 
-    @NotNull
+    @NotNull(message = "Course ID is not specified")
     @Column(columnDefinition = "INT(11)", nullable = false)
     private Integer courseId;
 
-    @NotNull
+    @NotNull(message = "Topic is not specified")
     @SafeHtml
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "Topic length must be in range 1-50")
     @Column(length = 50)
     private String topic;
 
-    @NotNull
+    @NotNull(message = "Teacher is not specified")
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "teacher_id")
     private User teacher;

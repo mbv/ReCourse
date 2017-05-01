@@ -1,33 +1,31 @@
 package by.triumgroup.recourse.entity.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
 @Table(name = "mark")
 public class Mark extends BaseEntity<Integer> {
 
-    @NotNull
-    @Min(0)
-    @Max(10)
+    @NotNull(message = "Score is not specified")
+    @Range(min = 0, max = 10, message = "Score must be in range 1-100")
     @Column(columnDefinition = "TINYINT", nullable = false)
     private Integer score;
 
-    @NotNull
+    @NotNull(message = "Solution ID is not specified")
     @Column(columnDefinition = "INT(11)", nullable = false)
     private Integer solutionId;
 
-    @NotNull
+    @NotNull(message = "Comment is not specified")
     @SafeHtml
-    @NotEmpty
+    @Size(min = 1, max = 2000, message = "Comment length must be in range 1-2000")
     @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
 

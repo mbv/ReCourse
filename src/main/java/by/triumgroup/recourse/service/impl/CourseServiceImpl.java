@@ -67,7 +67,7 @@ public class CourseServiceImpl
     @Override
     public Optional<Course> update(Course entity, Integer id) {
         Course course = wrapJPACall(() -> courseRepository.findOne(id));
-        if (course != null && course.getStatus() != Course.Status.REGISTRATION && entity.getStatus() == Course.Status.REGISTRATION) {
+        if (course != null && course.getStatus() != Course.Status.PUBLISHED && entity.getStatus() == Course.Status.PUBLISHED) {
             wrapJPACall(() -> hometaskSolutionRepository.deleteByCourseId(course.getId()));
         }
         return super.update(entity, id);
@@ -124,7 +124,7 @@ public class CourseServiceImpl
         if (user.getRole() != User.Role.STUDENT) {
             errorMessages.add(new ErrorMessage("user", "User must be a student"));
         }
-        if (course.getStatus() != Course.Status.REGISTRATION && !force) {
+        if (course.getStatus() != Course.Status.PUBLISHED && !force) {
             errorMessages.add(new ErrorMessage("course", "Course must has registration status"));
         }
         if (!errorMessages.isEmpty()) {

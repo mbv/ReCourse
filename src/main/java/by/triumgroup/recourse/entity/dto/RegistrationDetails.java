@@ -2,6 +2,7 @@ package by.triumgroup.recourse.entity.dto;
 
 import by.triumgroup.recourse.entity.model.User.Gender;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
@@ -9,31 +10,40 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
+import static by.triumgroup.recourse.validation.support.Constants.PATTERN;
+
 public class RegistrationDetails {
-    @Email
-    @NotNull
+
+    @NotNull(message = "Email is not specified")
+    @Email(regexp = PATTERN, message = "Email is malformed")
+    @Size(min = 1, max = 255, message = "Email length must be in range 1-255")
+    @SafeHtml
     private String email;
 
-    @Size(min = 1, max = 50)
-    @NotNull
+    @NotNull(message = "Name is not specified")
+    @SafeHtml
+    @Size(min = 1, max = 50, message = "Name length must be in range 1-50")
     private String name;
 
-    @Size(min = 1, max = 50)
-    @NotNull
+    @NotNull(message = "Surname is not specified")
+    @SafeHtml
+    @Size(min = 1, max = 50, message = "Surname length must be in range 1-50")
     private String surname;
 
-    @NotNull
-    @Size(min = 8)
+    @NotNull(message = "Password is not specified")
+    @Size(min = 8, max = 50, message = "Password length must be in range 8-50")
+    @SafeHtml
     private String password;
 
-    @NotNull
-    @Size(min = 8)
+    @NotNull(message = "Password confirmation is not specified")
+    @Size(min = 8, max = 50, message = "Password confirmation length must be in range 8-50")
+    @SafeHtml
     private String passwordConfirmation;
 
-    @NotNull
+    @NotNull(message = "Gender is not specified")
     private Gender gender;
 
-    @Past
+    @Past(message = "Birthday must be in past")
     @Column(columnDefinition = "DATE")
     private Timestamp birthday;
 

@@ -13,42 +13,46 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
 
+import static by.triumgroup.recourse.validation.support.Constants.PATTERN;
+
 @Entity
 @Table(name = "user")
 public class User extends BaseEntity<Integer> {
 
-    @NotNull
-    @Email
+    @NotNull(message = "Email is not specified")
+    @Email(regexp = PATTERN, message = "Email is malformed")
+    @Size(min = 1, max = 255, message = "Email length must be in range 1-255")
     @SafeHtml
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Size(min = 60, max = 60, message = "Password hash length must be 60 chars")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(columnDefinition = "CHAR(60)", nullable = false)
     private String passwordHash;
 
-    @NotNull
+    @NotNull(message = "Name is not specified")
     @SafeHtml
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "Name length must be in range 1-50")
     @Column(length = 50, nullable = false)
     private String name;
 
-    @NotNull
+    @NotNull(message = "Surname is not specified")
     @SafeHtml
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "Surname length must be in range 1-50")
     @Column(length = 50, nullable = false)
     private String surname;
 
-    @NotNull
+    @NotNull(message = "Gender is not specified")
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "ENUM ('MALE', 'FEMALE')", nullable = false)
     private Gender gender;
 
-    @Past
+    @Past(message = "Birthday must be in past")
     @Column(columnDefinition = "DATE")
     private Timestamp birthday;
 
-    @NotNull
+    @NotNull(message = "Role is not specified")
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "ENUM ('STUDENT', 'TEACHER', 'ADMIN')")
     private Role role;
