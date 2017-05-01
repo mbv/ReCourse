@@ -1,15 +1,22 @@
 package by.triumgroup.recourse.entity.dto;
 
+import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
 import java.util.List;
 
-public class ValidationErrorInfo {
+public class RestError {
     private String error;
 
     private int status;
 
     private List<ErrorMessage> errors;
 
-    public ValidationErrorInfo(String error, int status, List<ErrorMessage> errors) {
+    public RestError(HttpStatus status, ErrorMessage... errors) {
+        this(status.getReasonPhrase(), status.value(), Arrays.asList(errors));
+    }
+
+    public RestError(String error, int status, List<ErrorMessage> errors) {
         this.error = error;
         this.status = status;
         this.errors = errors;

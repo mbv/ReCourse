@@ -9,10 +9,10 @@ import by.triumgroup.recourse.entity.dto.RegistrationDetails;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.entity.support.UserRoleEnumConverter;
 import by.triumgroup.recourse.service.UserService;
-import by.triumgroup.recourse.service.exception.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
@@ -49,8 +49,13 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
+    public <S extends User> S create(@Valid @RequestBody S entity, @Auth UserAuthDetails authDetails) {
+        throw new MethodNotAllowedException(HttpMethod.POST);
+    }
+
+    @Override
     public void delete(Integer integer, @Auth UserAuthDetails authDetails) {
-        throw new MethodNotAllowedException();
+        throw new MethodNotAllowedException(HttpMethod.DELETE);
     }
 
     @Override
@@ -72,12 +77,8 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
 
     @Override
     public void register(@Valid @RequestBody RegistrationDetails registrationDetails) throws ControllerException {
-        try {
-            userService.register(registrationDetails).orElseThrow(BadRequestException::new);
-        } catch (ServiceException e){
-            logger.warn("Error while user registration", e);
-            throw new ControllerException(e);
-        }
+        wrapServiceCall(logger, () -> userService.register(registrationDetails))
+                .orElseThrow(BadRequestException::new);
     }
 
     @Override
@@ -100,9 +101,9 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     @Override
     public User getMyInfo(@Auth UserAuthDetails authDetails) {
         return wrapServiceCall(logger, () -> {
-                Optional<User> callResult = userService.findById(authDetails.getId());
-                return callResult.orElseThrow(NotFoundException::new);
-            }
+                    Optional<User> callResult = userService.findById(authDetails.getId());
+                    return callResult.orElseThrow(NotFoundException::new);
+                }
         );
     }
 

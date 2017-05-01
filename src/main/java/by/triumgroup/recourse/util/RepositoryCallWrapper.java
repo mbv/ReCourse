@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.util;
 
+import by.triumgroup.recourse.entity.dto.ErrorMessage;
 import by.triumgroup.recourse.service.exception.ServiceConstraintViolationException;
 import by.triumgroup.recourse.service.exception.ServiceException;
 import by.triumgroup.recourse.util.WrapperFunctions.WrapperFunction;
@@ -36,7 +37,7 @@ public class RepositoryCallWrapper {
             } catch (EmptyResultDataAccessException e) {
                 result = Optional.empty();
             } catch (DataIntegrityViolationException e) {
-                throw new ServiceConstraintViolationException(e);
+                throw new ServiceConstraintViolationException(new ErrorMessage("Invalid entity", "Invalid entity references"));
             }
             return result;
         });
@@ -50,7 +51,7 @@ public class RepositoryCallWrapper {
             } catch (EmptyResultDataAccessException e) {
                 result = Optional.empty();
             } catch (DataIntegrityViolationException e) {
-                throw new ServiceConstraintViolationException(e);
+                throw new ServiceConstraintViolationException(new ErrorMessage("Invalid entity", "Invalid entity references"));
             }
             return result;
         });

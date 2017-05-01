@@ -2,14 +2,21 @@ package by.triumgroup.recourse.configuration;
 
 
 import by.triumgroup.recourse.controller.*;
+import by.triumgroup.recourse.controller.exception.WhiteLabelErrorPageController;
 import by.triumgroup.recourse.controller.impl.*;
 import by.triumgroup.recourse.service.*;
+import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 
 @Configuration
 public class ControllerConfiguration {
+
+    @Bean
+    public ErrorController errorController() {
+        return new WhiteLabelErrorPageController();
+    }
 
     @Bean
     public UserController userController(UserService userService, DefaultTokenServices defaultTokenServices) {
@@ -20,8 +27,7 @@ public class ControllerConfiguration {
     public CourseController courseController(
             CourseService courseService,
             LessonService lessonService,
-            CourseFeedbackService courseFeedbackService,
-            UserService userService) {
+            CourseFeedbackService courseFeedbackService) {
         return new CourseControllerImpl(courseService, lessonService, courseFeedbackService);
     }
 

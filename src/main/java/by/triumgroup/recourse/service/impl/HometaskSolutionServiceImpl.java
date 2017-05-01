@@ -27,17 +27,20 @@ public class HometaskSolutionServiceImpl
     private final HometaskSolutionRepository repository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private HometaskSolutionReferenceValidator hometaskSolutionReferenceValidator;
     private LessonRepository lessonRepository;
 
     public HometaskSolutionServiceImpl(HometaskSolutionRepository repository,
                                        UserRepository userRepository,
                                        LessonRepository lessonRepository,
-                                       CourseRepository courseRepository) {
+                                       CourseRepository courseRepository,
+                                       HometaskSolutionReferenceValidator hometaskSolutionReferenceValidator) {
         super(repository);
         this.repository = repository;
         this.userRepository = userRepository;
         this.lessonRepository = lessonRepository;
         this.courseRepository = courseRepository;
+        this.hometaskSolutionReferenceValidator = hometaskSolutionReferenceValidator;
     }
 
 
@@ -85,6 +88,6 @@ public class HometaskSolutionServiceImpl
         );
         return Arrays.asList(
                 new UserRoleValidator<>(studentFieldInfo, userRepository, repository),
-                new HometaskSolutionReferenceValidator(lessonRepository, userRepository, courseRepository));
+                hometaskSolutionReferenceValidator);
     }
 }

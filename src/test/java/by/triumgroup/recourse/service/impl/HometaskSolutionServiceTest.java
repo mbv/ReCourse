@@ -12,6 +12,7 @@ import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSolutionSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.UserSupplier;
+import by.triumgroup.recourse.validation.validator.HometaskSolutionReferenceValidator;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.data.repository.CrudRepository;
@@ -40,7 +41,14 @@ public class HometaskSolutionServiceTest extends CrudServiceTest<HometaskSolutio
         userRepository = Mockito.mock(UserRepository.class);
         lessonRepository = Mockito.mock(LessonRepository.class);
         courseRepository = Mockito.mock(CourseRepository.class);
-        hometaskSolutionService = new HometaskSolutionServiceImpl(hometaskSolutionRepository, userRepository, lessonRepository, courseRepository);
+        HometaskSolutionReferenceValidator hometaskSolutionReferenceValidator = Mockito.mock(HometaskSolutionReferenceValidator.class);
+        when(hometaskSolutionReferenceValidator.supports(HometaskSolution.class)).thenReturn(true);
+        hometaskSolutionService = new HometaskSolutionServiceImpl(
+                hometaskSolutionRepository,
+                userRepository,
+                lessonRepository,
+                courseRepository,
+                hometaskSolutionReferenceValidator);
         hometaskSolutionSupplier = new HometaskSolutionSupplier();
         userSupplier = new UserSupplier();
     }

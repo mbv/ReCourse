@@ -1,15 +1,16 @@
 package by.triumgroup.recourse.validation.exception;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ServiceBadRequestException extends ValidationException {
+public class ServiceBadRequestException extends ServiceRequestException {
     public ServiceBadRequestException(BindingResult bindingResult) {
-        super(bindingResult
+        super(HttpStatus.BAD_REQUEST, bindingResult
                 .getFieldErrors()
                 .stream()
                 .map(ErrorMessage::fromFieldError)
@@ -17,10 +18,10 @@ public class ServiceBadRequestException extends ValidationException {
     }
 
     public ServiceBadRequestException(List<ErrorMessage> errorMessages) {
-        super(errorMessages);
+        super(HttpStatus.BAD_REQUEST, errorMessages);
     }
 
     public ServiceBadRequestException(ErrorMessage... errorMessages) {
-        super(Arrays.asList(errorMessages));
+        super(HttpStatus.BAD_REQUEST, Arrays.asList(errorMessages));
     }
 }

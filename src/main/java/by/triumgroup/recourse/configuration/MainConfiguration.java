@@ -2,8 +2,10 @@ package by.triumgroup.recourse.configuration;
 
 import by.triumgroup.recourse.configuration.security.SecurityConfiguration;
 import by.triumgroup.recourse.controller.exception.RestExceptionHandler;
+import by.triumgroup.recourse.repository.CourseRepository;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
+import by.triumgroup.recourse.validation.validator.HometaskSolutionReferenceValidator;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
@@ -41,7 +43,7 @@ public class MainConfiguration extends SpringBootServletInitializer {
 
     @Bean
     DefaultErrorAttributes errorAttributes() {
-        return new ErrorAttributesWithoutExceptionName();
+        return new CustomErrorAttributes();
     }
 
     @Bean
@@ -62,6 +64,13 @@ public class MainConfiguration extends SpringBootServletInitializer {
     @Bean
     LessonTimeValidator lessonTimeValidator(LessonRepository lessonRepository) {
         return new LessonTimeValidator(lessonRepository);
+    }
+
+    @Bean
+    HometaskSolutionReferenceValidator hometaskSolutionReferenceValidator(LessonRepository lessonRepository,
+                                                                          UserRepository userRepository,
+                                                                          CourseRepository courseRepository) {
+        return new HometaskSolutionReferenceValidator(lessonRepository, userRepository, courseRepository);
     }
 
     @Bean

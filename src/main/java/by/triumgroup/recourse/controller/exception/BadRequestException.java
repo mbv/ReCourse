@@ -3,7 +3,7 @@ package by.triumgroup.recourse.controller.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad request")
+@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Error in request")
 public class BadRequestException extends ControllerException {
     public BadRequestException() {
     }

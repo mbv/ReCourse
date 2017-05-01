@@ -1,9 +1,5 @@
 package by.triumgroup.recourse.controller.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(code = HttpStatus.FORBIDDEN, reason = "Access denied")
 public class AccessDeniedException extends ControllerException {
 
     public AccessDeniedException() {
