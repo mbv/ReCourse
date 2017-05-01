@@ -12,7 +12,6 @@ import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.service.HometaskSolutionService;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.MarkService;
-import by.triumgroup.recourse.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,9 +36,8 @@ public class HometaskSolutionControllerImpl
 
     public HometaskSolutionControllerImpl(HometaskSolutionService hometaskSolutionService,
                                           MarkService markService,
-                                          LessonService lessonService,
-                                          UserService userService) {
-        super(hometaskSolutionService, userService, logger);
+                                          LessonService lessonService) {
+        super(hometaskSolutionService, logger);
         this.hometaskSolutionService = hometaskSolutionService;
         this.markService = markService;
         this.lessonService = lessonService;
@@ -49,7 +47,6 @@ public class HometaskSolutionControllerImpl
     @Override
     public Iterable<HometaskSolution> getAll(@Auth UserAuthDetails authDetails) {
         Iterable<HometaskSolution> result;
-        refreshAuthDetails(authDetails);
         if (!authDetails.isAdmin()) {
             if (authDetails.getRole() == User.Role.STUDENT) {
                 result = wrapServiceCall(logger, () -> {
@@ -79,7 +76,6 @@ public class HometaskSolutionControllerImpl
             @PathVariable("studentId") Integer studentId,
             @Auth UserAuthDetails authDetails,
             Pageable pageable) {
-        refreshAuthDetails(authDetails);
         return wrapServiceCall(logger, () -> {
             if (authDetails.isAdmin() || studentId.equals(authDetails.getId())) {
                 Optional<List<HometaskSolution>> solutions = hometaskSolutionService.findByStudentId(studentId, pageable);
@@ -96,7 +92,6 @@ public class HometaskSolutionControllerImpl
             @PathVariable("studentId") Integer studentId,
             @RequestParam(value = "lessonId") Integer lessonId,
             @Auth UserAuthDetails authDetails) {
-        refreshAuthDetails(authDetails);
         return wrapServiceCall(logger, () -> {
             Optional<HometaskSolution> callResult = hometaskSolutionService.findByStudentIdAndLessonId(studentId, lessonId);
             if (callResult.isPresent()) {
@@ -117,7 +112,6 @@ public class HometaskSolutionControllerImpl
         return wrapServiceCall(logger, () -> {
             Optional<Lesson> lesson = lessonService.findById(lessonId);
             Optional<List<HometaskSolution>> solutions;
-            refreshAuthDetails(authDetails);
             if (lesson.isPresent()) {
                 if (authDetails.isAdmin() || lesson.get().getTeacher().getId().equals(authDetails.getId())) {
                     solutions = hometaskSolutionService.findByLessonId(lessonId, pageable);
@@ -133,13 +127,11 @@ public class HometaskSolutionControllerImpl
 
     @Override
     protected boolean hasAuthorityToEdit(HometaskSolution entity, UserAuthDetails authDetails) {
-        refreshAuthDetails(authDetails);
         return authDetails.isAdmin() || Objects.equals(entity.getStudent().getId(), authDetails.getId());
     }
 
     @Override
     protected boolean hasAuthorityToRead(HometaskSolution entity, UserAuthDetails authDetails) {
-        refreshAuthDetails(authDetails);
         boolean result = hasAuthorityToEdit(entity, authDetails);
         if (!result) {
             Optional<Lesson> lesson = lessonService.findById(entity.getLessonId());

@@ -34,7 +34,6 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     public void configure(ResourceServerSecurityConfigurer resources) {
         resources
                 .tokenStore(tokenStore());
-        resources.stateless(false);
     }
 
     @Override
