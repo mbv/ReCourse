@@ -21,13 +21,13 @@ public interface HometaskSolutionRepository extends PagingAndSortingRepository<H
     @Modifying
     @Query(value = "DELETE FROM hometask_solution WHERE (hometask_solution.student_id = ?1) AND (hometask_solution.lesson_id IN (SELECT lesson.id FROM lesson WHERE (lesson.course_id = ?2)))",
             nativeQuery = true)
-    void deleteByStudentIdCourseId(Integer studentId, Integer courseId);
+    Integer deleteByStudentIdCourseId(Integer studentId, Integer courseId);
 
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM hometask_solution WHERE (hometask_solution.lesson_id IN (SELECT lesson.id FROM lesson WHERE (lesson.course_id = ?1)))",
             nativeQuery = true)
-    void deleteByCourseId(Integer courseId);
+    Integer deleteByCourseId(Integer courseId);
 
 
 }

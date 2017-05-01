@@ -220,59 +220,61 @@ INSERT INTO user (password_hash, surname, name, email, gender, birthday, role) V
 
 -- -------------------------------------------------------------------
 
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Divanoodle',
-                                                                                        'Praesent lectus. Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio.',
-                                                                                        'DRAFT', '2017-06-04 06:24:00',
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES
+  ('Course from Avamba', 'Donec dapibus. Duis at velit eu est congue elementum. In hac habitasse platea dictumst.',
+   'DRAFT', '2016-12-24 05:32:36', 17);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Midel',
+                                                                                        'Nam dui. Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius. Integer ac leo.',
+                                                                                        'FINISHED',
+                                                                                        '2016-12-20 01:00:06', 26);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Wikizz',
+                                                                                        'Curabitur at ipsum ac tellus semper interdum. Mauris ullamcorper purus sit amet nulla. Quisque arcu libero, rutrum ac, lobortis vel, dapibus at, diam. Nam tristique tortor eu pede.',
+                                                                                        'PUBLISHED',
+                                                                                        '2016-12-15 15:20:37', 10);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Tagtune',
+                                                                                        'Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc.',
+                                                                                        'DRAFT', '2016-12-28 20:23:55',
+                                                                                        20);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Twinder',
+                                                                                        'Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis. Fusce posuere felis sed lacus.',
+                                                                                        'FINISHED',
+                                                                                        '2016-12-16 18:54:07', 18);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Talane',
+                                                                                        'Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem. Fusce consequat. Nulla nisl.',
+                                                                                        'PUBLISHED',
+                                                                                        '2016-12-29 13:35:58', 15);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Photobug',
+                                                                                        'In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet. Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam.',
+                                                                                        'DRAFT', '2016-12-27 10:58:28',
                                                                                         27);
 INSERT INTO course (title, description, status, registration_end, max_students) VALUES
-  ('Course from Browsetype', 'Integer non velit. Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue.',
-   'FINISHED', '2017-06-04 06:24:00', 12);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES
-  ('Course from Skipstorm', 'Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy.', 'PUBLISHED',
-   '2017-06-04 06:24:00', 17);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Dabtype',
-                                                                                        'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec pharetra, magna vestibulum aliquet ultrices, erat tortor sollicitudin mi, sit amet lobortis sapien sapien non mi. Integer ac neque.',
-                                                                                        'DRAFT', '2017-06-04 06:24:00',
-                                                                                        14);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Mycat',
-                                                                                        'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
-                                                                                        'FINISHED',
-                                                                                        '2017-06-04 06:24:00', 21);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Jayo',
-                                                                                        'In congue. Etiam justo. Etiam pretium iaculis justo. In hac habitasse platea dictumst. Etiam faucibus cursus urna.',
+  ('Course from Topdrive', 'Curabitur at ipsum ac tellus semper interdum. Mauris ullamcorper purus sit amet nulla.',
+   'FINISHED', '2017-01-08 09:33:05', 25);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Kanoodle',
+                                                                                        'Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl. Aenean lectus.',
                                                                                         'PUBLISHED',
-                                                                                        '2017-06-04 06:24:00', 14);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Kaymbo',
-                                                                                        'Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem. Fusce consequat. Nulla nisl.',
-                                                                                        'DRAFT', '2017-06-04 06:24:00',
-                                                                                        24);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Meevee',
-                                                                                        'Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet. Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo.',
-                                                                                        'FINISHED',
-                                                                                        '2017-06-04 06:24:00', 28);
+                                                                                        '2017-01-01 12:02:17', 28);
 INSERT INTO course (title, description, status, registration_end, max_students) VALUES
-  ('Course from Thoughtblab', 'Proin at turpis a pede posuere nonummy. Integer non velit.', 'PUBLISHED',
-   '2017-06-04 06:24:00', 17);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Rhyzio',
-                                                                                        'Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc.',
-                                                                                        'DRAFT', '2017-06-04 06:24:00',
-                                                                                        11);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Nlounge',
-                                                                                        'Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.',
+  ('Course from Tagcat', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem.', 'DRAFT',
+   '2016-12-14 04:26:45', 12);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Jetpulse',
+                                                                                        'Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue.',
                                                                                         'FINISHED',
-                                                                                        '2017-06-04 06:24:00', 24);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Kwilith',
-                                                                                        'Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem. Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci.',
+                                                                                        '2016-12-21 21:44:37', 10);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Ntags',
+                                                                                        'Integer a nibh. In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet. Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo.',
                                                                                         'PUBLISHED',
-                                                                                        '2017-06-04 06:24:00', 13);
+                                                                                        '2017-01-05 11:38:41', 17);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Dabvine',
+                                                                                        'Duis mattis egestas metus. Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.',
+                                                                                        'DRAFT', '2016-12-22 22:22:00',
+                                                                                        25);
 INSERT INTO course (title, description, status, registration_end, max_students) VALUES
-  ('Course from Jaxworks', 'Ut at dolor quis odio consequat varius. Integer ac leo. Pellentesque ultrices mattis odio.',
-   'DRAFT', '2017-06-04 06:24:00', 21);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES
-  ('Course from Jabbertype', 'Etiam justo. Etiam pretium iaculis justo.', 'FINISHED', '2017-06-04 06:24:00', 25);
-INSERT INTO course (title, description, status, registration_end, max_students) VALUES
-  ('Course from Lazzy', 'Nulla facilisi. Cras non velit nec nisi vulputate nonummy.', 'PUBLISHED',
-   '2017-06-04 06:24:00', 29);
+  ('Course from Voonder', 'Sed ante. Vivamus tortor.', 'FINISHED', '2016-12-27 18:03:28', 24);
+INSERT INTO course (title, description, status, registration_end, max_students) VALUES ('Course from Realmix',
+                                                                                        'Integer a nibh. In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.',
+                                                                                        'PUBLISHED',
+                                                                                        '2016-12-29 22:37:00', 23);
 
 -- -------------------------------------------------------------------
 

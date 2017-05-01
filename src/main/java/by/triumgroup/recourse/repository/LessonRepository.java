@@ -10,7 +10,6 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
-@SuppressWarnings("SpringDataRepositoryMethodParametersInspection")
 public interface LessonRepository extends PagingAndSortingRepository<Lesson, Integer> {
 
     List<Lesson> findByCourseIdOrderByStartTimeAsc(Integer id, Pageable pageable);

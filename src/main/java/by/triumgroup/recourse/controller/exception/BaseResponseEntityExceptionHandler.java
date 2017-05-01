@@ -27,12 +27,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static by.triumgroup.recourse.validation.support.Constants.DEFAULT_ERROR_TITLE;
+
 public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     protected ResponseEntity<Object> handleExceptionDefault(Exception ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String message = ex.getMessage();
         RestError apiError;
-        apiError = message != null ? createRestError(status, new ErrorMessage("Error", message)) : createRestError(status);
+        apiError = message != null ? createRestError(status, new ErrorMessage(DEFAULT_ERROR_TITLE, message)) : createRestError(status);
         return handleExceptionInternal(ex, apiError, headers, status, request);
     }
 

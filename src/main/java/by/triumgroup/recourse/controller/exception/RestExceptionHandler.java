@@ -19,6 +19,8 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 
+import static by.triumgroup.recourse.validation.support.Constants.DEFAULT_ERROR_TITLE;
+
 @ControllerAdvice
 public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
 
@@ -34,7 +36,7 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
         Throwable cause = ex.getCause();
         ErrorMessage errorMessage;
         if (cause == null) {
-            errorMessage = new ErrorMessage("Error", "Required request body is missing");
+            errorMessage = new ErrorMessage(DEFAULT_ERROR_TITLE, "Required request body is missing");
         } else if (cause instanceof InvalidFormatException) {
             InvalidFormatException e = (InvalidFormatException) cause;
             errorMessage = new ErrorMessage(
@@ -77,7 +79,7 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
     @ExceptionHandler(ControllerException.class)
     protected ResponseEntity<Object> handleControllerException(ControllerException ex) {
         return createResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
-                new ErrorMessage("Error", "Internal server error"));
+                new ErrorMessage(DEFAULT_ERROR_TITLE, "Internal server error"));
     }
 
 }

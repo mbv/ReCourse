@@ -10,4 +10,6 @@ public interface CourseFeedbackRepository extends PagingAndSortingRepository<Cou
 
     List<CourseFeedback> findByCourseIdOrderByIdDesc(Integer courseId, Pageable pageable);
 
+    Integer deleteByCourseId(Integer courseId);
+
 }

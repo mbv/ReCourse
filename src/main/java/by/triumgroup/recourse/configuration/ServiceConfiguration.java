@@ -41,8 +41,9 @@ public class ServiceConfiguration {
             CourseRepository courseRepository,
             UserRepository userRepository,
             LessonRepository lessonRepository,
-            HometaskSolutionRepository hometaskSolutionRepository) {
-        return new CourseServiceImpl(courseRepository, userRepository, lessonRepository, hometaskSolutionRepository);
+            HometaskSolutionRepository hometaskSolutionRepository,
+            CourseFeedbackRepository courseFeedbackRepository) {
+        return new CourseServiceImpl(courseRepository, userRepository, lessonRepository, courseFeedbackRepository, hometaskSolutionRepository);
     }
 
     @Bean

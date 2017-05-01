@@ -7,6 +7,8 @@ import org.springframework.web.context.request.RequestAttributes;
 import java.util.Collections;
 import java.util.Map;
 
+import static by.triumgroup.recourse.validation.support.Constants.DEFAULT_ERROR_TITLE;
+
 public class CustomErrorAttributes extends DefaultErrorAttributes {
 
     private static final String EXCEPTION_KEY = "exception";
@@ -27,7 +29,7 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
         errorAttributes.remove(PATH_KEY);
         Object remove = errorAttributes.get(MESSAGE_KEY);
         Object message = Collections.singletonList(new ErrorMessage(
-                "Error",
+                DEFAULT_ERROR_TITLE,
                 remove.toString()
         ));
         errorAttributes.put(ERRORS_KEY, message);
