@@ -2,28 +2,42 @@ angular
     .module('app')
     .service('AuthService', AuthService);
 
-function AuthService($http, $state, $cookies, UserFactory) {
+function AuthService($q, $http, $state, $cookies, UserFactory) {
 
     var self = {
-        isAuthorized: false,
+        prepareAuthInfo: prepareAuthInfo,
         tryAuthorize: tryAuthorize,
         unauthorize: unauthorize,
         signIn: signIn,
         signUp: signUp,
         signOut: signOut,
         role: null,
-        user: null
+        user: null,
+        isAuthorized: false
     };
 
     return self;
 
+    function prepareAuthInfo() {
+        return $q(function (resolve) {
+            if (!self.isAuthorized) {
+                tryAuthorize().then(resolve);
+            } else {
+                resolve();
+            }
+        })
+    }
+
     function tryAuthorize() {
-        var accessToken = $cookies.get('recourse-access-token');
-        if (!!accessToken) {
-            self.isAuthorized = true;
-            injectAccessTokenToOutgoingHttpRequests(accessToken);
-            initUser(accessToken);
-        }
+        return $q(function(resolve) {
+            var accessToken = $cookies.get('recourse-access-token');
+            if (!!accessToken) {
+                injectAccessTokenToOutgoingHttpRequests(accessToken);
+                trySetCurrentUser().then(resolve);
+            } else {
+                resolve();
+            }
+        });
     }
 
     function unauthorize() {
@@ -31,6 +45,7 @@ function AuthService($http, $state, $cookies, UserFactory) {
         rejectAccessTokenToOutgoingHttpRequests();
         self.isAuthorized = false;
         self.role = null;
+        self.user = null;
         $state.go('signIn');
     }
 
@@ -43,7 +58,7 @@ function AuthService($http, $state, $cookies, UserFactory) {
 
         $http(oauthRequestConfig('/ReCourse/oauth/token', requestParams))
             .then(function (response) {
-                handleAccessTokenRequest(response, needToRemember);
+                handleAccessTokenRequest(response, needToRemember)
             });
     }
 
@@ -56,7 +71,7 @@ function AuthService($http, $state, $cookies, UserFactory) {
     }
 
     function signOut() {
-        makeLogoutRequest(self.unauthorize);
+        return makeLogoutRequest().then(self.unauthorize);
     }
 
     function handleAccessTokenRequest(response, needToRemember) {
@@ -65,14 +80,19 @@ function AuthService($http, $state, $cookies, UserFactory) {
 
         if (!!accessToken) {
             injectAccessTokenToOutgoingHttpRequests(accessToken);
-            initUser(accessToken);
-            self.isAuthorized = true;
-            if (needToRemember) {
-                var expirationDate = new Date();
-                expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiresIn);
-                $cookies.put('recourse-access-token', accessToken, { expires: expirationDate } );
-            }
+            trySetCurrentUser().then(function () {
+                if (needToRemember) {
+                    rememberAccessToken(accessToken, tokenExpiresIn);
+                }
+                $state.go('root');
+            });
         }
+    }
+
+    function rememberAccessToken(accessToken, tokenExpiresIn) {
+        var expirationDate = new Date();
+        expirationDate.setSeconds(expirationDate.getSeconds() + tokenExpiresIn);
+        $cookies.put('recourse-access-token', accessToken, { expires: expirationDate } );
     }
 
     function injectAccessTokenToOutgoingHttpRequests(token) {
@@ -83,8 +103,8 @@ function AuthService($http, $state, $cookies, UserFactory) {
         $http.defaults.headers.common['Authorization'] = undefined;
     }
 
-    function makeLogoutRequest(callback) {
-        $http.post('/ReCourse/api/users/logout').then(callback);
+    function makeLogoutRequest() {
+        return $http.post('/ReCourse/api/users/logout');
     }
 
     function oauthRequestConfig(url, params) {
@@ -99,20 +119,11 @@ function AuthService($http, $state, $cookies, UserFactory) {
         };
     }
 
-    function initUser(accessToken) {
-        $http.get('/ReCourse/oauth/check_token', {params: {token:accessToken}}).then(function (response) {
-            if (response.status === 200) {
-                self.role = response.data.authorities[0];
-
-                if (self.role === 'ADMIN'){
-                    $state.go('users')
-                } else if (self.role === 'TEACHER') {
-                    $state.go('teacher-lessons');
-                }
-            }
-        });
-        UserFactory.me(function(response) {
+    function trySetCurrentUser() {
+        return UserFactory.getCurrentUser().$promise.then(function(response) {
             self.user = response;
+            self.isAuthorized = true;
+            self.role = self.user.role;
         });
     }
 }

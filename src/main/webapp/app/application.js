@@ -8,6 +8,5 @@ angular
         'ngAnimate',
         'ngMaterial',
         'angular-loading-bar',
-        'md.data.table',
-        'permission'
+        'md.data.table'
     ]);
