@@ -16,7 +16,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
@@ -25,12 +24,6 @@ public class RestExceptionHandler extends BaseResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         BindingResult bindingResult = ex.getBindingResult();
         RestError apiError = createRestError(bindingResult, status);
-        return handleExceptionInternal(ex, apiError, headers, status, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        RestError apiError = createRestError(status, new ErrorMessage("Invalid path", ex.getRequestURL()));
         return handleExceptionInternal(ex, apiError, headers, status, request);
     }
 
