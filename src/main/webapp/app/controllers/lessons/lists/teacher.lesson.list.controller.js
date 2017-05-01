@@ -11,7 +11,10 @@ function TeacherLessonListController($controller, $mdDialog, AuthService, Lesson
 
     self.showLesson = showLesson;
     self.showSolutions = showSolutions;
-    self.teacherId = AuthService.user.id;
+    AuthService.prepareAuthInfo().then(function() {
+        self.teacherId = AuthService.user.id;
+    });
+
     self.lessonsTypes = ['past', 'future'];
 
     refresh();
@@ -27,7 +30,7 @@ function TeacherLessonListController($controller, $mdDialog, AuthService, Lesson
     }
 
     function showSolutions(lesson) {
-        $state.go('teacher.solutions', { id: lesson.id });
+        $state.go('teacher-solutions', { id: lesson.id });
     }
 
 

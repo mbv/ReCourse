@@ -56,9 +56,15 @@ function AppStates($stateProvider, $urlRouterProvider) {
         },
         {
             name: 'lesson-solutions',
-            url: '/solutions/?lesson',
-            controller: 'LessonSolutionListController as self',
-            templateUrl: 'templates/lessons/solutions/index.html'
+            url: '/lessons/:id/solutions',
+            controller: 'AdminSolutionListController as self',
+            templateUrl: 'templates/solutions/index.html'
+        },
+        {
+            name: 'teacher-solutions',
+            url: '/teacher/lessons/:id/solutions',
+            controller: 'TeacherSolutionListController as self',
+            templateUrl: 'templates/solutions/index.html'
         },
         {
             name: 'teacher-lessons',

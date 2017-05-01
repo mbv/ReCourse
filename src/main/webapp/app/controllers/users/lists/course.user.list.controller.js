@@ -2,7 +2,7 @@ angular
     .module('app')
     .controller('CourseUserListController', CourseUserListController);
 
-function CourseUserListController($mdDialog, UserFactory, $stateParams, $controller) {
+function CourseUserListController($mdDialog, UserFactory, $stateParams, $controller, CourseFactory) {
     var self = this;
     $controller('UserListController', {self: self});
 

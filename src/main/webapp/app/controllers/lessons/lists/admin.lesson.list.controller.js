@@ -37,7 +37,7 @@ function AdminLessonListController($controller, $mdDialog, $stateParams, CourseF
     }
 
     function showSolutions(lesson) {
-        $state.go('crud.lessons.solutions', { id: lesson.id });
+        $state.go('lesson-solutions', { id: lesson.id });
     }
 
     function openEditModal(lesson) {

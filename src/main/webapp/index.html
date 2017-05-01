@@ -24,7 +24,7 @@
                     <md-nav-item md-nav-sref="users" name="users">users</md-nav-item>
                 </div>
                 <div ng-if="self.getRole() === 'TEACHER'">
-                    <md-nav-item md-nav-sref="lessons" name="teacher-lessons">Lessons</md-nav-item>
+                    <md-nav-item md-nav-sref="teacher-lessons" name="teacher-lessons">Lessons</md-nav-item>
                 </div>
                 <div ng-if="self.getRole() === 'STUDENT'">
                     <md-nav-item md-nav-sref="student" name="student-courses"></md-nav-item>
@@ -85,10 +85,16 @@
     <script type="text/javascript" src="app/controllers/lessons/lists/teacher.lesson.list.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/lessonModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/navigation.controller.js"></script>
-    <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionList.controller.js"></script>
-    <script type="text/javascript" src="app/controllers/lessons/solutions/lessonSolutionModal.controller.js"></script>
+
+    <script type="text/javascript" src="app/controllers/solutions/lists/admin.solution.list.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/solutions/lists/teacher.solution.list.controller.js"></script>
+    <script type="text/javascript" src="app/controllers/solutions/lists/solution.list.controller.js"></script>
+
+
+    <script type="text/javascript" src="app/controllers/solutions/lessonSolutionModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/lessons/teacherLessonModal.controller.js"></script>
-    <script type="text/javascript" src="app/controllers/lessons/solutions/teacherSolutionModal.controller.js"></script>
+
+    <script type="text/javascript" src="app/controllers/solutions/teacherSolutionModal.controller.js"></script>
     <script type="text/javascript" src="app/controllers/courses/studentCourseController.js"></script>
 
     <script type="text/javascript" src="app/filters/propertyFilter.js"></script>
