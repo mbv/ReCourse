@@ -15,35 +15,28 @@
 
 <body ng-app="app" ng-cloak layout="column">
 
-    <div ng-controller="NavigationController as self">
-        <div layout="row" class="md-toolbar-tools">
-            <h3>ReCourse</h3>
-
+    <md-toolbar layout="row" md-whiteframe="2" layout-align="space-around center" ng-controller="NavigationController as self">
+        <p>ReCourse</p>
+        <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
             <div ng-if="self.isAuthorized()">
-                <md-nav-bar ng-if="self.getRole() === 'ADMIN'" md-selected-nav-item="currentNavItem">
-                    <md-nav-item md-nav-sref="courses" name="courses" value="courses">courses</md-nav-item>
-                    <md-nav-item md-nav-sref="users" name="users" name="users">users</md-nav-item>
-                </md-nav-bar>
-
-                <md-nav-bar ng-if="self.getRole() === 'TEACHER'" md-selected-nav-item="currentNavItem">
+                <div ng-if="self.getRole() === 'ADMIN'">
+                    <md-nav-item md-nav-sref="courses" name="courses">courses</md-nav-item>
+                    <md-nav-item md-nav-sref="users" name="users">users</md-nav-item>
+                </div>
+                <div ng-if="self.getRole() === 'TEACHER'">
                     <md-nav-item md-nav-sref="lessons" name="teacher-lessons">Lessons</md-nav-item>
-                </md-nav-bar>
-
-                <md-nav-bar ng-if="self.getRole() === 'STUDENT'" md-selected-nav-item="currentNavItem">
+                </div>
+                <div ng-if="self.getRole() === 'STUDENT'">
                     <md-nav-item md-nav-sref="student" name="student-courses"></md-nav-item>
-                </md-nav-bar>
+                </div>
+                <md-button class="sign-out-button" ng-click="self.signOut()">Sign out</md-button>
             </div>
-
-
-            <md-button ng-if="self.isAuthorized()" ng-click="self.signOut()">Sign out</md-button>
-
-
-            <md-nav-bar ng-if="!self.isAuthorized()" md-selected-nav-item="currentNavItem">
+            <div ng-if="!self.isAuthorized()">
                 <md-nav-item md-nav-sref="signIn" name="signIn">Sign In</md-nav-item>
                 <md-nav-item md-nav-sref="signUp" name="signUp">Sign Up</md-nav-item>
-            </md-nav-bar>
-        </div>
-    </div>
+            </div>
+        </md-nav-bar>
+    </md-toolbar>
 
     <md-content ui-view >Loading...</md-content>
 
@@ -59,9 +52,6 @@
     <script type="text/javascript" src="node_modules/angular-ui-date/dist/date.js"></script>
     <script type="text/javascript" src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="node_modules/angular-ui-router-redirect/dist/ui.router.redirect.js"></script>
-    <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-    <script type="text/javascript" src="node_modules/angular-permission/dist/angular-permission.min.js"></script>
-    <script type="text/javascript" src="node_modules/angular-permission/dist/angular-permission-ui.min.js"></script>
 
     <script type="text/javascript" src="app/application.js"></script>
     <script type="text/javascript" src="app/configs/states.config.js"></script>
@@ -78,6 +68,7 @@
     <script type="text/javascript" src="app/factories/mark.factory.js"></script>
     <script type="text/javascript" src="app/factories/feedback.factory.js"></script>
 
+    <script type="text/javascript" src="app/controllers/root.controller.js"></script>
     <script type="text/javascript" src="app/controllers/signIn.controller.js"></script>
     <script type="text/javascript" src="app/controllers/signUp.controller.js"></script>
     <script type="text/javascript" src="app/controllers/users/lists/user.list.controller.js"></script>

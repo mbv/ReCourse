@@ -6,6 +6,11 @@ function AppStates($stateProvider, $urlRouterProvider) {
     [
         { name: 'about', url: '/about', templateUrl: 'templates/about.html' },
         {
+            name: 'root',
+            url: '/',
+            controller: 'RootController'
+        },
+        {
             name: 'signIn',
             url: '/sign_in',
             controller: 'SignInController as self',

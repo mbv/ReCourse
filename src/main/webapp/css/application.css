@@ -13,3 +13,19 @@
 md-sidenav {
     width: 250px;
 }
+
+md-nav-bar div {
+    display: flex;
+}
+
+md-nav-bar .md-nav-bar {
+    border-color: transparent;
+}
+
+.md-button.sign-out-button {
+    color: rgb(197, 202, 233);
+}
+
+.md-button.sign-out-button:hover {
+    background-color: transparent;
+}
