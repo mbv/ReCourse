@@ -7,7 +7,6 @@ import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.LessonService;
 import by.triumgroup.recourse.service.exception.ServiceException;
-import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.support.UserFieldInfo;
 import by.triumgroup.recourse.validation.validator.LessonTimeValidator;
 import by.triumgroup.recourse.validation.validator.UserRoleValidator;
@@ -48,19 +47,11 @@ public class LessonServiceImpl
         throw new ServiceException();
     }
 
-    @Override
-    protected void validateNestedEntities(Lesson entity) {
-        if (entity.getTeacher().getId() == null) {
-            throw new ServiceBadRequestException("teacher.id", "Teacher ID is not specified");
-        }
-    }
-
     public Optional<Lesson> update(Lesson entity, Integer id, User.Role performerRole) {
         Optional<Lesson> result;
         Optional<Lesson> databaseLessonOptional = wrapJPACallToOptional(() -> repository.findOne(id));
         if (databaseLessonOptional.isPresent()) {
             entity.setId(id);
-            validateNestedEntities(entity);
             validateEntity(entity);
             if (performerRole == User.Role.TEACHER){
                 String hometask = entity.getTask();

@@ -2,6 +2,7 @@ package by.triumgroup.recourse.controller.impl;
 
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.CourseFeedbackController;
+import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.entity.model.CourseFeedback;
 import by.triumgroup.recourse.service.CourseFeedbackService;
 import org.slf4j.Logger;
@@ -20,6 +21,12 @@ public class CourseFeedbackControllerImpl
         super(courseFeedbackService, logger);
     }
 
+    @Override
+    protected void validateNestedEntities(CourseFeedback entity) {
+        if (entity.getStudent().getId() == null) {
+            throw new BadRequestException("student.id", "Student ID is not specified");
+        }
+    }
 
     @Override
     protected boolean hasAuthorityToEdit(CourseFeedback entity, UserAuthDetails authDetails) {

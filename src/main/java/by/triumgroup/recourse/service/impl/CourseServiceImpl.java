@@ -7,7 +7,8 @@ import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.*;
 import by.triumgroup.recourse.service.CourseService;
-import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
+import by.triumgroup.recourse.service.exception.ServiceAccessDeniedException;
+import by.triumgroup.recourse.service.exception.ServiceBadRequestException;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Validator;
@@ -72,6 +73,12 @@ public class CourseServiceImpl
         return course.map(Course::getStudents).orElseGet(Collections::emptySet)
                 .stream().sorted(Comparator.comparingInt(BaseEntity::getId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public <S extends Course> Optional<S> add(S entity) {
+        entity.setStatus(Course.Status.DRAFT);
+        return super.add(entity);
     }
 
     @Override
@@ -213,7 +220,11 @@ public class CourseServiceImpl
                     throw new ServiceBadRequestException("Invalid course", "Invalid course status");
             }
         } else {
-            messages.add(new ErrorMessage("user", "Only students can register on course"));
+            if (force) {
+                messages.add(new ErrorMessage("user", "Only students can register on course"));
+            } else {
+                throw new ServiceAccessDeniedException();
+            }
         }
         rejectIfNeed(messages);
     }
@@ -239,7 +250,11 @@ public class CourseServiceImpl
                     throw new ServiceBadRequestException("Invalid course", "Invalid course status");
             }
         } else {
-            messages.add(new ErrorMessage("user", "Only students can unregister from course"));
+            if (force) {
+                messages.add(new ErrorMessage("user", "Only students can unregister from course"));
+            } else {
+                throw new ServiceAccessDeniedException();
+            }
         }
         rejectIfNeed(messages);
     }

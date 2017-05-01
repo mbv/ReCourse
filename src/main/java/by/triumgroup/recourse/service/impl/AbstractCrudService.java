@@ -2,7 +2,7 @@ package by.triumgroup.recourse.service.impl;
 
 import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
-import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
+import by.triumgroup.recourse.service.exception.ServiceBadRequestException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -30,7 +30,7 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
     @Override
     public <S extends E> Optional<S> add(S entity) {
         entity.setId(null);
-        validateNestedEntities(entity);
+
         validateEntity(entity);
         return wrapJPACallToOptional(() -> repository.save(entity));
     }
@@ -45,7 +45,6 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
         Optional<E> result;
         if (wrapJPACall(() -> repository.exists(id))) {
             entity.setId(id);
-            validateNestedEntities(entity);
             validateEntity(entity);
             result = wrapJPACallToOptional(() -> repository.save(entity));
         } else {
@@ -58,9 +57,6 @@ public abstract class AbstractCrudService<E extends BaseEntity<ID>, ID extends S
     public Iterable<E> findAll() {
         //noinspection Convert2MethodRef
         return wrapJPACall(() -> repository.findAll());
-    }
-
-    protected void validateNestedEntities(E entity) {
     }
 
     protected void validateEntity(E entity) {

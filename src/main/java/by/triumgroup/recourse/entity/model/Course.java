@@ -50,10 +50,11 @@ public class Course extends BaseEntity<Integer> {
     public Course() {
     }
 
-    public Course(String title, String description, Status status, Integer maxStudents) {
+    public Course(String title, String description, Status status, Timestamp registrationEnd, Integer maxStudents) {
         this.title = title;
         this.description = description;
         this.status = status;
+        this.registrationEnd = registrationEnd;
         this.maxStudents = maxStudents;
     }
 

@@ -9,9 +9,8 @@ import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.LessonRepository;
 import by.triumgroup.recourse.repository.UserRepository;
 import by.triumgroup.recourse.service.UserService;
+import by.triumgroup.recourse.service.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.service.exception.ServiceException;
-import by.triumgroup.recourse.validation.exception.ServiceAccessDeniedException;
-import by.triumgroup.recourse.validation.exception.ServiceBadRequestException;
 import by.triumgroup.recourse.validation.validator.PasswordChangingValidator;
 import by.triumgroup.recourse.validation.validator.RegistrationDetailsValidator;
 import org.slf4j.Logger;
@@ -197,7 +196,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer> implemen
     }
 
     private void denyRoleChanging(String message) {
-        throw new ServiceAccessDeniedException(new ErrorMessage("role", message));
+        throw new ServiceBadRequestException(new ErrorMessage("role", message));
     }
 
     private void forceLogoutUser(User user) {

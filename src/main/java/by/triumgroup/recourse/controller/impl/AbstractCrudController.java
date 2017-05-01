@@ -28,6 +28,9 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
         this.crudService = crudService;
     }
 
+    protected void validateNestedEntities(E entity) {
+    }
+
     protected abstract boolean hasAuthorityToEdit(E entity, UserAuthDetails authDetails);
 
     protected boolean hasAuthorityToRead(E entity, UserAuthDetails authDetails) {
@@ -59,6 +62,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
 
     @Override
     public <S extends E> S create(@Valid @RequestBody S entity, @Auth UserAuthDetails authDetails) {
+        validateNestedEntities(entity);
         checkAuthority(entity, authDetails, this::hasAuthorityToEdit);
         return wrapServiceCall(logger, () -> {
             Optional<S> callResult = crudService.add(entity);
@@ -68,6 +72,7 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
 
     @Override
     public E update(@Valid @RequestBody E entity, @PathVariable("id") ID id, @Auth UserAuthDetails authDetails) {
+        validateNestedEntities(entity);
         checkAuthority(entity, authDetails, this::hasAuthorityToEdit);
         return wrapServiceCall(logger, () -> {
             Optional<E> callResult = crudService.update(entity, id);

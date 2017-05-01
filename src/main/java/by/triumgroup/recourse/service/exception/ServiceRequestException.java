@@ -1,7 +1,6 @@
-package by.triumgroup.recourse.validation.exception;
+package by.triumgroup.recourse.service.exception;
 
 import by.triumgroup.recourse.entity.dto.ErrorMessage;
-import by.triumgroup.recourse.service.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;

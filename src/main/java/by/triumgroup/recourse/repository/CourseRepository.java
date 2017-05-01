@@ -19,7 +19,7 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, Int
             "FROM course\n" +
             "  LEFT JOIN course_student ON ((course.id = course_student.course_id) AND\n" +
             "                              (course_student.student_id != ?1) OR (course_student.course_id IS NULL))\n" +
-            "WHERE (course.status = 'REGISTRATION')\n" +
+            "WHERE (course.status = 'PUBLISHED') AND (course.registration_end > NOW())\n" +
             "GROUP BY id\n" +
             "ORDER BY id DESC\n" +
             "#pageable\n",

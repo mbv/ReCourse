@@ -3,6 +3,7 @@ package by.triumgroup.recourse.controller.impl;
 import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.LessonController;
+import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.Lesson;
 import by.triumgroup.recourse.service.LessonService;
@@ -30,7 +31,15 @@ public class LessonControllerImpl
     }
 
     @Override
+    protected void validateNestedEntities(Lesson entity) {
+        if (entity.getTeacher().getId() == null) {
+            throw new BadRequestException("teacher.id", "Teacher ID is not specified");
+        }
+    }
+
+    @Override
     public Lesson update(@Valid @RequestBody Lesson entity, @PathVariable("id") Integer id, @Auth UserAuthDetails authDetails) {
+        validateNestedEntities(entity);
         checkAuthority(entity, authDetails, this::hasAuthorityToEdit);
         return wrapServiceCall(logger, () -> {
             Optional<Lesson> callResult = lessonService.update(entity, id, authDetails.getRole());

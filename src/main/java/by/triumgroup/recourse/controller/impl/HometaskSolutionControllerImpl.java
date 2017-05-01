@@ -4,6 +4,7 @@ import by.triumgroup.recourse.configuration.security.Auth;
 import by.triumgroup.recourse.configuration.security.UserAuthDetails;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.controller.exception.AccessDeniedException;
+import by.triumgroup.recourse.controller.exception.BadRequestException;
 import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.Lesson;
@@ -43,6 +44,12 @@ public class HometaskSolutionControllerImpl
         this.lessonService = lessonService;
     }
 
+    @Override
+    protected void validateNestedEntities(HometaskSolution entity) {
+        if (entity.getStudent().getId() == null) {
+            throw new BadRequestException("student.id", "Student ID is not specified");
+        }
+    }
 
     @Override
     public Iterable<HometaskSolution> getAll(@Auth UserAuthDetails authDetails) {
