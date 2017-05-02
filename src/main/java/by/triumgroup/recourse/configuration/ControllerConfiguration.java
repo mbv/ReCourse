@@ -63,5 +63,11 @@ public class ControllerConfiguration {
         return new TeacherControllerImpl(lessonService);
     }
 
+    @Bean
+    public StudentController studentController(
+            LessonService lessonService) {
+        return new StudentControllerImpl(lessonService);
+    }
+
 }
 

@@ -91,6 +91,16 @@ public class LessonServiceImpl
     }
 
     @Override
+    public Optional<List<Lesson>> findFutureLessonsByUserId(Integer userId, Pageable pageable) {
+        return wrapJPACallToOptional(() -> repository.findFutureLessonsByUserId(userId, pageable));
+    }
+
+    @Override
+    public Optional<List<Lesson>> findPastLessonsByUserId(Integer userId, Pageable pageable) {
+        return wrapJPACallToOptional(() -> repository.findPastLessonsByUserId(userId, pageable));
+    }
+
+    @Override
     protected String getEntityName() {
         return "lesson";
     }

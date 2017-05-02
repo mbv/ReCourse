@@ -9,6 +9,16 @@ function LessonFactory($resource) {
             url: 'api/teachers/:id/lessons',
             method: 'GET',
             isArray: true
+        },
+        getFutureForStudent: {
+            url: 'api/students/:id/future_lessons',
+            method: 'GET',
+            isArray: true
+        },
+        getPastForStudent: {
+            url: 'api/students/:id/past_lessons',
+            method: 'GET',
+            isArray: true
         }
     });
 }

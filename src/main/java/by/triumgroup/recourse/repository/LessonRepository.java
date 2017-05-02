@@ -28,4 +28,30 @@ public interface LessonRepository extends PagingAndSortingRepository<Lesson, Int
                             @Param("teacher_id") Integer teacherId,
                             @Param("duration") Time duration,
                             @Param("lesson_id") Integer lessonId);
+
+    @Query(value = "SELECT lesson.id, lesson.start_time, lesson.duration, lesson.course_id, lesson.topic, lesson.teacher_id, lesson.task\n" +
+            "FROM lesson\n" +
+            "JOIN course JOIN course_student\n" +
+            "ON ((course.id = course_student.course_id) and\n" +
+            "(course_student.student_id = ?1) and\n" +
+            "(course.status = 'PUBLISHED') and\n" +
+            "(lesson.course_id = course.id) and\n" +
+            "(lesson.start_time > now()))\n" +
+            "ORDER BY lesson.id DESC\n" +
+            "#pageable\n",
+            nativeQuery = true)
+    List<Lesson> findFutureLessonsByUserId(Integer userId, Pageable pageable);
+
+    @Query(value = "SELECT lesson.id, lesson.start_time, lesson.duration, lesson.course_id, lesson.topic, lesson.teacher_id, lesson.task\n" +
+            "FROM lesson\n" +
+            "JOIN course JOIN course_student\n" +
+            "ON ((course.id = course_student.course_id) and\n" +
+            "(course_student.student_id = ?1) and\n" +
+            "(course.status = 'PUBLISHED') and\n" +
+            "(lesson.course_id = course.id) and\n" +
+            "(lesson.start_time <= now()))\n" +
+            "ORDER BY lesson.id DESC\n" +
+            "#pageable\n",
+            nativeQuery = true)
+    List<Lesson> findPastLessonsByUserId(Integer userId, Pageable pageable);
 }

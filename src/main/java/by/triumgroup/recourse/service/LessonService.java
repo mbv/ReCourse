@@ -17,4 +17,7 @@ public interface LessonService extends CrudService<Lesson, Integer> {
 
     Optional<List<Lesson>> findByTeacherIdAndCourseId(Integer teacherId, Integer courseId, Pageable pageable);
 
+    Optional<List<Lesson>> findFutureLessonsByUserId(Integer userId, Pageable pageable);
+
+    Optional<List<Lesson>> findPastLessonsByUserId(Integer userId, Pageable pageable);
 }
