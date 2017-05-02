@@ -14,7 +14,7 @@
             <div layout="row">
                 <md-input-container flex>
                     <label>Topic</label>
-                    <input ng-model="self.lesson.topic" readonly>
+                    <input ng-model="self.lesson.topic" disabled>
                 </md-input-container>
             </div>
             <div layout="row">
@@ -22,17 +22,15 @@
                     <label>Start Time</label>
                     <md-datepicker md-hide-icons="calendar" md-date-filter="" ng-model="self.lesson.startTime" ng-disabled="true"></md-datepicker>
                 </md-input-container>
-            </div>
-            <div layout="row">
-                Teacher: {{ self.lesson.teacher.name }} {{ self.lesson.teacher.surname }}
-            </div>
-            <div layout="row">
-                Course: {{ self.course.title }}
+                <md-input-container flex>
+                    <label>Course</label>
+                    <input ng-model="self.course.title" disabled>
+                </md-input-container>
             </div>
             <div layout="row">
                 <md-input-container flex>
                     <label>Hometask</label>
-                    <input ng-model="self.lesson.task">
+                    <textarea ng-model="self.lesson.task" rows="5" ng-disabled="self.lesson.startTime < self.now()"></textarea>
                 </md-input-container>
             </div>
         </md-dialog-content>

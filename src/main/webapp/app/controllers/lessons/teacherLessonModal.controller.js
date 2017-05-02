@@ -13,6 +13,7 @@ function TeacherLessonModalController($mdDialog, LessonFactory, CourseFactory, l
     self.cancel = cancel;
     self.course = {};
     self.saveHometask = saveHometask;
+    self.now = now;
 
     CourseFactory.query().$promise.then(function (result) {
         self.courses = result;
@@ -20,6 +21,10 @@ function TeacherLessonModalController($mdDialog, LessonFactory, CourseFactory, l
             return course.id === self.lesson.courseId;
         })
     });
+
+    function now() {
+        return +new Date();
+    }
 
     function saveHometask() {
         LessonFactory.update(self.lesson, $mdDialog.hide);

@@ -40,7 +40,7 @@
 
                                 <md-menu-content>
 
-                                    <md-menu-item>
+                                    <md-menu-item ng-if="self.isTeacherLessons() && self.isPastLessons()">
                                         <md-button ng-click="self.showSolutions(lesson)">
                                             <md-icon md-menu-origin>
                                                 <i class="material-icons">event_note</i>
@@ -75,7 +75,7 @@
                                                 <md-icon md-menu-origin>
                                                     <i class="material-icons">info_outline</i>
                                                 </md-icon>
-                                                Delete
+                                                Show
                                             </md-button>
                                         </md-menu-item>
                                     </div>

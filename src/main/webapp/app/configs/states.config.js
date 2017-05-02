@@ -72,11 +72,11 @@ function AppStates($stateProvider, $urlRouterProvider) {
             views: {
                 '': { templateUrl: 'templates/lessons/lessons.future.past.html'},
                 'future@teacher-lessons':{
-                    controller: 'TeacherLessonListController as self',
+                    controller: 'TeacherFutureLessonListController as self',
                     templateUrl: 'templates/lessons/index.html'
                 },
                 'past@teacher-lessons': {
-                    controller: 'TeacherLessonListController as self',
+                    controller: 'TeacherPastLessonListController as self',
                     templateUrl: 'templates/lessons/index.html'
                 }
             }
