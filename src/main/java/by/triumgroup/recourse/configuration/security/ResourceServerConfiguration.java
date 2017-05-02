@@ -51,6 +51,8 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .antMatchers(HttpMethod.GET,"/api/hometasks/solutions/marks/**").authenticated()
                 .antMatchers("/api/hometasks/solutions/marks/**").hasAnyAuthority(User.Role.ADMIN.name(), User.Role.TEACHER.name())
 
+                .antMatchers("/api/hometasks/solutions/marked/**").hasAnyAuthority(User.Role.ADMIN.name())
+
                 .antMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/users/**").authenticated()
                 .antMatchers("/api/users/logout", "/api/users/password/change").authenticated()

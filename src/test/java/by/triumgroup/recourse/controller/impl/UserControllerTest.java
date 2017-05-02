@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.Optional;
 
+import static by.triumgroup.recourse.util.Util.allItemsPage;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -108,7 +109,7 @@ public class UserControllerTest extends CrudControllerTest<User, Integer> {
 
     @Override
     public void getAllEntitiesTest() throws Exception {
-        when(getService().findAll()).thenReturn(Lists.emptyList());
+        when(getService().findAll(allItemsPage())).thenReturn(Lists.emptyList());
         User admin = userSupplier.getWithRole(User.Role.ADMIN);
         sendGet(generalRequest, admin)
                 .andExpect(status().isOk());

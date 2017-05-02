@@ -82,9 +82,9 @@ public class UserControllerImpl extends AbstractCrudController<User, Integer> im
     }
 
     @Override
-    public Iterable<User> getAll(@Auth UserAuthDetails authDetails) {
+    public Iterable<User> getAll(Pageable pageable, @Auth UserAuthDetails authDetails) {
         checkAuthority(null, authDetails, this::hasAuthorityToRead);
-        return super.getAll(authDetails);
+        return super.getAll(pageable, authDetails);
     }
 
     @Override

@@ -5,7 +5,10 @@ import by.triumgroup.recourse.controller.CrudControllerTest;
 import by.triumgroup.recourse.controller.HometaskSolutionController;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.User;
-import by.triumgroup.recourse.service.*;
+import by.triumgroup.recourse.service.CrudService;
+import by.triumgroup.recourse.service.HometaskSolutionService;
+import by.triumgroup.recourse.service.LessonService;
+import by.triumgroup.recourse.service.MarkService;
 import by.triumgroup.recourse.supplier.entity.model.EntitySupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.HometaskSolutionSupplier;
 import by.triumgroup.recourse.supplier.entity.model.impl.MarkSupplier;
@@ -16,6 +19,7 @@ import org.mockito.Mockito;
 
 import java.util.Optional;
 
+import static by.triumgroup.recourse.util.Util.allItemsPage;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,7 +62,7 @@ public class HometaskSolutionControllerTest extends CrudControllerTest<HometaskS
     @Test
     @Override
     public void getAllEntitiesTest() throws Exception {
-        when(getService().findAll()).thenReturn(Lists.emptyList());
+        when(getService().findAll(allItemsPage())).thenReturn(Lists.emptyList());
         User admin = userSupplier.getWithRole(User.Role.ADMIN);
         sendGet(generalRequest, admin)
                 .andExpect(status().isOk());

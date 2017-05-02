@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static by.triumgroup.recourse.util.ServiceCallWrapper.wrapServiceCall;
-import static by.triumgroup.recourse.util.Util.allItemsPage;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class HometaskSolutionControllerImpl
@@ -52,20 +51,20 @@ public class HometaskSolutionControllerImpl
     }
 
     @Override
-    public Iterable<HometaskSolution> getAll(@Auth UserAuthDetails authDetails) {
+    public Iterable<HometaskSolution> getAll(Pageable pageable, @Auth UserAuthDetails authDetails) {
         Iterable<HometaskSolution> result;
         if (!authDetails.isAdmin()) {
             if (authDetails.getRole() == User.Role.STUDENT) {
                 result = wrapServiceCall(logger, () -> {
                     Optional<List<HometaskSolution>> hometaskSolutions = hometaskSolutionService
-                            .findByStudentId(authDetails.getId(), allItemsPage());
+                            .findByStudentId(authDetails.getId(), pageable);
                     return hometaskSolutions.orElseThrow(NotFoundException::new);
                 });
             } else {
                 throw new AccessDeniedException();
             }
         } else {
-            result = super.getAll(authDetails);
+            result = super.getAll(pageable, authDetails);
         }
         return result;
     }

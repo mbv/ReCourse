@@ -45,6 +45,13 @@ public class ControllerConfiguration {
     }
 
     @Bean
+    public MarkedHometaskSolutionController markedHometaskSolutionController(
+            HometaskSolutionService hometasksolutionService,
+            MarkService markService) {
+        return new MarkedHometaskSolutionControllerImpl(hometasksolutionService, markService);
+    }
+
+    @Bean
     public LessonController lessonController(LessonService lessonService) {
         return new LessonControllerImpl(lessonService);
     }

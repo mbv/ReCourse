@@ -32,7 +32,8 @@ public class Mark extends BaseEntity<Integer> {
     public Mark() {
     }
 
-    public Mark(int score, Integer solutionId, String comment) {
+    public Mark(int id, int score, Integer solutionId, String comment) {
+        super(id);
         this.score = score;
         this.solutionId = solutionId;
         this.comment = comment;

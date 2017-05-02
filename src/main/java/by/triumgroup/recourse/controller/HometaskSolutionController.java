@@ -20,7 +20,7 @@ public interface HometaskSolutionController extends CrudController<HometaskSolut
     @GetMapping(value = "/student/{studentId}", params = "lessonId")
     HometaskSolution getStudentSolution(
             @PathVariable("studentId") Integer studentId,
-            @RequestParam(value = "lessonId", required = false) Integer lessonId,
+            @RequestParam(value = "lessonId") Integer lessonId,
             @Auth UserAuthDetails authDetails);
 
     @GetMapping("/student/{studentId}")

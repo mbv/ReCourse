@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
 
+import static by.triumgroup.recourse.util.Util.allItemsPage;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +54,7 @@ public abstract class CrudControllerTest<E extends BaseEntity<ID>, ID> extends A
 
     @Test
     public void getAllEntitiesTest() throws Exception {
-        when(getService().findAll()).thenReturn(Lists.emptyList());
+        when(getService().findAll(allItemsPage())).thenReturn(Lists.emptyList());
 
         sendGet(generalRequest)
                 .andExpect(status().isOk());

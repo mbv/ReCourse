@@ -9,6 +9,7 @@ import by.triumgroup.recourse.controller.exception.NotFoundException;
 import by.triumgroup.recourse.entity.model.BaseEntity;
 import by.triumgroup.recourse.service.CrudService;
 import org.slf4j.Logger;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -56,8 +57,8 @@ public abstract class AbstractCrudController<E extends BaseEntity<ID>, ID> imple
         });
     }
 
-    public Iterable<E> getAll(@Auth UserAuthDetails authDetails) {
-        return wrapServiceCall(logger, crudService::findAll);
+    public Iterable<E> getAll(Pageable pageable, @Auth UserAuthDetails authDetails) {
+        return wrapServiceCall(logger, () -> crudService.findAll(pageable));
     }
 
     @Override

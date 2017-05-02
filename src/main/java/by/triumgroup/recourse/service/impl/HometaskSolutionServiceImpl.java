@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.service.impl;
 
+import by.triumgroup.recourse.entity.dto.MarkedHometaskSolution;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import by.triumgroup.recourse.entity.model.User;
 import by.triumgroup.recourse.repository.CourseRepository;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACall;
 import static by.triumgroup.recourse.util.RepositoryCallWrapper.wrapJPACallToOptional;
 import static by.triumgroup.recourse.util.Util.ifExistsWithRole;
 
@@ -72,6 +74,21 @@ public class HometaskSolutionServiceImpl
                 ? repository.findByStudentIdAndLessonId(studentId, lessonId)
                 : null
         );
+    }
+
+    @Override
+    public List<MarkedHometaskSolution> findAllMarked(Pageable pageable) {
+        return wrapJPACall(() -> repository.findAllMarked(pageable));
+    }
+
+    @Override
+    public List<MarkedHometaskSolution> findMarkedByStudentId(Integer id, Pageable pageable) {
+        return wrapJPACall(() -> repository.findMarkedByStudentId(id, pageable));
+    }
+
+    @Override
+    public List<MarkedHometaskSolution> findMarkedByLessonId(Integer id, Pageable pageable) {
+        return wrapJPACall(() -> repository.findMarkedByLessonId(id, pageable));
     }
 
     @Override

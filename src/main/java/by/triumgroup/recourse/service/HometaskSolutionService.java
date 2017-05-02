@@ -1,5 +1,6 @@
 package by.triumgroup.recourse.service;
 
+import by.triumgroup.recourse.entity.dto.MarkedHometaskSolution;
 import by.triumgroup.recourse.entity.model.HometaskSolution;
 import org.springframework.data.domain.Pageable;
 
@@ -14,4 +15,10 @@ public interface HometaskSolutionService extends CrudService<HometaskSolution, I
 
     Optional<HometaskSolution> findByStudentIdAndLessonId(Integer studentId, Integer hometaskId);
 
+    List<MarkedHometaskSolution> findAllMarked(Pageable pageable);
+
+    List<MarkedHometaskSolution> findMarkedByStudentId(Integer id, Pageable pageable);
+
+    List<MarkedHometaskSolution> findMarkedByLessonId(Integer id, Pageable pageable);
+    
 }

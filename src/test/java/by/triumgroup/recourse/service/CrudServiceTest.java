@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import static by.triumgroup.recourse.util.Util.allItemsPage;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -72,7 +73,7 @@ public abstract class CrudServiceTest<E extends BaseEntity<ID>, ID extends Seria
     public void findAllEntitiesTest() throws Exception {
         when(getCrudRepository().findAll()).thenReturn(Lists.newArrayList(getEntitySupplier().getValidEntityWithId()));
 
-        List<E> list = Lists.newArrayList(getCrudService().findAll());
+        List<E> list = Lists.newArrayList(getCrudService().findAll(allItemsPage()));
 
         verify(getCrudRepository(), times(1)).findAll();
         Assert.assertEquals(1, list.size());
