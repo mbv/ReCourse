@@ -7,6 +7,7 @@ function SolutionListController($state, self, $mdDialog, SolutionFactory, MarkFa
 
     self.isAdminSolutions = isAdminSolutions;
     self.isTeacherSolutions = isTeacherSolutions;
+    self.pagination = { page: 1, limit: 7 };
 
     function isAdminSolutions() {
         return $state.current.name === 'lesson-solutions';

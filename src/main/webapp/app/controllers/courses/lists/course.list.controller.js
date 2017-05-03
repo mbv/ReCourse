@@ -9,6 +9,8 @@ function CourseListController($mdDialog, CourseFactory, $state) {
     self.isUpdatingChosen = false;
 
     self.title = 'Courses';
+    self.pagination = { page: 1, limit: 7 };
+
     self.addCourse = addCourse;
     self.deleteCourse = deleteCourse;
     self.editCourse = editCourse;

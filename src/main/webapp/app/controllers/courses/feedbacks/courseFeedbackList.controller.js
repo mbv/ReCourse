@@ -9,6 +9,7 @@ function CourseFeedbackListController($mdDialog, CourseFactory, FeedbackFactory,
     self.courseId = $stateParams.course;
     self.feedbacks = [];
     self.isUpdatingChosen = false;
+    self.pagination = { page: 1, limit: 7 };
 
     self.addFeedback = addFeedback;
     self.deleteFeedback = deleteFeedback;

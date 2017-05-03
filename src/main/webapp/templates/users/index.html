@@ -20,7 +20,7 @@
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row ng-repeat="user in self.users">
+            <tr md-row ng-repeat="user in self.users | limitTo: self.pagination.limit : (self.pagination.page - 1) * self.pagination.limit">
                 <td md-cell>{{user.id}}</td>
                 <td md-cell>{{user.email}}</td>
                 <td md-cell>{{user.name}}</td>
@@ -40,6 +40,7 @@
             </tbody>
         </table>
     </md-table-container>
+    <md-table-pagination md-limit="self.pagination.limit" md-page="self.pagination.page" md-total="{{self.users.length}}"></md-table-pagination>
 </md-card>
 <md-button class="md-fab" ng-click="self.addUser()" ng-if="!self.course">
     <i class="material-icons">add</i>
