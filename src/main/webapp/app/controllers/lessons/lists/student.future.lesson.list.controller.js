@@ -1,21 +1,28 @@
 angular
     .module('app')
-    .controller('TeacherFutureLessonListController', TeacherFutureLessonListController);
+    .controller('StudentFutureLessonListController', StudentFutureLessonListController);
 
-function TeacherFutureLessonListController($controller, $mdDialog) {
+function StudentFutureLessonListController($controller, $mdDialog, LessonFactory, AuthService) {
     var self = this;
-    self.filterLessons = filterLessons;
-    $controller('TeacherLessonListController', {self: self});
+    $controller('StudentLessonListController', { self: self });
+
     self.title = 'Future lessons';
     self.isUpdatingChosen = false;
     self.lessonsType = 'future';
+    self.lessons = [];
+
     self.showLesson = showLesson;
+    self.refresh = refresh;
 
+    AuthService.prepareAuthInfo().then(function() {
+        self.studentId = AuthService.user.id;
+        refresh();
+    });
 
-    function filterLessons(lessons) {
-        self.lessons = lessons.filter(function (lesson) {
-            return lesson.startTime > (+new Date());
-        });
+    function refresh() {
+        LessonFactory.getFutureForStudent({ id: self.studentId }).$promise.then(function (result) {
+            self.lessons = result;
+        })
     }
 
     function showLesson(lesson) {

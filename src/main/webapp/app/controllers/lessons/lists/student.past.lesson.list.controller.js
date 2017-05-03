@@ -1,28 +1,34 @@
 angular
     .module('app')
-    .controller('TeacherPastLessonListController', TeacherPastLessonListController);
+    .controller('StudentPastLessonListController', StudentPastLessonListController);
 
-function TeacherPastLessonListController($controller, $mdDialog, $state) {
+function StudentPastLessonListController($controller, $mdDialog, $state, LessonFactory, AuthService) {
     var self = this;
-    self.filterLessons = filterLessons;
-    $controller('TeacherLessonListController', {self: self});
+    $controller('StudentLessonListController', { self: self });
+
     self.title = 'Past lessons';
     self.isUpdatingChosen = false;
     self.lessonsType = 'past';
+    self.lessons = [];
+
     self.showLesson = showLesson;
     self.showSolutions = showSolutions;
+    self.refresh = refresh;
 
+    AuthService.prepareAuthInfo().then(function() {
+        self.studentId = AuthService.user.id;
+        refresh();
+    });
 
-    function filterLessons(lessons) {
-        self.lessons = lessons.filter(function (lesson) {
-            return lesson.startTime <= (+new Date());
-        });
+    function refresh() {
+        LessonFactory.getPastForStudent({ id: self.studentId }).$promise.then(function (result) {
+            self.lessons = result;
+        })
     }
 
     function showLesson(lesson) {
         openShowModal(lesson);
     }
-
 
     function openShowModal(lesson) {
         $mdDialog.show({

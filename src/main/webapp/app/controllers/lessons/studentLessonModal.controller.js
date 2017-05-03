@@ -1,8 +1,8 @@
 angular
     .module('app')
-    .controller('TeacherLessonModalController', TeacherLessonModalController);
+    .controller('StudentLessonModalController', StudentLessonModalController);
 
-function TeacherLessonModalController($mdDialog, LessonFactory, CourseFactory, lesson) {
+function StudentLessonModalController($mdDialog, LessonFactory, CourseFactory, lesson) {
     var self = this;
 
     if (lesson && lesson.startTime) {

@@ -5,6 +5,7 @@ angular
 function LessonListController($state, self) {
     self.title = '';
     self.lessons = [];
+    self.pagination = { page: 1, limit: 7 };
     // self.isUpdatingChosen = false;
 
     // self.addLesson = addLesson;
@@ -13,6 +14,7 @@ function LessonListController($state, self) {
     // self.showLesson = showLesson;
     // self.showSolutions = showSolutions;
     self.isTeacherLessons = isTeacherLessons;
+    self.isStudentLessons = isStudentLessons;
     self.isAdminLessons = isAdminLessons;
     // self.courseId = $stateParams.course;
 
@@ -44,6 +46,10 @@ function LessonListController($state, self) {
 
     function isAdminLessons() {
         return $state.current.name === 'course-lessons';
+    }
+
+    function isStudentLessons() {
+        return $state.current.name === 'student-lessons';
     }
 
     // function addLesson() {
