@@ -15,17 +15,17 @@
 
                         <th ng-if="self.isAdminLessons()" md-column>#</th>
                         <th md-column>Topic</th>
-                        <th ng-if="self.isAdminLessons()" md-column>Teacher</th>
+                        <th ng-if="self.isAdminLessons() || self.isStudentLessons()" md-column>Teacher</th>
                         <th md-column>Start Time</th>
                         <th md-column>Duration</th>
                     </tr>
                 </thead>
 
                 <tbody md-body>
-                    <tr md-row ng-repeat="lesson in self.lessons">
+                    <tr md-row ng-repeat="lesson in self.lessons | limitTo: self.pagination.limit : (self.pagination.page - 1) * self.pagination.limit">
                         <td ng-if="self.isAdminLessons()" md-cell>{{lesson.id}}</td>
                         <td md-cell>{{lesson.topic}}</td>
-                        <td ng-if="self.isAdminLessons()" md-cell>{{lesson.teacher.name}} {{lesson.teacher.surname}}</td>
+                        <td ng-if="self.isAdminLessons() || self.isStudentLessons()" md-cell>{{lesson.teacher.name}} {{lesson.teacher.surname}}</td>
                         <td md-cell>{{lesson.startTime | date : 'MM/dd/yyyy'}}</td>
                         <td md-cell>{{lesson.duration}}</td>
                         <td md-cell>
@@ -87,8 +87,9 @@
                 </tbody>
             </table>
         </md-table-container>
+        <md-table-pagination md-limit="self.pagination.limit" md-page="self.pagination.page" md-total="{{self.lessons.length}}"></md-table-pagination>
     </md-card>
-    <div ng-if="!self.teacherId">
+    <div ng-if="self.isAdminLessons() && !self.teacherId">
         <md-button class="md-fab" ng-click="self.addLesson()">
             <i class="material-icons">add</i>
         </md-button>
