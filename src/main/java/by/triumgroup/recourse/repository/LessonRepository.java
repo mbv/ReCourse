@@ -37,7 +37,7 @@ public interface LessonRepository extends PagingAndSortingRepository<Lesson, Int
             "(course.status = 'PUBLISHED') and\n" +
             "(lesson.course_id = course.id) and\n" +
             "(lesson.start_time > now()))\n" +
-            "ORDER BY lesson.id DESC\n" +
+            "ORDER BY lesson.start_time ASC\n" +
             "#pageable\n",
             nativeQuery = true)
     List<Lesson> findFutureLessonsByUserId(Integer userId, Pageable pageable);
@@ -50,7 +50,7 @@ public interface LessonRepository extends PagingAndSortingRepository<Lesson, Int
             "(course.status = 'PUBLISHED') and\n" +
             "(lesson.course_id = course.id) and\n" +
             "(lesson.start_time <= now()))\n" +
-            "ORDER BY lesson.id DESC\n" +
+            "ORDER BY lesson.start_time ASC\n" +
             "#pageable\n",
             nativeQuery = true)
     List<Lesson> findPastLessonsByUserId(Integer userId, Pageable pageable);
